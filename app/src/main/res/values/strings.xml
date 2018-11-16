@@ -5,4 +5,40 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+
+    <string name="item_content">Coffee naturally contains a variety of compounds including caffeine, antioxidants and diterpenes. These contribute not only to the unique flavour but also to the well-researched physiological effects of coffee.</string>
+    <string name="add_to_cart">ADD TO CART</string>
+    <string name="item_price">3,500 MMK</string>
+    <string name="item_name">Coco Coffee</string>
+    <string name="instock">In Stock</string>
+    <string name="title_activity_game_break">GameBreak</string>
+
+
+    <string name="interstitial_ad_sample">Interstitial Ad Sample</string>
+    <string name="start_level">Level 1</string>
+    <string name="next_level">Next Level</string>
+    <!-- -
+        This is an ad unit ID for an interstitial test ad. Replace with your own interstitial ad unit id.
+        For more information, see https://support.google.com/admob/answer/3052638
+    <!- -->
+    <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="filter">Filter By</string>
+    <string name="all_product">All Products</string>
+    <string name="sport_drink">Sport Drinks</string>
+    <string name="cold_drink">Cold Drinks</string>
+    <string name="coffee">Coffee</string>
+    <string name="result">Result</string>
+    <string name="all">All</string>
+    <string name="by_brand">by Brand</string>
+    <string name="by_category">by Category</string>
+    <string name="product_detail">Product Details</string>
+    <string name="title_activity_animation">AnimationActivity</string>
+    <string name="title_activity_animation2">Animation2Activity</string>
+    <string name="back_activtiy">Back Activtiy</string>
+    <string name="next_activity">next Activity</string>
+    <string name="coco_coffee">CoCo Coffee</string>
+    <string name="search">Search</string>
+    <string name="mmk">MMK 3,500</string>
+    <string name="count">12</string>
 </resources>
