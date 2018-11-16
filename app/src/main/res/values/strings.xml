@@ -41,4 +41,7 @@
     <string name="search">Search</string>
     <string name="mmk">MMK 3,500</string>
     <string name="count">12</string>
+    <string name="tv_sign_in">Sign In</string>
+    <string name="phone_or_email">Phone or Email</string>
+    <string name="password">password</string>
 </resources>
