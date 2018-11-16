@@ -5,4 +5,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="tv_sign_in">Sign In</string>
+    <string name="phone_or_email">Phone or Email</string>
+    <string name="password">password</string>
 </resources>
