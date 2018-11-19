@@ -1,12 +1,12 @@
 package com.creative_webstudio.iba.activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,9 +32,10 @@ import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+import butterknife.ButterKnife;
 
 
-public class ProductActivity extends AppCompatActivity implements ProductDelegate, SearchView.OnQueryTextListener {
+public class ProductActivity extends BaseDrawerActivity implements ProductDelegate, SearchView.OnQueryTextListener {
     RecyclerView rvProduct, rvSearch;
     Button btnProduct;
     AlertDialog productDialog;
@@ -52,10 +53,16 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
     private String chooseItem;
 
+    public static Intent newIntent(Context context){
+        Intent intent=new Intent(context,ProductActivity.class);
+        return intent;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product);
+        setMyView(R.layout.activity_product);
+        ButterKnife.bind(this,this);
 
         rvProduct = findViewById(R.id.rv_product);
         toolbar = findViewById(R.id.toolbar);
@@ -202,10 +209,11 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
 
     @Override
     public void onBackPressed() {
-        if (llSearch.getVisibility() == View.GONE && searchView.getVisibility() == View.VISIBLE) {
-            finish();
-            startActivity(getIntent());
-        }
+        super.onBackPressed();
+//        if (llSearch.getVisibility() == View.GONE && searchView.getVisibility() == View.VISIBLE) {
+//            finish();
+//            startActivity(getIntent());
+//        }
 
     }
 }

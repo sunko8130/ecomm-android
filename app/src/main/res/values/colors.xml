@@ -6,6 +6,8 @@
 
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#757575</color>
+    
+    <color name="splashColor">#290e5e</color>
 
     <color name="whiteFull">#FFFFFF</color>
     <color name="redFull">#FF0000</color>

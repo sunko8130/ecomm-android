@@ -35,7 +35,7 @@
     <string name="product_detail">Product Details</string>
     <string name="title_activity_animation">AnimationActivity</string>
     <string name="title_activity_animation2">Animation2Activity</string>
-    <string name="back_activtiy">Back Activtiy</string>
+    <string name="back_activity">Back Activity</string>
     <string name="next_activity">next Activity</string>
     <string name="coco_coffee">CoCo Coffee</string>
     <string name="search">Search</string>
@@ -44,4 +44,7 @@
     <string name="tv_sign_in">Sign In</string>
     <string name="phone_or_email">Phone or Email</string>
     <string name="password">password</string>
+    <string name="title_activity_base_drawer">BaseDrawerActivity</string>
+    <string name="save">Save</string>
+    <string name="product">Product</string>
 </resources>
