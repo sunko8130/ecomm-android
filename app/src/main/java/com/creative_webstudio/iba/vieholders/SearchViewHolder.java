@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
 import com.creative_webstudio.iba.vos.NamesVo;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
 
@@ -19,7 +20,7 @@ public class SearchViewHolder extends RecyclerView.ViewHolder {
     int width;
 
 
-    public SearchViewHolder(@NonNull View itemView, final ProductDelegate productDelegate) {
+    public SearchViewHolder(@NonNull View itemView, final ProductSearchDelegate productDelegate) {
         super(itemView);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
         ivProduct = itemView.findViewById(R.id.iv_product);

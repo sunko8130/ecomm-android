@@ -2,8 +2,13 @@ package com.creative_webstudio.iba.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,6 +39,9 @@ import com.viewpagerindicator.CirclePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class ProductActivity extends AppCompatActivity implements ProductDelegate, SearchView.OnQueryTextListener {
     RecyclerView rvProduct, rvSearch;
@@ -40,6 +49,10 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
     AlertDialog productDialog;
     TextView tvFilterBy, tvItemCount;
     ViewPager viewPager;
+    AppBarLayout appBar;
+    @BindView(R.id.iv_search)
+    ImageView ivSearch;
+
 
     LinearLayout ll, llSearch;
     android.support.v7.widget.Toolbar toolbar;
@@ -47,7 +60,7 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
     private List<NamesVo> names = new ArrayList<>();
     CirclePageIndicator titlePageIndicator;
     SearchAdapter searchAdapter;
-    SearchView searchView;
+
 
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
     private String chooseItem;
@@ -56,7 +69,9 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
+        ButterKnife.bind(this, this);
 
+        rvSearch = findViewById(R.id.rv_search);
         rvProduct = findViewById(R.id.rv_product);
         toolbar = findViewById(R.id.toolbar);
         ll = findViewById(R.id.ll);
@@ -64,6 +79,7 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
         btnProduct = findViewById(R.id.btn_product);
         tvFilterBy = findViewById(R.id.tv_filter);
         tvItemCount = findViewById(R.id.tv_item_count);
+        appBar = findViewById(R.id.appbar);
         setSupportActionBar(toolbar);
 
         NamesVo namesVo = new NamesVo("start");
@@ -80,10 +96,9 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
         ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getApplicationContext(), R.dimen.margin_small);
         rvProduct.addItemDecoration(itemDecoration);
 
-        searchAdapter = new SearchAdapter(this, names);
-        rvSearch = findViewById(R.id.rv_search);
-        rvSearch.setAdapter(searchAdapter);
-        rvSearch.setLayoutManager(new LinearLayoutManager(this));
+//        searchAdapter = new SearchAdapter(this, names);
+//        rvSearch.setAdapter(searchAdapter);
+//        rvSearch.setLayoutManager(new LinearLayoutManager(this));
 
 
         btnProduct.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +134,12 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
 
         setupViewPager();
 
-
+        ivSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onTapSearch();
+            }
+        });
     }
 
     @Override
@@ -127,6 +147,18 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
         Intent i = new Intent(this, ProductDetailsActivity.class);
         startActivity(i);
         overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
+    }
+
+    @Override
+    public void onTapSearch() {
+        Intent i = new Intent(this, ProductSearchActivity.class);
+        startActivity(i);
+
+    }
+
+    @Override
+    public void onTapShoppingCart() {
+
     }
 
 
@@ -140,12 +172,10 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
         titlePageIndicator.setViewPager(viewPager);
         titlePageIndicator.setSnap(true);
 
-
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-
         return false;
     }
 
@@ -163,52 +193,5 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
         return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        final MenuItem menuItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) menuItem.getActionView();
-        searchView.setBackgroundColor(getResources().getColor(R.color.backgroundColor));
-        searchView.setQueryHint("Search Product");
-        searchView.setOnQueryTextListener(this);
 
-        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean newViewFocus) {
-                if (!newViewFocus) {
-                    ll.setVisibility(View.VISIBLE);
-                    llSearch.setVisibility(View.GONE);
-                    toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-//                    finish();
-//                    startActivity(getIntent());
-                }
-            }
-        });
-
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == R.id.action_search) {
-            ll.setVisibility(View.GONE);
-            llSearch.setVisibility(View.VISIBLE);
-            toolbar.setBackgroundColor(getResources().getColor(R.color.backgroundColor));
-            return true;
-
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (llSearch.getVisibility() == View.GONE && searchView.getVisibility() == View.VISIBLE) {
-            finish();
-            startActivity(getIntent());
-        }
-
-    }
 }
