@@ -70,6 +70,9 @@ public class ProductActivity extends AppCompatActivity implements ProductDelegat
         names = namesVo.getNames();
 
         tvItemCount.setText("99");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_menu_white_24dp));
 
         productAdapter = new ProductAdapter(this, names);
         rvProduct.setAdapter(productAdapter);

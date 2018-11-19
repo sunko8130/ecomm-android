@@ -44,4 +44,5 @@
     <string name="tv_sign_in">Sign In</string>
     <string name="phone_or_email">Phone or Email</string>
     <string name="password">password</string>
+    <string name="product">Product</string>
 </resources>

@@ -8,42 +8,125 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="Products"
-            app:titleTextColor="@color/backgroundColor">
+            android:layout_height="320dp"
+            android:background="@color/backgroundColor"
+            app:contentScrim="@color/backgroundColor"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="wrap_content"
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:layout_marginEnd="@dimen/margin_medium"
-                android:layout_marginTop="@dimen/margin_medium">
+                android:layout_marginTop="?attr/actionBarSize">
 
-                <ImageView
-                    android:id="@+id/iv_shopping"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/margin_medium"
-                    android:layout_marginTop="@dimen/margin_medium"
-                    android:src="@drawable/ic_shopping_cart_black_24dp" />
+                <RelativeLayout
+                    android:id="@+id/rl_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp">
+
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/view_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <com.viewpagerindicator.CirclePageIndicator
+                        android:id="@+id/title_page_indicator"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:padding="@dimen/margin_medium"
+                        app:fillColor="@color/colorPrimary" />
+                </RelativeLayout>
+
 
                 <TextView
-                    android:id="@+id/tv_item_count"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_gravity="end"
-                    android:background="@drawable/round_text_view"
+                    android:id="@+id/tv_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/btn_product"
+                    android:layout_alignBottom="@+id/btn_product"
+                    android:layout_marginEnd="@dimen/margin_medium_2"
+                    android:layout_toStartOf="@+id/btn_product"
+                    android:background="@color/backgroundColor"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_local_bar_black_24dp"
                     android:gravity="center"
-                    android:text="@string/count"
-                    android:textColor="@color/backgroundColor"
-                    android:textSize="@dimen/text_small" />
+                    android:text="@string/filter"
+                    android:textSize="@dimen/text_regular" />
+
+                <Button
+                    android:id="@+id/btn_product"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/rl_viewpager"
+                    android:layout_marginBottom="@dimen/margin_medium"
+                    android:layout_marginEnd="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_medium"
+                    android:background="@color/backgroundColor"
+                    android:paddingEnd="30dp"
+                    android:paddingStart="30dp"
+                    android:text="@string/all_product"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorPrimary" />
+
+            </RelativeLayout>
 
 
-            </FrameLayout>
-        </android.support.v7.widget.Toolbar>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                app:layout_collapseMode="pin">
+
+                <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/margin_medium"
+                    android:layout_marginTop="@dimen/margin_medium">
+
+                    <TextView
+                        android:id="@+id/tv_toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center"
+                        android:text="@string/product"
+                        android:textColor="@color/backgroundColor"
+                        android:textSize="@dimen/text_regular_3x"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/iv_shopping"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="@dimen/margin_medium"
+                        android:layout_marginTop="@dimen/margin_medium"
+                        android:src="@drawable/ic_shopping_cart_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/tv_item_count"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="end"
+                        android:background="@drawable/round_text_view"
+                        android:gravity="center"
+                        android:text="@string/count"
+                        android:textColor="@color/backgroundColor"
+                        android:textSize="@dimen/text_small" />
+
+
+                </FrameLayout>
+            </android.support.v7.widget.Toolbar>
+
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
 
     </android.support.design.widget.AppBarLayout>
 
@@ -58,66 +141,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp">
-
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/view_pager"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="@dimen/margin_medium" />
-
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_alignParentBottom="true"
-                    app:tabBackground="@drawable/tab_selector"
-                    app:tabGravity="center"
-                    app:tabIndicatorHeight="0dp" />
-
-                <com.viewpagerindicator.CirclePageIndicator
-                    android:id="@+id/title_page_indicator"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:padding="@dimen/margin_medium" />
-
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_medium">
-
-                <TextView
-                    android:id="@+id/tv_filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginEnd="@dimen/margin_medium_2"
-                    android:layout_toStartOf="@+id/btn_product"
-                    android:drawableStart="@drawable/ic_local_bar_black_24dp"
-                    android:drawablePadding="10dp"
-                    android:text="@string/filter"
-                    android:textSize="@dimen/text_regular" />
-
-                <Button
-                    android:id="@+id/btn_product"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="@dimen/margin_medium"
-                    android:paddingEnd="30dp"
-                    android:paddingStart="30dp"
-                    android:text="@string/all_product"
-                    android:textAllCaps="false"
-                    android:textColor="@color/backgroundColor" />
-            </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_product"
