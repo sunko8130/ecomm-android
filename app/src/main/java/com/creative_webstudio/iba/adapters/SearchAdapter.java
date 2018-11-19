@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
 import com.creative_webstudio.iba.vieholders.SearchViewHolder;
 import com.creative_webstudio.iba.vos.NamesVo;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
@@ -18,11 +19,11 @@ import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
 
-    private ProductDelegate mproductDelegate;
+    private ProductSearchDelegate mproductDelegate;
     private List<NamesVo> names;
 
 
-    public SearchAdapter(ProductDelegate productDelegate, List<NamesVo> names) {
+    public SearchAdapter(ProductSearchDelegate productDelegate, List<NamesVo> names) {
         this.names = names;
         this.mproductDelegate = productDelegate;
     }
