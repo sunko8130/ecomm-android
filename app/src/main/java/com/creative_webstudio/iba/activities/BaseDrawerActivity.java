@@ -27,9 +27,6 @@ import com.creative_webstudio.iba.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by DELL on 11/19/2018.
- */
 
 public class BaseDrawerActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -60,12 +57,12 @@ public class BaseDrawerActivity extends BaseActivity implements NavigationView.O
         addDrawerItems();
         setupDrawer();
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(true);
+//        toolbar.setNavigationIcon(R.drawable.ic_menu);
 //        navigationView.setNavigationItemSelectedListener(this);
         context = this;
     }
