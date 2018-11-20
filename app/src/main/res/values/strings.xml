@@ -47,4 +47,5 @@
     <string name="title_activity_base_drawer">BaseDrawerActivity</string>
     <string name="save">Save</string>
     <string name="product">Product</string>
+    <string name="cart">cart</string>
 </resources>

@@ -57,12 +57,12 @@ public class BaseDrawerActivity extends BaseActivity implements NavigationView.O
         addDrawerItems();
         setupDrawer();
 
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayShowTitleEnabled(false);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //        getSupportActionBar().setDisplayShowHomeEnabled(true);
 //        getSupportActionBar().setHomeButtonEnabled(true);
-//        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
 //        navigationView.setNavigationItemSelectedListener(this);
         context = this;
     }
@@ -70,7 +70,6 @@ public class BaseDrawerActivity extends BaseActivity implements NavigationView.O
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-
     }
 
     public void setMyView(int layoutResID) {
@@ -112,12 +111,14 @@ public class BaseDrawerActivity extends BaseActivity implements NavigationView.O
                     case (R.id.menuProduct):
                         if (item.getItemId() == R.id.menuProduct && !(context instanceof ProductActivity)) {
                             startActivity(ProductActivity.newIntent(context));
+                            finish();
 //                        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
                         }
                         break;
                     case (R.id.menuCart):
                         if (item.getItemId() == R.id.menuCart && !(context instanceof CartActivity)) {
                             startActivity(CartActivity.newIntent(context));
+                            finish();
 //                        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
                         }
                         break;

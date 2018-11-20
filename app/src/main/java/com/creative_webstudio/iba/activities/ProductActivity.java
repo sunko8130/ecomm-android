@@ -3,24 +3,20 @@ package com.creative_webstudio.iba.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,19 +25,16 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.ProductAdapter;
 import com.creative_webstudio.iba.adapters.SearchAdapter;
 import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
+import com.creative_webstudio.iba.components.CountDrawable;
 import com.creative_webstudio.iba.vos.NamesVo;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
 import com.creative_webstudio.iba.fragments.FragmentOne;
 import com.creative_webstudio.iba.fragments.FragmentTwo;
-import com.creative_webstudio.iba.utils.ItemOffsetDecoration;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ProductActivity extends BaseDrawerActivity implements ProductDelegate, SearchView.OnQueryTextListener {
@@ -51,12 +44,9 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
     TextView tvFilterBy, tvItemCount;
     ViewPager viewPager;
     AppBarLayout appBar;
-    @BindView(R.id.iv_search)
-    ImageView ivSearch;
 
 
     LinearLayout ll, llSearch;
-    android.support.v7.widget.Toolbar toolbar;
     private ProductAdapter productAdapter;
     private List<NamesVo> names = new ArrayList<>();
     CirclePageIndicator titlePageIndicator;
@@ -74,38 +64,29 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product);
+        setMyView(R.layout.activity_product);
         ButterKnife.bind(this, this);
 
         rvSearch = findViewById(R.id.rv_search);
         rvProduct = findViewById(R.id.rv_product);
-        toolbar = findViewById(R.id.toolbar);
         ll = findViewById(R.id.ll);
         llSearch = findViewById(R.id.ll_search);
         btnProduct = findViewById(R.id.btn_product);
         tvFilterBy = findViewById(R.id.tv_filter);
-        tvItemCount = findViewById(R.id.tv_item_count);
+//        tvItemCount = findViewById(R.id.tv_item_count);
         appBar = findViewById(R.id.appbar);
-        setSupportActionBar(toolbar);
 
         NamesVo namesVo = new NamesVo("start");
         names = namesVo.getNames();
 
-        tvItemCount.setText("99");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_menu_white_24dp));
+//        tvItemCount.setText("99");
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_menu_white_24dp));
 
         productAdapter = new ProductAdapter(this, names);
         rvProduct.setAdapter(productAdapter);
         rvProduct.setLayoutManager(new GridLayoutManager(this, 2));
-//        ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getApplicationContext(), R.dimen.margin_small);
-//        rvProduct.addItemDecoration(itemDecoration);
-
-//        searchAdapter = new SearchAdapter(this, names);
-//        rvSearch.setAdapter(searchAdapter);
-//        rvSearch.setLayoutManager(new LinearLayoutManager(this));
-
 
         btnProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,13 +120,49 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
 
 
         setupViewPager();
+    }
 
-        ivSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onTapSearch();
-            }
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.product_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        setCount(this, "99");
+        return true;
+    }
+
+    private void setCount(Context context, String count) {
+        MenuItem menuItem=toolbar.getMenu().findItem(R.id.menu_cart);
+        LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
+
+        CountDrawable badge;
+
+        // Reuse drawable if possible
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_group_count);
+        if (reuse != null && reuse instanceof CountDrawable) {
+            badge = (CountDrawable) reuse;
+        } else {
+            badge = new CountDrawable(context);
+        }
+
+        badge.setCount(count);
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_group_count, badge);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.menu_search){
+            onTapSearch();
+            return true;
+        }else if(item.getItemId()==R.id.menu_cart){
+            startActivity(CartActivity.newIntent(this));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
