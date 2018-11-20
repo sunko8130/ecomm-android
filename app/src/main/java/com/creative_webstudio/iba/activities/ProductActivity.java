@@ -38,6 +38,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.ButterKnife;
 
 import butterknife.BindView;
@@ -65,16 +66,16 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
     private String chooseItem;
 
-    public static Intent newIntent(Context context){
-        Intent intent=new Intent(context,ProductActivity.class);
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, ProductActivity.class);
         return intent;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setMyView(R.layout.activity_product);
-        ButterKnife.bind(this,this);
+        setContentView(R.layout.activity_product);
+        ButterKnife.bind(this, this);
 
         rvSearch = findViewById(R.id.rv_search);
         rvProduct = findViewById(R.id.rv_product);
@@ -98,8 +99,8 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
         productAdapter = new ProductAdapter(this, names);
         rvProduct.setAdapter(productAdapter);
         rvProduct.setLayoutManager(new GridLayoutManager(this, 2));
-        ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getApplicationContext(), R.dimen.margin_small);
-        rvProduct.addItemDecoration(itemDecoration);
+//        ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getApplicationContext(), R.dimen.margin_small);
+//        rvProduct.addItemDecoration(itemDecoration);
 
 //        searchAdapter = new SearchAdapter(this, names);
 //        rvSearch.setAdapter(searchAdapter);
