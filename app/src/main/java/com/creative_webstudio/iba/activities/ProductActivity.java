@@ -41,7 +41,7 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
     RecyclerView rvProduct, rvSearch;
     Button btnProduct;
     AlertDialog productDialog;
-    TextView tvFilterBy, tvItemCount;
+    TextView tvFilterBy;
     ViewPager viewPager;
     AppBarLayout appBar;
 
@@ -73,16 +73,12 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
         llSearch = findViewById(R.id.ll_search);
         btnProduct = findViewById(R.id.btn_product);
         tvFilterBy = findViewById(R.id.tv_filter);
-//        tvItemCount = findViewById(R.id.tv_item_count);
         appBar = findViewById(R.id.appbar);
 
         NamesVo namesVo = new NamesVo("start");
         names = namesVo.getNames();
 
-//        tvItemCount.setText("99");
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(true);
-//        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_menu_white_24dp));
+
 
         productAdapter = new ProductAdapter(this, names);
         rvProduct.setAdapter(productAdapter);
@@ -167,8 +163,7 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
 
     @Override
     public void onTapView() {
-        Intent i = new Intent(this, ProductDetailsActivity.class);
-        startActivity(i);
+        startActivity(ProductDetailsActivity.newIntent(this,"Product"));
         overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
     }
 

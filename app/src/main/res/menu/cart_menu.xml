@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_cart"
+        android:icon="@drawable/toolbar_cart_icon"
+        android:title="@string/cart"
+        app:showAsAction="always" />
+
+        <item
+            android:id="@+id/menuProduct"
+            android:title="Product"
+            android:icon="@drawable/ic_shopping_cart_black_24dp"
+            />
+
+        <item
+            android:id="@+id/menuCart"
+            android:title="Cart"
+            android:icon="@drawable/ic_shopping_cart_black_24dp"
+            />
+</menu>

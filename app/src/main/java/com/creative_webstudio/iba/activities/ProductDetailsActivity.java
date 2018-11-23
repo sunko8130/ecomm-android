@@ -1,5 +1,6 @@
 package com.creative_webstudio.iba.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +20,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
     ImageView ivMiddle;
     ImageView ivBackToolBar, ivBack;
     AppBarLayout appBarLayout;
+    String backActivity="Product";
+
+    public static Intent newIntent(Context context, String backActivity) {
+        Intent intent = new Intent(context, ProductDetailsActivity.class);
+        intent.putExtra("BackActivity", backActivity);
+        return intent;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,7 +36,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
+        if(getIntent().hasExtra("BackActivity")) {
+            backActivity = getIntent().getStringExtra("BackActivity");
+        }
         appBarLayout = findViewById(R.id.appbar);
         tvToolBarTitle = findViewById(R.id.tv_toolbar_title);
         ivMiddle = findViewById(R.id.iv_middle);
@@ -74,8 +84,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     public void nextActivity() {
-        Intent i = new Intent(this, ProductActivity.class);
-        startActivity(i);
+        if(backActivity.equals("Product")) {
+            startActivity(ProductActivity.newIntent(this));
+        }else if(backActivity.equals("Cart")){
+            startActivity(CartActivity.newIntent(this));
+        }
         overridePendingTransition(R.anim.zoom_in_anim, R.anim.rotate_anticlockwise_anim);
     }
 

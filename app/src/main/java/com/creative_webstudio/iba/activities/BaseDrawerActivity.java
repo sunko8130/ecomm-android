@@ -28,7 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class BaseDrawerActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class BaseDrawerActivity extends BaseActivity {
 
     private boolean doubleBackToExitPressedOnce = false;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -191,15 +191,4 @@ public class BaseDrawerActivity extends BaseActivity implements NavigationView.O
         }
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case (R.id.menuProduct):
-                break;
-            case (R.id.menuCart):
-                break;
-        }
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
 }
