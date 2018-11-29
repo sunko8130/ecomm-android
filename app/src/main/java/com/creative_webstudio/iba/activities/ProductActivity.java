@@ -60,7 +60,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     AlertDialog productDialog;
     @Nullable
     @BindView(R.id.view_pager)
-    ViewPager viewPager;
+    AutoScrollViewPager viewPager;
     @Nullable
     @BindView(R.id.appbar)
     AppBarLayout appBar;
@@ -113,9 +113,9 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         rvProduct.setAdapter(productAdapter);
         rvProduct.setLayoutManager(new GridLayoutManager(this, 2));
 
-        if(productAdapter.getItemCount()==0){
+        if (productAdapter.getItemCount() == 0) {
             appBar.setExpanded(false);
-        }else {
+        } else {
             appBar.setExpanded(true);
         }
         mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
@@ -143,8 +143,8 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
                 swipeRefreshLayout.setRefreshing(false);
                 //expand
                 final float scale = getResources().getDisplayMetrics().density;
-                int height  = (int) (300 * scale);
-                CoordinatorLayout.LayoutParams params =(CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+                int height = (int) (300 * scale);
+                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
                 params.height = height; // HEIGHT
                 appBar.setLayoutParams(params);
                 appBar.setExpanded(true);
@@ -241,19 +241,21 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     public void onTapShoppingCart() {
 
     }
+
     private void setupViewPager() {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new FragmentOne());
         adapter.addFragment(new FragmentTwo());
         if (viewPager != null) {
             viewPager.setAdapter(adapter);
+            viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
+            viewPager.setInterval(2000);
+            viewPager.startAutoScroll();
+            titlePageIndicator = findViewById(R.id.title_page_indicator);
+            titlePageIndicator.setViewPager(viewPager);
+            titlePageIndicator.setSnap(true);
         }
-        viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
-        viewPager.setInterval(2000);
-        viewPager.startAutoScroll();
-        titlePageIndicator = findViewById(R.id.title_page_indicator);
-        titlePageIndicator.setViewPager(viewPager);
-        titlePageIndicator.setSnap(true);
+
     }
 
     @Override
