@@ -32,7 +32,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        ButterKnife.bind(this,this);
+        ButterKnife.bind(this, this);
 
         mPresenter = ViewModelProviders.of(this).get(SplashPresenter.class);
         mPresenter.initPresenter(this);

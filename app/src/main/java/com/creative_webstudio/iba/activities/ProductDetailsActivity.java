@@ -39,7 +39,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     @BindView(R.id.appbar)
     AppBarLayout appBarLayout;
-    String backActivity="Product";
+    String backActivity = "Product";
 
     private ProductDetailsPresenter mPresenter;
 
@@ -58,7 +58,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        if(getIntent().hasExtra("BackActivity")) {
+        if (getIntent().hasExtra("BackActivity")) {
             backActivity = getIntent().getStringExtra("BackActivity");
         }
 
@@ -82,6 +82,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
                 } else if (verticalOffset == 0) {
                     // If expanded, then do this
+
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                        getWindow().setFlags(WindowManager.LayoutParams.Flag,
+//                                WindowManager.LayoutParams.FLAGS_CHANGED);
+//                    }
                     tvToolBarTitle.setVisibility(View.GONE);
                     ivMiddle.setVisibility(View.GONE);
 
@@ -118,4 +123,5 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 }

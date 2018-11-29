@@ -34,10 +34,11 @@ public class CartActivity extends BaseActivity implements CartView {
     List<NamesVo> names = new ArrayList<>();
     private CartPresenter mPresenter;
 
-    public static Intent newIntent(Context context){
-        Intent intent=new Intent(context,CartActivity.class);
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, CartActivity.class);
         return intent;
     }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +57,7 @@ public class CartActivity extends BaseActivity implements CartView {
 
     @Override
     public void onTapView() {
-        startActivity(ProductDetailsActivity.newIntent(this,"Cart"));
+        startActivity(ProductDetailsActivity.newIntent(this, "Cart"));
     }
 
     @Override

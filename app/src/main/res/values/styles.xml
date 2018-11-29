@@ -81,5 +81,12 @@
         <item name="android:foreground">@drawable/bg_ripple_white</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.StatusBarColor" parent="AppTheme.NoActionBar">
+        <!--<item name="windowActionBar">false</item>-->
+        <!--<item name="windowNoTitle">true</item>-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
 </resources>
 

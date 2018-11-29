@@ -34,6 +34,9 @@ dependencies {
     implementation 'com.github.JakeWharton:ViewPagerIndicator:2.4.1'
     //cardView
     implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation('cn.trinea.android.view.autoscrollviewpager:android-auto-scroll-view-pager:1.1.2') {
+        exclude module: 'support-v4'
+    }
     //retrofit
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'

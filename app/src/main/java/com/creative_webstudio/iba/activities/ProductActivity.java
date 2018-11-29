@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 
+import com.creative_webstudio.iba.MyOnPageChangeListener;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.ProductAdapter;
 import com.creative_webstudio.iba.adapters.SearchAdapter;
@@ -45,6 +46,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
 
 public class ProductActivity extends BaseDrawerActivity implements SearchView.OnQueryTextListener, ProductView {
 
@@ -197,7 +199,6 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     private void setCount(Context context, String count) {
         MenuItem menuItem = toolbar.getMenu().findItem(R.id.menu_cart);
         LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
-
         CountDrawable badge;
 
         // Reuse drawable if possible
@@ -240,8 +241,6 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     public void onTapShoppingCart() {
 
     }
-
-
     private void setupViewPager() {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new FragmentOne());
@@ -249,10 +248,12 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         if (viewPager != null) {
             viewPager.setAdapter(adapter);
         }
+        viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
+        viewPager.setInterval(2000);
+        viewPager.startAutoScroll();
         titlePageIndicator = findViewById(R.id.title_page_indicator);
         titlePageIndicator.setViewPager(viewPager);
         titlePageIndicator.setSnap(true);
-
     }
 
     @Override
@@ -272,6 +273,20 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
         searchAdapter.setNewData(mName);
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // stop auto scroll when onPause
+        viewPager.stopAutoScroll();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // start auto scroll when onResume
+        viewPager.startAutoScroll();
     }
 
 
