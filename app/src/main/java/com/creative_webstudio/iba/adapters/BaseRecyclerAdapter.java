@@ -1,9 +1,11 @@
-package com.creative_webstudio.iba;
+package com.creative_webstudio.iba.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
+
+import com.creative_webstudio.iba.vieholders.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

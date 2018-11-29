@@ -1,6 +1,8 @@
 package com.creative_webstudio.iba.activities;
 
 
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,7 +17,9 @@ import android.view.MenuItem;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.SearchAdapter;
 import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
-import com.creative_webstudio.iba.vos.NamesVo;
+import com.creative_webstudio.iba.datas.vos.NamesVo;
+import com.creative_webstudio.iba.mvp.presenters.ProductSearchPresenter;
+import com.creative_webstudio.iba.mvp.views.ProductSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ProductSearchActivity extends AppCompatActivity implements ProductSearchDelegate, SearchView.OnQueryTextListener {
+public class ProductSearchActivity extends AppCompatActivity implements ProductSearchView, SearchView.OnQueryTextListener {
     @BindView(R.id.search_product_toolbar)
     Toolbar toolbar;
 
@@ -36,6 +40,12 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
     SearchAdapter searchAdapter;
     private List<NamesVo> names = new ArrayList<>();
 
+    private ProductSearchPresenter mPresenter;
+
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, ProductSearchActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,11 +53,15 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
         setContentView(R.layout.activity_product_search);
         ButterKnife.bind(this, this);
         setSupportActionBar(toolbar);
+
+        mPresenter = ViewModelProviders.of(this).get(ProductSearchPresenter.class);
+        mPresenter.initPresenter(this);
+
         NamesVo namesVo = new NamesVo("start");
         names = namesVo.getNames();
         getSupportActionBar().setHomeButtonEnabled(true);
-        searchAdapter = new SearchAdapter(this, names);
-
+        searchAdapter = new SearchAdapter(this, mPresenter);
+        searchAdapter.setNewData(names);
         rvSearch.setAdapter(searchAdapter);
         rvSearch.setLayoutManager(new LinearLayoutManager(this));
 
@@ -67,8 +81,8 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
     @Override
     public void onTapView() {
         Intent i = new Intent(this, ProductDetailsActivity.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
+        startActivity(ProductDetailsActivity.newIntent(this, "Search"));
+//        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
     }
 
     @Override
@@ -86,7 +100,7 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
             }
         }
 
-        searchAdapter.updateProductList(mName);
+        searchAdapter.setNewData(mName);
         return true;
     }
 
@@ -97,5 +111,11 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//       startActivity(ProductActivity.newIntent(this));
     }
 }

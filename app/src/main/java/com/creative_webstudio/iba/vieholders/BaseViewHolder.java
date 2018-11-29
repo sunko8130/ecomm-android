@@ -1,4 +1,4 @@
-package com.creative_webstudio.iba;
+package com.creative_webstudio.iba.vieholders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

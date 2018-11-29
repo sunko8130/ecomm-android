@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.delegates.CartDelegate;
 import com.creative_webstudio.iba.vieholders.CartViewHolder;
-import com.creative_webstudio.iba.vos.NamesVo;
+import com.creative_webstudio.iba.datas.vos.NamesVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
     private List<NamesVo> names;
 
 
-    public CartAdapter(CartDelegate productDelegate, List<NamesVo> names) {
+    public CartAdapter(List<NamesVo> names,CartDelegate productDelegate) {
         this.names = names;
         this.mproductDelegate = productDelegate;
     }

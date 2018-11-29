@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.delegates.CartDelegate;
-import com.creative_webstudio.iba.vos.NamesVo;
+import com.creative_webstudio.iba.datas.vos.NamesVo;
 
 public class CartViewHolder extends RecyclerView.ViewHolder {
 

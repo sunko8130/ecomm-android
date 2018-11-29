@@ -1,8 +1,7 @@
 package com.creative_webstudio.iba.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -10,45 +9,23 @@ import android.view.ViewGroup;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
 import com.creative_webstudio.iba.vieholders.SearchViewHolder;
-import com.creative_webstudio.iba.vos.NamesVo;
-import com.creative_webstudio.iba.delegates.ProductDelegate;
+import com.creative_webstudio.iba.datas.vos.NamesVo;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
+public class SearchAdapter extends BaseRecyclerAdapter<SearchViewHolder,NamesVo> {
 
     private ProductSearchDelegate mproductDelegate;
-    private List<NamesVo> names;
 
 
-    public SearchAdapter(ProductSearchDelegate productDelegate, List<NamesVo> names) {
-        this.names = names;
+    public SearchAdapter(Context context,ProductSearchDelegate productDelegate) {
+        super(context);
         this.mproductDelegate = productDelegate;
     }
 
     @NonNull
     @Override
     public SearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.view_holder_search_list, parent, false);
+        View view = mLayoutInflator.inflate(R.layout.view_holder_search_list, parent, false);
         return new SearchViewHolder(view, mproductDelegate);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull SearchViewHolder viewHolder, int i) {
-        viewHolder.setNames(names.get(i));
-    }
-
-    @Override
-    public int getItemCount() {
-        return names.size();
-    }
-
-    public void updateProductList(List<NamesVo> newList) {
-        names = new ArrayList<>();
-        names.addAll(newList);
-        notifyDataSetChanged();
-    }
 }

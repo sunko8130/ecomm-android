@@ -1,4 +1,4 @@
-package com.creative_webstudio.iba.vos;
+package com.creative_webstudio.iba.datas.vos;
 
 
 import java.util.ArrayList;
@@ -49,6 +49,15 @@ public class NamesVo {
 
         NamesVo vo7 = new NamesVo();
         vo7.setName("florets");
+
+        NamesVo vo8 = new NamesVo();
+        vo8.setName("Ice Coffee");
+
+        NamesVo vo9 = new NamesVo();
+        vo9.setName("florets");
+
+        NamesVo vo10 = new NamesVo();
+        vo10.setName("Ice Coffee");
         names.add(vo1);
         names.add(vo2);
         names.add(vo3);
@@ -56,6 +65,9 @@ public class NamesVo {
         names.add(vo5);
         names.add(vo6);
         names.add(vo7);
+        names.add(vo8);
+        names.add(vo9);
+        names.add(vo10);
     }
 
 

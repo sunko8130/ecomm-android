@@ -1,4 +1,4 @@
-package com.creative_webstudio.iba;
+package com.creative_webstudio.iba.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

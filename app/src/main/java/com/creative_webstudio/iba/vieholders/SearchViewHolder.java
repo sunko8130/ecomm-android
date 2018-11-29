@@ -1,44 +1,38 @@
 package com.creative_webstudio.iba.vieholders;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
-import com.creative_webstudio.iba.vos.NamesVo;
-import com.creative_webstudio.iba.delegates.ProductDelegate;
+import com.creative_webstudio.iba.datas.vos.NamesVo;
+
+import butterknife.BindView;
 
 
-public class SearchViewHolder extends RecyclerView.ViewHolder {
+public class SearchViewHolder extends BaseViewHolder<NamesVo> {
 
-    private TextView tvProductName;
-    private NamesVo mNames;
-    private ImageView ivProduct;
-    int width;
-
+    @BindView(R.id.tv_product_name)
+    TextView tvProductName;
+    @BindView(R.id.iv_product)
+    ImageView ivProduct;
+    private ProductSearchDelegate mSearchDelegate;
 
     public SearchViewHolder(@NonNull View itemView, final ProductSearchDelegate productDelegate) {
         super(itemView);
-        tvProductName = itemView.findViewById(R.id.tv_product_name);
-        ivProduct = itemView.findViewById(R.id.iv_product);
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                productDelegate.onTapView();
-            }
-        });
+        mSearchDelegate=productDelegate;
 
     }
 
-    public void setNames(NamesVo names) {
-        this.mNames = names;
-        tvProductName.setText(names.getName());
-        /*width = (BottomSheet.width / 2);
-        ivProduct.getLayoutParams().width = Math.round(width / Resources.getSystem().getDisplayMetrics().density);
-        ;*/
+    @Override
+    public void setData(NamesVo data) {
+        tvProductName.setText(data.getName());
+    }
 
+    @Override
+    public void onClick(View v) {
+        mSearchDelegate.onTapView();
     }
 }

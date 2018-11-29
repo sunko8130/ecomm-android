@@ -1,5 +1,6 @@
 package com.creative_webstudio.iba.activities;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,7 +9,10 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 
 import com.creative_webstudio.iba.R;
@@ -26,8 +30,12 @@ import com.creative_webstudio.iba.adapters.ProductAdapter;
 import com.creative_webstudio.iba.adapters.SearchAdapter;
 import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
-import com.creative_webstudio.iba.vos.NamesVo;
-import com.creative_webstudio.iba.delegates.ProductDelegate;
+import com.creative_webstudio.iba.components.EmptyViewPod;
+import com.creative_webstudio.iba.components.SmartRecyclerView;
+import com.creative_webstudio.iba.components.SmartScrollListener;
+import com.creative_webstudio.iba.mvp.presenters.ProductPresenter;
+import com.creative_webstudio.iba.mvp.views.ProductView;
+import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.fragments.FragmentOne;
 import com.creative_webstudio.iba.fragments.FragmentTwo;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -35,30 +43,55 @@ import com.viewpagerindicator.CirclePageIndicator;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ProductActivity extends BaseDrawerActivity implements ProductDelegate, SearchView.OnQueryTextListener {
-    RecyclerView rvProduct, rvSearch;
+public class ProductActivity extends BaseDrawerActivity implements SearchView.OnQueryTextListener, ProductView {
+
+    @Nullable
+    @BindView(R.id.rv_product)
+    SmartRecyclerView rvProduct;
+    @Nullable
+    @BindView(R.id.btn_product)
     Button btnProduct;
+
     AlertDialog productDialog;
-    TextView tvFilterBy;
+    @Nullable
+    @BindView(R.id.view_pager)
     ViewPager viewPager;
+    @Nullable
+    @BindView(R.id.appbar)
     AppBarLayout appBar;
+    @Nullable
+    @BindView(R.id.ll)
+    RelativeLayout ll;
+
+    //for swipe refresh
+    @Nullable
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    private SmartScrollListener mSmartScrollListener;
+
+    //empty view
+    @Nullable
+    @BindView(R.id.vp_empty_product)
+    EmptyViewPod vpEmpty;
 
 
-    LinearLayout ll, llSearch;
     private ProductAdapter productAdapter;
     private List<NamesVo> names = new ArrayList<>();
     CirclePageIndicator titlePageIndicator;
     SearchAdapter searchAdapter;
+
+    private ProductPresenter mPresenter;
 
 
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
     private String chooseItem;
 
     public static Intent newIntent(Context context) {
-        Intent intent = new Intent(context, ProductActivity.class);
-        return intent;
+        return new Intent(context, ProductActivity.class);
     }
 
     @Override
@@ -66,23 +99,56 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
         super.onCreate(savedInstanceState);
         setMyView(R.layout.activity_product);
         ButterKnife.bind(this, this);
-
-        rvSearch = findViewById(R.id.rv_search);
-        rvProduct = findViewById(R.id.rv_product);
-        ll = findViewById(R.id.ll);
-        llSearch = findViewById(R.id.ll_search);
-        btnProduct = findViewById(R.id.btn_product);
-        tvFilterBy = findViewById(R.id.tv_filter);
-        appBar = findViewById(R.id.appbar);
-
+        mPresenter = ViewModelProviders.of(this).get(ProductPresenter.class);
+        mPresenter.initPresenter(this);
         NamesVo namesVo = new NamesVo("start");
         names = namesVo.getNames();
 
 
-
-        productAdapter = new ProductAdapter(this, names);
+        rvProduct.setEmptyView(vpEmpty);
+        productAdapter = new ProductAdapter(this, mPresenter);
+//        productAdapter.setNewData(names);
         rvProduct.setAdapter(productAdapter);
         rvProduct.setLayoutManager(new GridLayoutManager(this, 2));
+
+        if(productAdapter.getItemCount()==0){
+            appBar.setExpanded(false);
+        }else {
+            appBar.setExpanded(true);
+        }
+        mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
+            @Override
+            public void onListEndReach() {
+                Snackbar.make(rvProduct, "Loading new data.", Snackbar.LENGTH_LONG).show();
+                swipeRefreshLayout.setRefreshing(true);
+
+//                mPresenter.onNewsListEndReach(getApplicationContext());
+            }
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+//                final float scale = getResources().getDisplayMetrics().density;
+//                int height  = (int) (10 * scale);
+//                CoordinatorLayout.LayoutParams params =(CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+//                params.height = height; // HEIGHT
+//                appBar.setLayoutParams(params);
+//                appBar.setExpanded(true);
+//                viewPager.setVisibility(View.GONE);
+                Snackbar.make(rvProduct, "Refreshing new data.", Snackbar.LENGTH_LONG).show();
+                productAdapter.setNewData(names);
+                swipeRefreshLayout.setRefreshing(false);
+                //expand
+                final float scale = getResources().getDisplayMetrics().density;
+                int height  = (int) (300 * scale);
+                CoordinatorLayout.LayoutParams params =(CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+                params.height = height; // HEIGHT
+                appBar.setLayoutParams(params);
+                appBar.setExpanded(true);
+//                mPresenter.onForceRefresh(getApplicationContext());
+            }
+        });
 
         btnProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,8 +179,6 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
 
             }
         });
-
-
         setupViewPager();
     }
 
@@ -131,14 +195,14 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
     }
 
     private void setCount(Context context, String count) {
-        MenuItem menuItem=toolbar.getMenu().findItem(R.id.menu_cart);
+        MenuItem menuItem = toolbar.getMenu().findItem(R.id.menu_cart);
         LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
 
         CountDrawable badge;
 
         // Reuse drawable if possible
         Drawable reuse = icon.findDrawableByLayerId(R.id.ic_group_count);
-        if (reuse != null && reuse instanceof CountDrawable) {
+        if (reuse instanceof CountDrawable) {
             badge = (CountDrawable) reuse;
         } else {
             badge = new CountDrawable(context);
@@ -151,10 +215,10 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.menu_search){
+        if (item.getItemId() == R.id.menu_search) {
             onTapSearch();
             return true;
-        }else if(item.getItemId()==R.id.menu_cart){
+        } else if (item.getItemId() == R.id.menu_cart) {
             startActivity(CartActivity.newIntent(this));
             return true;
         }
@@ -163,15 +227,13 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
 
     @Override
     public void onTapView() {
-        startActivity(ProductDetailsActivity.newIntent(this,"Product"));
-        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
+        startActivity(ProductDetailsActivity.newIntent(this, "Product"));
+//        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
     }
 
     @Override
     public void onTapSearch() {
-        Intent i = new Intent(this, ProductSearchActivity.class);
-        startActivity(i);
-
+        startActivity(ProductSearchActivity.newIntent(this));
     }
 
     @Override
@@ -184,8 +246,9 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new FragmentOne());
         adapter.addFragment(new FragmentTwo());
-        viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(adapter);
+        if (viewPager != null) {
+            viewPager.setAdapter(adapter);
+        }
         titlePageIndicator = findViewById(R.id.title_page_indicator);
         titlePageIndicator.setViewPager(viewPager);
         titlePageIndicator.setSnap(true);
@@ -207,7 +270,7 @@ public class ProductActivity extends BaseDrawerActivity implements ProductDelega
             }
         }
 
-        searchAdapter.updateProductList(mName);
+        searchAdapter.setNewData(mName);
         return true;
     }
 

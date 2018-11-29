@@ -1,7 +1,6 @@
 package com.creative_webstudio.iba.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +20,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.creative_webstudio.iba.BaseActivity;
 import com.creative_webstudio.iba.R;
 
 import butterknife.BindView;
@@ -100,9 +98,9 @@ public class BaseDrawerActivity extends BaseActivity {
     private void addDrawerItems() {
         if (this instanceof ProductActivity) {
             navigationView.getMenu().findItem(R.id.menuProduct).setChecked(true);
-        } else if (this instanceof CartActivity) {
+        } /*else if (this instanceof CartActivity) {
             navigationView.getMenu().findItem(R.id.menuCart).setChecked(true);
-        }
+        }*/
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -111,14 +109,14 @@ public class BaseDrawerActivity extends BaseActivity {
                     case (R.id.menuProduct):
                         if (item.getItemId() == R.id.menuProduct && !(context instanceof ProductActivity)) {
                             startActivity(ProductActivity.newIntent(context));
-                            finish();
+//                            finish();
 //                        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
                         }
                         break;
                     case (R.id.menuCart):
                         if (item.getItemId() == R.id.menuCart && !(context instanceof CartActivity)) {
                             startActivity(CartActivity.newIntent(context));
-                            finish();
+//                            finish();
 //                        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
                         }
                         break;
@@ -161,10 +159,10 @@ public class BaseDrawerActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (this instanceof CartActivity) {
+       /* if (this instanceof CartActivity) {
             startActivity(ProductActivity.newIntent(this));
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        } else if (this instanceof ProductActivity) {
+        } else */if (this instanceof ProductActivity) {
             if (doubleBackToExitPressedOnce) {
                 super.onBackPressed();
                 moveTaskToBack(true);
