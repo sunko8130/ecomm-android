@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 
 public class SplashActivity extends AppCompatActivity implements SplashView {
 
+    @Nullable
     @BindView(R.id.ivSplash)
     ImageView ivSplash;
 

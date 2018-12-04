@@ -19,4 +19,5 @@ public abstract class BasePresenter<T extends BaseView> extends ViewModel {
     public LiveData<String> getErrorLD() {
         return mErrorLD;
     }
+
 }

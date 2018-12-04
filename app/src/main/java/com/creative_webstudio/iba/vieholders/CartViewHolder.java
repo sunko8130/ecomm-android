@@ -10,9 +10,11 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.delegates.CartDelegate;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
 
+import org.mmtextview.components.MMTextView;
+
 public class CartViewHolder extends RecyclerView.ViewHolder {
 
-    private TextView tvProductName;
+    private MMTextView tvProductName;
     private NamesVo mNames;
     private ImageView ivProduct;
     int width;

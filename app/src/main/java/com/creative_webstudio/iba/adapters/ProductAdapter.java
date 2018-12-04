@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.datas.vos.HCInfoVO;
 import com.creative_webstudio.iba.vieholders.ProductViewHolder;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
@@ -14,22 +15,22 @@ import com.creative_webstudio.iba.delegates.ProductDelegate;
 import java.util.List;
 
 
-public class ProductAdapter extends BaseRecyclerAdapter<ProductViewHolder,NamesVo> {
+public class ProductAdapter extends BaseRecyclerAdapter<ProductViewHolder,HCInfoVO> {
 
-    private ProductDelegate mproductDelegate;
+    private ProductDelegate mProductDelegate;
     private List<NamesVo> names;
 
 
     public ProductAdapter(Context context,ProductDelegate productDelegate) {
         super(context);
-        this.mproductDelegate = productDelegate;
+        this.mProductDelegate = productDelegate;
     }
 
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         View view = mLayoutInflator.inflate(R.layout.view_holder_product_list, parent, false);
-        return new ProductViewHolder(view, mproductDelegate);
+        return new ProductViewHolder(view, mProductDelegate);
     }
 
 }

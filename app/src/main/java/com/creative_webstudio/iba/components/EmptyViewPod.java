@@ -2,12 +2,16 @@ package com.creative_webstudio.iba.components;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.creative_webstudio.iba.R;
+
+import org.mmtextview.components.MMTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,7 +26,7 @@ public class EmptyViewPod extends RelativeLayout {
     ImageView ivEmpty;
 
     @BindView(R.id.tv_empty)
-    TextView tvEmpty;
+    MMTextView tvEmpty;
 
     public EmptyViewPod(Context context) {
         super(context);
@@ -40,6 +44,12 @@ public class EmptyViewPod extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.bind(this, this);
+        tvEmpty.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void setEmptyData(int emptyImageId, String emptyMsg) {
@@ -50,4 +60,6 @@ public class EmptyViewPod extends RelativeLayout {
     public void setEmptyData(String emptyMsg) {
         tvEmpty.setText(emptyMsg);
     }
+
+
 }

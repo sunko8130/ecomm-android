@@ -23,7 +23,7 @@ public abstract class BaseModel {
                 .build();
 
         Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl("http://padcmyanmar.com/padc-2/asartaline/api/v1/")
+                .baseUrl("http://padcmyanmar.com/padc-5/mm-healthcare/")
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)

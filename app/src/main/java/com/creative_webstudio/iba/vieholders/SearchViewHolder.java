@@ -9,13 +9,15 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
 
+import org.mmtextview.components.MMTextView;
+
 import butterknife.BindView;
 
 
 public class SearchViewHolder extends BaseViewHolder<NamesVo> {
 
     @BindView(R.id.tv_product_name)
-    TextView tvProductName;
+    MMTextView tvProductName;
     @BindView(R.id.iv_product)
     ImageView ivProduct;
     private ProductSearchDelegate mSearchDelegate;

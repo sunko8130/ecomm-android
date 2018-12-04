@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,9 +14,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.datas.vos.HCInfoVO;
 import com.creative_webstudio.iba.mvp.presenters.ProductDetailsPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductDetailView;
+
+import org.mmtextview.components.MMTextView;
 
 import java.util.Objects;
 
@@ -25,7 +30,7 @@ import butterknife.ButterKnife;
 
 public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailView {
     @BindView(R.id.tv_toolbar_title)
-    TextView tvToolBarTitle;
+    MMTextView tvToolBarTitle;
 
     @BindView(R.id.iv_middle)
     ImageView ivMiddle;
@@ -41,6 +46,15 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     AppBarLayout appBarLayout;
     String backActivity = "Product";
 
+    @BindView(R.id.tv_item_name)
+    MMTextView tvItemName;
+
+    @BindView(R.id.iv_details_top_image)
+    ImageView ivDetailTopImage;
+
+    @BindView(R.id.tv_item_content)
+    MMTextView tvItemContent;
+
     private ProductDetailsPresenter mPresenter;
 
     public static Intent newIntent(Context context, String backActivity) {
@@ -49,11 +63,18 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         return intent;
     }
 
+    public static Intent newIntent(Context context, String backActivity, double infoVO) {
+        Intent intent = new Intent(context, ProductDetailsActivity.class);
+        intent.putExtra("BackActivity", backActivity);
+        intent.putExtra("infoVo", infoVO);
+        return intent;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.product_details);
-        ButterKnife.bind(this,this);
+        ButterKnife.bind(this, this);
         Toolbar toolbar = findViewById(R.id.toolbar_details);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -62,8 +83,14 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
             backActivity = getIntent().getStringExtra("BackActivity");
         }
 
+
         mPresenter = ViewModelProviders.of(this).get(ProductDetailsPresenter.class);
         mPresenter.initPresenter(this);
+        if (getIntent().hasExtra("infoVo")) {
+            double infoId = getIntent().getDoubleExtra("infoVo",0);
+            mPresenter.getInfoById(infoId);
+        }
+
 //        ivBackToolBar.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -124,4 +151,16 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         super.onBackPressed();
     }
 
+    @Override
+    public void showInfoById(HCInfoVO hcInfoVO) {
+        //Sample
+        Glide.with(this)
+                .load(hcInfoVO.getImage())
+                .into(ivDetailTopImage);
+        Glide.with(this)
+                .load(hcInfoVO.getImage())
+                .into(ivMiddle);
+        tvItemName.setText(hcInfoVO.getTitle());
+        tvItemContent.setText(hcInfoVO.getShortDec());
+    }
 }

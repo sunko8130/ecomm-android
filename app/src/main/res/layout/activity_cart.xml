@@ -86,18 +86,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guideSpacing">
 
-        <TextView
+        <org.mmtextview.components.MMTextView
             android:id="@+id/tvSubTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/subtotal" />
 
-        <TextView
+        <org.mmtextview.components.MMTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/tax" />
 
-        <TextView
+        <org.mmtextview.components.MMTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/total"
@@ -117,17 +117,17 @@
         app:layout_constraintStart_toStartOf="@id/guideLinearEnd"
         app:layout_constraintTop_toBottomOf="@+id/guideSpacing">
 
-        <TextView
+        <org.mmtextview.components.MMTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mmk_sub_total" />
 
-        <TextView
+        <org.mmtextview.components.MMTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mmk_tax" />
 
-        <TextView
+        <org.mmtextview.components.MMTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mmk_total"

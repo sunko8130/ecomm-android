@@ -1,5 +1,7 @@
 package com.creative_webstudio.iba.activities;
 
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,14 +19,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.MyOnPageChangeListener;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.ProductAdapter;
@@ -34,6 +40,7 @@ import com.creative_webstudio.iba.components.CountDrawable;
 import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
+import com.creative_webstudio.iba.datas.vos.HCInfoVO;
 import com.creative_webstudio.iba.mvp.presenters.ProductPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductView;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
@@ -73,12 +80,21 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
+    //load more animation
+    @Nullable
+    @BindView(R.id.aniLoadMore)
+    LottieAnimationView aniLoadMore;
+
     private SmartScrollListener mSmartScrollListener;
 
     //empty view
     @Nullable
     @BindView(R.id.vp_empty_product)
     EmptyViewPod vpEmpty;
+
+    @Nullable
+    @BindView(R.id.btn_refresh_empty)
+    TextView tvEmpty;
 
 
     private ProductAdapter productAdapter;
@@ -87,6 +103,8 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     SearchAdapter searchAdapter;
 
     private ProductPresenter mPresenter;
+
+    private List<HCInfoVO> infoVOList;
 
 
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
@@ -103,9 +121,10 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         ButterKnife.bind(this, this);
         mPresenter = ViewModelProviders.of(this).get(ProductPresenter.class);
         mPresenter.initPresenter(this);
+        infoVOList = new ArrayList<>();
+
         NamesVo namesVo = new NamesVo("start");
         names = namesVo.getNames();
-
 
         rvProduct.setEmptyView(vpEmpty);
         productAdapter = new ProductAdapter(this, mPresenter);
@@ -121,16 +140,18 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
             @Override
             public void onListEndReach() {
-                Snackbar.make(rvProduct, "Loading new data.", Snackbar.LENGTH_LONG).show();
-                swipeRefreshLayout.setRefreshing(true);
-
+                aniLoadMore.setVisibility(View.VISIBLE);
+                Log.e("hhhhhhh", "onListEndReach: "+ "Scroll End");
 //                mPresenter.onNewsListEndReach(getApplicationContext());
             }
         });
 
+        rvProduct.addOnScrollListener(mSmartScrollListener);
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                //collapse
 //                final float scale = getResources().getDisplayMetrics().density;
 //                int height  = (int) (10 * scale);
 //                CoordinatorLayout.LayoutParams params =(CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
@@ -138,19 +159,28 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 //                appBar.setLayoutParams(params);
 //                appBar.setExpanded(true);
 //                viewPager.setVisibility(View.GONE);
-                Snackbar.make(rvProduct, "Refreshing new data.", Snackbar.LENGTH_LONG).show();
-                productAdapter.setNewData(names);
-                swipeRefreshLayout.setRefreshing(false);
-                //expand
-                final float scale = getResources().getDisplayMetrics().density;
-                int height = (int) (300 * scale);
-                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
-                params.height = height; // HEIGHT
-                appBar.setLayoutParams(params);
-                appBar.setExpanded(true);
+//                Snackbar.make(rvProduct, "Refreshing new data.", Snackbar.LENGTH_LONG).show();
+//                productAdapter.setNewData(names);
+//                swipeRefreshLayout.setRefreshing(false);
+//                //expand
+//                final float scale = getResources().getDisplayMetrics().density;
+//                int height = (int) (300 * scale);
+//                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+//                params.height = height; // HEIGHT
+//                appBar.setLayoutParams(params);
+//                appBar.setExpanded(true);
+                forceRefresh();
 //                mPresenter.onForceRefresh(getApplicationContext());
             }
         });
+
+        tvEmpty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                forceRefresh();
+            }
+        });
+
 
         btnProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,6 +212,37 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
             }
         });
         setupViewPager();
+    }
+
+    private void forceRefresh() {
+        mPresenter.forceRefresh();
+        productAdapter.clearData();
+        Snackbar.make(rvProduct, "Refreshing new data.", Snackbar.LENGTH_LONG).show();
+        mPresenter.getInfoList().observe(this, new Observer<List<HCInfoVO>>() {
+            @Override
+            public void onChanged(@Nullable List<HCInfoVO> hcInfoVOS) {
+                infoVOList = hcInfoVOS;
+                productAdapter.setNewData(hcInfoVOS);
+                swipeRefreshLayout.setRefreshing(false);
+                //expand
+                final float scale = getResources().getDisplayMetrics().density;
+                int height = (int) (300 * scale);
+                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+                params.height = height; // HEIGHT
+                appBar.setLayoutParams(params);
+                appBar.setExpanded(true);
+                mPresenter.setErrorNull();
+            }
+        });
+        mPresenter.getErrorLD().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                swipeRefreshLayout.setRefreshing(false);
+                Snackbar.make(toolbar, s, Snackbar.LENGTH_LONG).show();
+            }
+        });
+//        productAdapter.setNewData(names);
+
     }
 
     @Override
@@ -227,8 +288,12 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     }
 
     @Override
-    public void onTapView() {
-        startActivity(ProductDetailsActivity.newIntent(this, "Product"));
+    public void showProductDetail(Double infoId) {
+        HCInfoVO info = null;
+        for (HCInfoVO i : infoVOList) {
+            if (i.getId() == infoId) info = i;
+        }
+        startActivity(ProductDetailsActivity.newIntent(this, "Product", infoId));
 //        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
     }
 
@@ -249,7 +314,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         if (viewPager != null) {
             viewPager.setAdapter(adapter);
             viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
-            viewPager.setInterval(2000);
+            viewPager.setInterval(10000);
             viewPager.startAutoScroll();
             titlePageIndicator = findViewById(R.id.title_page_indicator);
             titlePageIndicator.setViewPager(viewPager);

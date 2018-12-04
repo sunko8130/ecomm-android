@@ -14,7 +14,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/coco_coffee" />
 
-    <TextView
+    <org.mmtextview.components.MMTextView
         android:id="@+id/tv_product_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         android:textSize="@dimen/text_regular_3x"
         android:textStyle="bold" />
 
-    <TextView
+    <org.mmtextview.components.MMTextView
         android:id="@+id/tv_stock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         android:textColor="@color/limeGreen"
         android:textSize="@dimen/text_regular" />
 
-    <TextView
+    <org.mmtextview.components.MMTextView
         android:id="@+id/tv_MMK"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

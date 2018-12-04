@@ -1,24 +1,43 @@
 package com.creative_webstudio.iba.mvp.presenters;
 
 
-import android.content.Intent;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 
-import com.creative_webstudio.iba.R;
-import com.creative_webstudio.iba.activities.ProductDetailsActivity;
-import com.creative_webstudio.iba.activities.ProductSearchActivity;
+import com.creative_webstudio.iba.datas.models.IbaModel;
+import com.creative_webstudio.iba.datas.vos.HCInfoVO;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
 import com.creative_webstudio.iba.mvp.views.ProductView;
 
+import java.util.List;
+
 public class ProductPresenter extends BasePresenter<ProductView> implements ProductDelegate{
+
+    private MutableLiveData<List<HCInfoVO>> mInfoList;
 
     @Override
     public void initPresenter(ProductView mView) {
         super.initPresenter(mView);
+        mInfoList = new MutableLiveData<>();
+        forceRefresh();
     }
 
+    public void forceRefresh(){
+        IbaModel.getInstance().loadHCInfo(mInfoList,mErrorLD);
+    }
+
+    public void setErrorNull(){
+        mErrorLD=new MutableLiveData<>();
+    }
+
+    public LiveData<List<HCInfoVO>> getInfoList(){
+        return mInfoList;
+    }
+
+
     @Override
-    public void onTapView() {
-        mView.onTapView();
+    public void onTapView(Double infoId) {
+        mView.showProductDetail(infoId);
 //        startActivity(ProductDetailsActivity.newIntent(this,"Product"));
 //        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
     }
