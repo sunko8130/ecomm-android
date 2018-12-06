@@ -6,7 +6,9 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
+import com.creative_webstudio.iba.datas.vos.CriteriaVo;
 import com.creative_webstudio.iba.datas.vos.HCInfoVO;
+import com.creative_webstudio.iba.datas.vos.ProductVo;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.networks.HCInfoResponse;
 import com.creative_webstudio.iba.utils.AppConstants;
@@ -48,7 +50,7 @@ public class IbaModel extends BaseModel {
     public void getTokenByUP(String userName, String password, final MutableLiveData<Integer> mResponseCode) {
         String base = AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET;
         String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        theApi.getTokenbyUP(userAuth, userName, password, "password")
+        theApi.getTokenbyUP(userAuth, userName, password, AppConstants.GRANT_TYPE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<TokenVO>>() {
@@ -82,7 +84,7 @@ public class IbaModel extends BaseModel {
                             mResponseCode.setValue(666);
                         } else if (e instanceof NetworkErrorException) {
                             mResponseCode.setValue(777);
-                        }else {
+                        } else {
                             mResponseCode.setValue(888);
                         }
                         Log.e("auth", "onError: " + e.getMessage());
@@ -97,7 +99,7 @@ public class IbaModel extends BaseModel {
 
     }
 
-    public void getTokenbyRefresh(String refreshToken, final MutableLiveData<Integer> mResponseCode){
+    public void getTokenbyRefresh(String refreshToken, final MutableLiveData<Integer> mResponseCode) {
         String base = AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET;
         String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
         theApi.getTokenbyRefresh(userAuth, refreshToken, "refresh_token")
@@ -134,7 +136,7 @@ public class IbaModel extends BaseModel {
                             mResponseCode.setValue(666);
                         } else if (e instanceof NetworkErrorException) {
                             mResponseCode.setValue(777);
-                        }else {
+                        } else {
                             mResponseCode.setValue(888);
                         }
                     }
@@ -145,6 +147,40 @@ public class IbaModel extends BaseModel {
                     }
                 });
     }
+
+    public void getProductSearchList(CriteriaVo criteriaVo, final MutableLiveData<List<ProductVo>> productSearList) {
+        //String base = ibaPreference.fromPreference("AccessToken", "");
+        String base = "48ac24bb-7964-4811-aad2-1de8cb12c24b";
+        String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        theApiProductSearch.getProductSearch(userAuth, criteriaVo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Response<List<ProductVo>>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<List<ProductVo>> listResponse) {
+
+                        Log.e("productsearch", "success" + listResponse);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("productsearch", "error" + e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+    }
+
     public void loadHCInfo(final MutableLiveData<List<HCInfoVO>> mHCInfoList,
                            final MutableLiveData<String> error) {
         theApiSample.loadHCInfo("b002c7e1a528b7cb460933fc2875e916")
@@ -185,5 +221,6 @@ public class IbaModel extends BaseModel {
         }
         return info;
     }
+
 
 }

@@ -1,6 +1,5 @@
 package com.creative_webstudio.iba.activities;
 
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -13,21 +12,17 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -141,7 +136,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
             @Override
             public void onListEndReach() {
                 aniLoadMore.setVisibility(View.VISIBLE);
-                Log.e("hhhhhhh", "onListEndReach: "+ "Scroll End");
+                Log.e("hhhhhhh", "onListEndReach: " + "Scroll End");
 //                mPresenter.onNewsListEndReach(getApplicationContext());
             }
         });
@@ -278,7 +273,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_search) {
-            onTapSearch();
+            mPresenter.onTapSearch();
             return true;
         } else if (item.getItemId() == R.id.menu_cart) {
             startActivity(CartActivity.newIntent(this));
@@ -299,7 +294,8 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
     @Override
     public void onTapSearch() {
-        startActivity(ProductSearchActivity.newIntent(this));
+
+        // startActivity(ProductSearchActivity.newIntent(this));
     }
 
     @Override

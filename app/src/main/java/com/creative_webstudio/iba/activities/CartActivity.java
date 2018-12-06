@@ -23,10 +23,6 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by DELL on 11/19/2018.
- */
-
 public class CartActivity extends BaseActivity implements CartView {
     @Nullable
     @BindView(R.id.rv_card_list)
