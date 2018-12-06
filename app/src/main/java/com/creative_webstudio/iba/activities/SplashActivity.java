@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -43,11 +44,16 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
         mPresenter.initPresenter(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         refreshToken = ibaShared.fromPreference("RefreshToken","");
-        if(refreshToken.equals("")){
-            startActivity(SignInActivity.newIntent(SplashActivity.this));
-        }else {
-            startActivity(ProductActivity.newIntent(SplashActivity.this));
-        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(refreshToken.equals("")){
+                    startActivity(SignInActivity.newIntent(SplashActivity.this));
+                }else {
+                    startActivity(ProductActivity.newIntent(SplashActivity.this));
+                }
+            }
+        }, 5000);
     }
 
 }

@@ -1,9 +1,12 @@
 package com.creative_webstudio.iba.activities;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,9 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.components.CustomRetryDialog;
 import com.creative_webstudio.iba.mvp.presenters.SignInPresenter;
 import com.creative_webstudio.iba.mvp.views.SignInView;
-import com.creative_webstudio.iba.utils.AppConstants;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
 
@@ -37,6 +40,9 @@ public class SignInActivity extends BaseActivity implements SignInView {
     private SignInPresenter mPresenter;
     private boolean connected = false;
 
+    //dialog
+    CustomRetryDialog dialog;
+
     private IBAPreferenceManager ibaShared;
     public static Intent newIntent(Context context) {
         return new Intent(context, SignInActivity.class);
@@ -52,36 +58,50 @@ public class SignInActivity extends BaseActivity implements SignInView {
         mPresenter.initPresenter(this);
         ibaShared = new IBAPreferenceManager(this);
 
-
+        dialog=new CustomRetryDialog(SignInActivity.this);
+        dialog.setCanceledOnTouchOutside(false);
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-                if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-                    //we are connected to a network
-                    connected = true;
-                }
-                else
-                    connected = false;
-                if (etUserName.getText().toString().trim().equalsIgnoreCase("")) {
-                    etUserName.setError("Enter UserName");
-                }else if(etPassword.getText().toString().trim().equalsIgnoreCase("")){
-                    etPassword.setError("Enter Password");
-                }else if(!connected){
-                    Snackbar.make(btnSignIn, "No Internet Connection", Snackbar.LENGTH_LONG).show();
-                }else {
-                    mPresenter.getToken(etUserName.getText().toString(), etPassword.getText().toString());
-                }
-
+               tryConnection();
             }
         });
+    }
+
+    public void tryConnection(){
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else
+            connected = false;
+        if (etUserName.getText().toString().trim().equalsIgnoreCase("")) {
+            etUserName.setError("Enter UserName");
+        }else if(etPassword.getText().toString().trim().equalsIgnoreCase("")){
+            etPassword.setError("Enter Password");
+        }else if(!connected){
+            dialog.show();
+            dialog.tvRetry.setText("No Internet Connection");
+            dialog.btnRetry.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tryConnection();
+                    dialog.dismiss();
+                }
+            });
+        }else {
+            btnSignIn.setClickable(false);
+            mPresenter.getToken(etUserName.getText().toString(), etPassword.getText().toString());
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mPresenter.getResponseCode().observe(this, new Observer<Integer>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onChanged(@Nullable Integer integer) {
                 switch (integer) {
@@ -89,15 +109,32 @@ public class SignInActivity extends BaseActivity implements SignInView {
                         startActivity(ProductActivity.newIntent(SignInActivity.this));
                         break;
                     case 400:
-                        Snackbar.make(btnSignIn, "Invalid User Name or Password", Snackbar.LENGTH_LONG).show();
+                        dialog.show();
+                        dialog.tvRetry.setText("Invalid User Name or Password");
+                        dialog.btnRetry.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+//                                tryConnection();
+                                dialog.dismiss();
+                                btnSignIn.setClickable(true);
+                            }
+                        });
                         break;
                     default:
+                        dialog.show();
+                        dialog.tvRetry.setText("Network Error");
+                        dialog.btnRetry.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                tryConnection();
+                                dialog.dismiss();
+                            }
+                        });
                         Snackbar.make(btnSignIn, "Network Error", Snackbar.LENGTH_LONG).show();
                         break;
                 }
             }
         });
-        Log.e("Shared", "onResume: "+ibaShared.fromPreference("AccessToken",""));
-        Log.e("Shared", "onResume: "+ibaShared.fromPreference("RefreshToken",""));
     }
+
 }

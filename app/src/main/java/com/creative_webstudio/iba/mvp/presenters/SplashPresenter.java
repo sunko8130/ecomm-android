@@ -9,7 +9,4 @@ public class SplashPresenter extends BasePresenter<SplashView> {
         super.initPresenter(mView);
     }
 
-    public void getAccess(String token){
-        IbaModel.getInstance().getTokenbyRefresh(token,mResponseCode);
-    }
 }

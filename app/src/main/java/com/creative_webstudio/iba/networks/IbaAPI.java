@@ -23,7 +23,7 @@ public interface IbaAPI {
 
     @FormUrlEncoded
     @POST("oauth/token")
-    Observable<Response<TokenVO>> getTokenbyUP(
+    Observable<Response<TokenVO>> getTokenByUP(
             @Header("Authorization") String authHeader,
             @Field("username") String username,
             @Field("password") String password,
@@ -31,12 +31,11 @@ public interface IbaAPI {
 
     @FormUrlEncoded
     @POST("oauth/token")
-    Observable<Response<TokenVO>> getTokenbyRefresh(
+    Observable<Response<TokenVO>> getTokenByRefresh(
             @Header("Authorization") String authHeader,
             @Field("refresh_token") String refreshToken,
             @Field("grant_type") String grantType);
 
-    @FormUrlEncoded
     @POST("product/search/list")
     Observable<Response<List<ProductVo>>> getProductSearch(
             @Header("Authorization") String authHeader,

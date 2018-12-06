@@ -19,6 +19,8 @@
     <color name="grayDark">#30353D</color>
     <color name="blackFull">#000000</color>
 
+    <color name="blackTransparent">#78000000</color>
+
     <color name="redOrange">#EA4335</color>
     <color name="limeGreen">#32CD32</color>
     <color name="indianRed">#FF6A6A</color>

@@ -50,7 +50,7 @@ public class IbaModel extends BaseModel {
     public void getTokenByUP(String userName, String password, final MutableLiveData<Integer> mResponseCode) {
         String base = AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET;
         String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        theApi.getTokenbyUP(userAuth, userName, password, AppConstants.GRANT_TYPE)
+        theApi.getTokenByUP(userAuth, userName, password, AppConstants.GRANT_TYPE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<TokenVO>>() {
@@ -99,10 +99,11 @@ public class IbaModel extends BaseModel {
 
     }
 
-    public void getTokenbyRefresh(String refreshToken, final MutableLiveData<Integer> mResponseCode) {
+    public void getTokenByRefresh(final CriteriaVo criteriaVo, final MutableLiveData<List<ProductVo>> productSearList, final MutableLiveData<Integer>responseCode) {
+        String refreshToken = ibaPreference.fromPreference("RefreshToken","");
         String base = AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET;
         String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        theApi.getTokenbyRefresh(userAuth, refreshToken, "refresh_token")
+        theApi.getTokenByRefresh(userAuth, refreshToken, "refresh_token")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<TokenVO>>() {
@@ -118,13 +119,12 @@ public class IbaModel extends BaseModel {
                             TokenVO tokenVO = (TokenVO) response.body();
                             ibaPreference.toPreference("AccessToken", tokenVO.getAccessToken());
                             ibaPreference.toPreference("RefreshToken", tokenVO.getRefreshToken());
-                            mResponseCode.setValue(response.code());
+                            getProductSearchList(criteriaVo,productSearList,responseCode);
+
                         } else if (response.code() == 204) {
                             //no data
-                            mResponseCode.setValue(response.code());
                             Log.e("auth", "noData: " + response.code());
                         } else {
-                            mResponseCode.setValue(400);
                             Log.e("auth", "severError: " + response.code());
                         }
                     }
@@ -133,11 +133,8 @@ public class IbaModel extends BaseModel {
                     public void onError(Throwable e) {
                         //network error
                         if (e instanceof IOException) {
-                            mResponseCode.setValue(666);
                         } else if (e instanceof NetworkErrorException) {
-                            mResponseCode.setValue(777);
                         } else {
-                            mResponseCode.setValue(888);
                         }
                     }
 
@@ -148,10 +145,10 @@ public class IbaModel extends BaseModel {
                 });
     }
 
-    public void getProductSearchList(CriteriaVo criteriaVo, final MutableLiveData<List<ProductVo>> productSearList) {
-        //String base = ibaPreference.fromPreference("AccessToken", "");
-        String base = "48ac24bb-7964-4811-aad2-1de8cb12c24b";
-        String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+    public void getProductSearchList(final CriteriaVo criteriaVo, final MutableLiveData<List<ProductVo>> productSearList, final MutableLiveData<Integer>responseCode) {
+        String base = ibaPreference.fromPreference("AccessToken", "");
+//        String base = "48ac24bb-7964-4811-aad2-1de8cb12c24b";
+        String userAuth = "Bearer " + base;
         theApiProductSearch.getProductSearch(userAuth, criteriaVo)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -163,9 +160,14 @@ public class IbaModel extends BaseModel {
 
                     @Override
                     public void onNext(Response<List<ProductVo>> listResponse) {
-
-                        Log.e("productsearch", "success" + listResponse);
-
+                        Log.e("productsearch", "success" + listResponse.code());
+                        if(listResponse.code()==401){
+                            getTokenByRefresh(criteriaVo,productSearList,responseCode);
+                        }else {
+                            Log.e("hhhhhh", "onNext: "+listResponse.code() );
+                            ArrayList<ProductVo> productVo = (ArrayList<ProductVo>) listResponse.body();
+                            Log.e("hhhhhh", "onNext: "+listResponse.code() +productVo.size());
+                        }
                     }
 
                     @Override

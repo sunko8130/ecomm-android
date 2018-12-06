@@ -43,8 +43,8 @@ public class ProductVo {
     @SerializedName("thumbnails")
     private ThumbnailsVo thumbnails;
 
-    @SerializedName("orderUnits")
-    private OrderUnitsVo orderUnits;
+//    @SerializedName("orderUnits")
+//    private OrderUnitsVo orderUnits;
 
     @SerializedName("productCategory")
     private ProductCategoryVo productCategory;
@@ -145,13 +145,13 @@ public class ProductVo {
         this.thumbnails = thumbnails;
     }
 
-    public OrderUnitsVo getOrderUnits() {
-        return orderUnits;
-    }
-
-    public void setOrderUnits(OrderUnitsVo orderUnits) {
-        this.orderUnits = orderUnits;
-    }
+//    public OrderUnitsVo getOrderUnits() {
+//        return orderUnits;
+//    }
+//
+//    public void setOrderUnits(OrderUnitsVo orderUnits) {
+//        this.orderUnits = orderUnits;
+//    }
 
     public ProductCategoryVo getProductCategory() {
         return productCategory;

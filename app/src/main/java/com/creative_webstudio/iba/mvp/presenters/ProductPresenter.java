@@ -50,7 +50,7 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
         Log.e("onTapSearch", "onTapSearch: ");
         MutableLiveData<List<ProductVo>> productSearchActivityMutableLiveData = new MutableLiveData<>();
         CriteriaVo criteriaVo = new CriteriaVo("e", 0, 10);
-        IbaModel.getInstance().getProductSearchList(criteriaVo, productSearchActivityMutableLiveData);
+        IbaModel.getInstance().getProductSearchList(criteriaVo, productSearchActivityMutableLiveData,mResponseCode);
         mView.onTapSearch();
 //        Intent i = new Intent(this, ProductSearchActivity.class);
 //        startActivity(ProductSearchActivity.newIntent(this));
