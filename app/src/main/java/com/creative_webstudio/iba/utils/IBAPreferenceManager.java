@@ -36,7 +36,7 @@ public class IBAPreferenceManager {
             return prefs.getString(key, defaultValue);
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
-                Log.e("TelenorPrefs", "Error -> " + e.getMessage());
+                Log.e("IBAPrefs", "Error -> " + e.getMessage());
             }
             return defaultValue;
         }
@@ -48,7 +48,7 @@ public class IBAPreferenceManager {
             prefsEditor.commit();
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
-                Log.e("TelenorPrefs", "Error -> " + e.getMessage());
+                Log.e("IBAPrefs", "Error -> " + e.getMessage());
             }
         }
     }
@@ -59,7 +59,7 @@ public class IBAPreferenceManager {
             prefsEditor.commit();
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
-                Log.e("TelenorPrefs", "Error -> " + e.getMessage());
+                Log.e("IBAPrefs", "Error -> " + e.getMessage());
             }
         }
     }
@@ -72,7 +72,7 @@ public class IBAPreferenceManager {
             prefsEditor.commit();
         } catch (Exception e) {
             if (BuildConfig.DEBUG) {
-                Log.e("TelenorPrefs", "Error -> " + e.getMessage());
+                Log.e("IBAPrefs", "Error -> " + e.getMessage());
             }
         }
     }

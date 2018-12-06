@@ -72,12 +72,13 @@
         app:layout_constraintBottom_toTopOf="@id/guideEtPhoneBtn">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/etPhone"
+            android:id="@+id/etUserName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/phone_or_email"
+            android:hint="@string/userName"
             android:textSize="@dimen/text_regular_2x"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:text="IBA-MG0tu1002"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -92,7 +93,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/password"
             android:textSize="@dimen/text_regular_2x"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:text="IBA-MG0tu1002P@ssw0rd"/>
     </android.support.design.widget.TextInputLayout>
 
     <Button

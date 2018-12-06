@@ -13,6 +13,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public abstract class BaseModel {
+    protected IbaAPI theApiSample;
     protected IbaAPI theApi;
 
     protected BaseModel(Context context){
@@ -22,8 +23,16 @@ public abstract class BaseModel {
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
 
-        Retrofit retrofit=new Retrofit.Builder()
+        Retrofit retrofitSample=new Retrofit.Builder()
                 .baseUrl("http://padcmyanmar.com/padc-5/mm-healthcare/")
+                .addConverterFactory(GsonConverterFactory.create(new Gson()))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(okHttpClient)
+                .build();
+        theApiSample =retrofitSample.create(IbaAPI.class);
+
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl("http://192.168.100.100:8281/iba-uae/")
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)

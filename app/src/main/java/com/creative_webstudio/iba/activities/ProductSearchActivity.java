@@ -16,13 +16,13 @@ import android.view.MenuItem;
 
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.SearchAdapter;
-import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.mvp.presenters.ProductSearchPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,8 +43,7 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
     private ProductSearchPresenter mPresenter;
 
     public static Intent newIntent(Context context) {
-        Intent intent = new Intent(context, ProductSearchActivity.class);
-        return intent;
+        return new Intent(context, ProductSearchActivity.class);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
 
         NamesVo namesVo = new NamesVo("start");
         names = namesVo.getNames();
-        getSupportActionBar().setHomeButtonEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
         searchAdapter = new SearchAdapter(this, mPresenter);
         searchAdapter.setNewData(names);
         rvSearch.setAdapter(searchAdapter);
