@@ -175,9 +175,15 @@ public class IbaModel extends BaseModel {
 
                     @Override
                     public void onNext(Response<List<ProductVO>> listResponse) {
+<<<<<<< Updated upstream
                         if(listResponse.code()==401){
                             getTokenByRefresh();
                         }else if (listResponse.code() == 200) {
+=======
+                        if (listResponse.code() == 401) {
+                            getTokenByRefresh(criteriaVo, productSearList, responseCode);
+                        } else if (listResponse.code() == 200) {
+>>>>>>> Stashed changes
                             productSearList.setValue(listResponse.body());
                         } else if (listResponse.code() == 204) {
                             //no data

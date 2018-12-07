@@ -35,6 +35,10 @@ import com.creative_webstudio.iba.components.CountDrawable;
 import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
+<<<<<<< Updated upstream
+=======
+import com.creative_webstudio.iba.datas.vos.HCInfoVO;
+>>>>>>> Stashed changes
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.mvp.presenters.ProductPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductView;
@@ -283,11 +287,19 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
     @Override
     public void showProductDetail(Double infoId) {
+<<<<<<< Updated upstream
 //        ProductVo productVo = null;
 //        for (ProductVo i : productVoList) {
 //            if (i.getId() == infoId) productVo = i;
 //        }
 //        startActivity(ProductDetailsActivity.newIntent(this, "Product", infoId));
+=======
+        ProductVO productVo = null;
+        for (ProductVO i : productVoList) {
+            if (i.getId() == infoId) productVo = i;
+        }
+        startActivity(ProductDetailsActivity.newIntent(this, "Product", infoId));
+>>>>>>> Stashed changes
 //        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
     }
 
