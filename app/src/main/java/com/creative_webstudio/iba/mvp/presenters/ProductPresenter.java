@@ -35,12 +35,8 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
 
     public void forceRefresh() {
         CriteriaVo criteriaVo = new CriteriaVo(0, 10);
-<<<<<<< Updated upstream
-        IbaModel.getInstance().getProductPaging(criteriaVo, mProductList,mResponseCode);
-=======
         criteriaVo.setWord("e");
         IbaModel.getInstance().getProductSearchList(criteriaVo, mProductList, mResponseCode);
->>>>>>> Stashed changes
     }
 
 

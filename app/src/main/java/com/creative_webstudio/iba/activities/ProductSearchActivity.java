@@ -49,6 +49,8 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
     private List<NamesVo> names = new ArrayList<>();
     private ProductSearchPresenter mPresenter;
 
+    private List<ProductVO> mProductVOS;
+
     public static Intent newIntent(Context context) {
         return new Intent(context, ProductSearchActivity.class);
     }
@@ -59,6 +61,7 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
         setContentView(R.layout.activity_product_search);
         ButterKnife.bind(this, this);
         setSupportActionBar(toolbar);
+        mProductVOS = new ArrayList<>();
 
         mPresenter = ViewModelProviders.of(this).get(ProductSearchPresenter.class);
         mPresenter.initPresenter(this);
@@ -85,7 +88,7 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
             @Override
             public void onClick(View view) {
                 Log.e("onclickTvResult", "onClick: Success ");
-                mPresenter.onTapSearch();
+                mPresenter.onTapSearch("e");
                 mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
                     @Override
                     public void onChanged(@Nullable List<ProductVO> productVOS) {
@@ -112,15 +115,24 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
 
     @Override
     public boolean onQueryTextChange(String newText) {
+
         String userInput = newText.toLowerCase();
-        List<NamesVo> mName = new ArrayList<>();
-        for (NamesVo name : names) {
-            if (name.getName().toLowerCase().contains(userInput)) {
-                mName.add(name);
+        mPresenter.onTapSearch(userInput);
+        mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
+            @Override
+            public void onChanged(@Nullable List<ProductVO> productVOS) {
+                searchAdapter.setNewData(productVOS);
+                mProductVOS = productVOS;
+            }
+        });
+        List<ProductVO> productVo = new ArrayList<>();
+        for (ProductVO product : mProductVOS) {
+            if (product.getProductName().toLowerCase().contains(userInput)) {
+                productVo.add(product);
             }
         }
 
-        // searchAdapter.setNewData(mName);
+        searchAdapter.setNewData(productVo);
         return true;
     }
 
