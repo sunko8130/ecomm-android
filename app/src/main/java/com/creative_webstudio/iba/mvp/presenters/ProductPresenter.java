@@ -8,7 +8,7 @@ import android.util.Log;
 import com.creative_webstudio.iba.datas.models.IbaModel;
 import com.creative_webstudio.iba.datas.vos.CriteriaVo;
 import com.creative_webstudio.iba.datas.vos.HCInfoVO;
-import com.creative_webstudio.iba.datas.vos.ProductVo;
+import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
 import com.creative_webstudio.iba.mvp.views.ProductView;
 
@@ -48,9 +48,10 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
     @Override
     public void onTapSearch() {
         Log.e("onTapSearch", "onTapSearch: ");
-        MutableLiveData<List<ProductVo>> productSearchActivityMutableLiveData = new MutableLiveData<>();
-        CriteriaVo criteriaVo = new CriteriaVo("e", 0, 10);
-        IbaModel.getInstance().getProductSearchList(criteriaVo, productSearchActivityMutableLiveData,mResponseCode);
+        MutableLiveData<List<ProductVO>> productSearchActivityMutableLiveData = new MutableLiveData<>();
+        CriteriaVo criteriaVo = new CriteriaVo(0, 10);
+        //IbaModel.getInstance().getProductSearchList(criteriaVo, productSearchActivityMutableLiveData, mResponseCode);
+        IbaModel.getInstance().getProductPaging(criteriaVo);
         mView.onTapSearch();
 //        Intent i = new Intent(this, ProductSearchActivity.class);
 //        startActivity(ProductSearchActivity.newIntent(this));

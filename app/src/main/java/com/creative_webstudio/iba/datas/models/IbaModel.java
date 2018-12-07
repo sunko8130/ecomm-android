@@ -8,7 +8,8 @@ import android.util.Log;
 
 import com.creative_webstudio.iba.datas.vos.CriteriaVo;
 import com.creative_webstudio.iba.datas.vos.HCInfoVO;
-import com.creative_webstudio.iba.datas.vos.ProductVo;
+import com.creative_webstudio.iba.datas.vos.ProductPagingVO;
+import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.networks.HCInfoResponse;
 import com.creative_webstudio.iba.utils.AppConstants;
@@ -99,8 +100,8 @@ public class IbaModel extends BaseModel {
 
     }
 
-    public void getTokenByRefresh(final CriteriaVo criteriaVo, final MutableLiveData<List<ProductVo>> productSearList, final MutableLiveData<Integer>responseCode) {
-        String refreshToken = ibaPreference.fromPreference("RefreshToken","");
+    public void getTokenByRefresh(final CriteriaVo criteriaVo, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
+        String refreshToken = ibaPreference.fromPreference("RefreshToken", "");
         String base = AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET;
         String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
         theApi.getTokenByRefresh(userAuth, refreshToken, "refresh_token")
@@ -119,7 +120,7 @@ public class IbaModel extends BaseModel {
                             TokenVO tokenVO = (TokenVO) response.body();
                             ibaPreference.toPreference("AccessToken", tokenVO.getAccessToken());
                             ibaPreference.toPreference("RefreshToken", tokenVO.getRefreshToken());
-                            getProductSearchList(criteriaVo,productSearList,responseCode);
+                            getProductSearchList(criteriaVo, productSearList, responseCode);
 
                         } else if (response.code() == 204) {
                             //no data
@@ -145,28 +146,28 @@ public class IbaModel extends BaseModel {
                 });
     }
 
-    public void getProductSearchList(final CriteriaVo criteriaVo, final MutableLiveData<List<ProductVo>> productSearList, final MutableLiveData<Integer>responseCode) {
+    public void getProductSearchList(final CriteriaVo criteriaVo, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
         String base = ibaPreference.fromPreference("AccessToken", "");
 //        String base = "48ac24bb-7964-4811-aad2-1de8cb12c24b";
         String userAuth = "Bearer " + base;
         theApiProductSearch.getProductSearch(userAuth, criteriaVo)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<List<ProductVo>>>() {
+                .subscribe(new Observer<Response<List<ProductVO>>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(Response<List<ProductVo>> listResponse) {
+                    public void onNext(Response<List<ProductVO>> listResponse) {
                         Log.e("productsearch", "success" + listResponse.code());
-                        if(listResponse.code()==401){
-                            getTokenByRefresh(criteriaVo,productSearList,responseCode);
-                        }else {
-                            Log.e("hhhhhh", "onNext: "+listResponse.code() );
-                            ArrayList<ProductVo> productVo = (ArrayList<ProductVo>) listResponse.body();
-                            Log.e("hhhhhh", "onNext: "+listResponse.code() +productVo.size());
+                        if (listResponse.code() == 401) {
+                            getTokenByRefresh(criteriaVo, productSearList, responseCode);
+                        } else {
+                            Log.e("hhhhhh", "onNext: " + listResponse.code());
+                            ArrayList<ProductVO> productVO = (ArrayList<ProductVO>) listResponse.body();
+                            Log.e("hhhhhh", "onNext: " + listResponse.code() + productVO.size());
                         }
                     }
 
@@ -181,6 +182,36 @@ public class IbaModel extends BaseModel {
                     }
                 });
 
+    }
+
+    public void getProductPaging(CriteriaVo criteriaVo) {
+        String base = ibaPreference.fromPreference("AccessToken", "");
+        String auth = "Bearer " + base;
+        theApiProductSearch.getProductPaging(auth, criteriaVo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Response<ProductPagingVO>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<ProductPagingVO> productPagingVOResponse) {
+                        Log.e("success", "onNext:Product Paging " + productPagingVOResponse.body().getProductVOList().size());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("success", "onError: ErrorMsg :: " + e.getMessage());
+                    }
+
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     public void loadHCInfo(final MutableLiveData<List<HCInfoVO>> mHCInfoList,

@@ -1,7 +1,8 @@
 package com.creative_webstudio.iba.networks;
 
 import com.creative_webstudio.iba.datas.vos.CriteriaVo;
-import com.creative_webstudio.iba.datas.vos.ProductVo;
+import com.creative_webstudio.iba.datas.vos.ProductPagingVO;
+import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 
 import java.util.List;
@@ -37,7 +38,12 @@ public interface IbaAPI {
             @Field("grant_type") String grantType);
 
     @POST("product/search/list")
-    Observable<Response<List<ProductVo>>> getProductSearch(
+    Observable<Response<List<ProductVO>>> getProductSearch(
+            @Header("Authorization") String authHeader,
+            @Body CriteriaVo criteriaVo);
+
+    @POST("product/search/paging")
+    Observable<Response<ProductPagingVO>> getProductPaging(
             @Header("Authorization") String authHeader,
             @Body CriteriaVo criteriaVo);
 
