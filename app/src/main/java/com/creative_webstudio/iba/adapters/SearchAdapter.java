@@ -7,16 +7,17 @@ import android.view.ViewGroup;
 
 
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
 import com.creative_webstudio.iba.vieholders.SearchViewHolder;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
 
-public class SearchAdapter extends BaseRecyclerAdapter<SearchViewHolder,NamesVo> {
+public class SearchAdapter extends BaseRecyclerAdapter<SearchViewHolder, ProductVO> {
 
     private ProductSearchDelegate mproductDelegate;
 
 
-    public SearchAdapter(Context context,ProductSearchDelegate productDelegate) {
+    public SearchAdapter(Context context, ProductSearchDelegate productDelegate) {
         super(context);
         this.mproductDelegate = productDelegate;
     }

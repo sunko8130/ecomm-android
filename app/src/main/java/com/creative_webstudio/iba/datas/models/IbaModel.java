@@ -17,8 +17,6 @@ import com.creative_webstudio.iba.utils.AppConstants;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -175,9 +173,10 @@ public class IbaModel extends BaseModel {
 
                     @Override
                     public void onNext(Response<List<ProductVO>> listResponse) {
-                        if(listResponse.code()==401){
+                        if (listResponse.code() == 401) {
                             getTokenByRefresh();
-                        }else if (listResponse.code() == 200) {
+                        } else if (listResponse.code() == 200) {
+                            Log.e("auth", "getProductSearch onNext: " + listResponse.body().size());
                             productSearList.setValue(listResponse.body());
                         } else if (listResponse.code() == 204) {
                             //no data
@@ -189,7 +188,6 @@ public class IbaModel extends BaseModel {
                         }
                     }
 
-
                     @Override
                     public void onError(Throwable e) {
                         //network error
@@ -200,13 +198,14 @@ public class IbaModel extends BaseModel {
                         } else {
                             responseCode.setValue(888);
                         }
-
                     }
 
                     @Override
                     public void onComplete() {
 
                     }
+
+
                 });
 
     }
@@ -225,11 +224,11 @@ public class IbaModel extends BaseModel {
 
                     @Override
                     public void onNext(Response<ProductPagingVO> response) {
-                        if(response.code()==401){
+                        if (response.code() == 401) {
                             getTokenByRefresh();
-                        }else if (response.code() == 200) {
+                        } else if (response.code() == 200) {
                             mProductList.setValue(response.body().getProductVOList());
-                            Log.e("productList", "onNext: "+response.body().getProductVOList().size() );
+                            Log.e("productList", "onNext: " + response.body().getProductVOList().size());
                         } else if (response.code() == 204) {
                             //no data
                             responseCode.setValue(response.code());

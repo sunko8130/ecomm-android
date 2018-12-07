@@ -24,7 +24,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.MyOnPageChangeListener;
 import com.creative_webstudio.iba.R;
@@ -293,8 +292,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
     @Override
     public void goProductSearchScreen() {
-
-        // startActivity(ProductSearchActivity.newIntent(this));
+        startActivity(ProductSearchActivity.newIntent(this));
     }
 
     @Override
@@ -338,7 +336,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
             }
         }
 
-        searchAdapter.setNewData(mName);
+        // searchAdapter.setNewData(mName);
         return true;
     }
 
