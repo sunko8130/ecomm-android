@@ -2,6 +2,7 @@ package com.creative_webstudio.iba.networks;
 
 import com.creative_webstudio.iba.datas.vos.CriteriaVo;
 import com.creative_webstudio.iba.datas.vos.ProductPagingVO;
+import com.creative_webstudio.iba.datas.vos.ProductSearchVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 

@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.creative_webstudio.iba.datas.models.IbaModel;
 import com.creative_webstudio.iba.datas.vos.CriteriaVo;
-import com.creative_webstudio.iba.datas.vos.HCInfoVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
 import com.creative_webstudio.iba.enents.TokenEvent;
@@ -36,7 +35,12 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
 
     public void forceRefresh() {
         CriteriaVo criteriaVo = new CriteriaVo(0, 10);
+<<<<<<< Updated upstream
         IbaModel.getInstance().getProductPaging(criteriaVo, mProductList,mResponseCode);
+=======
+        criteriaVo.setWord("e");
+        IbaModel.getInstance().getProductSearchList(criteriaVo, mProductList, mResponseCode);
+>>>>>>> Stashed changes
     }
 
 
@@ -44,7 +48,7 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
         return mProductList;
     }
 
-    public void showTokenError(Integer errorCode){
+    public void showTokenError(Integer errorCode) {
         mView.showTokenError(errorCode);
     }
 
@@ -67,11 +71,11 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAccessByRefreshToken(TokenEvent event){
+    public void onAccessByRefreshToken(TokenEvent event) {
         int responseCode = event.getResponseCode();
-        if(responseCode==200){
+        if (responseCode == 200) {
             forceRefresh();
-        }else {
+        } else {
             showTokenError(responseCode);
         }
     }
