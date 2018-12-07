@@ -2,7 +2,6 @@ package com.creative_webstudio.iba.datas.vos;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProductVo {
@@ -43,8 +42,8 @@ public class ProductVo {
     @SerializedName("thumbnails")
     private ThumbnailsVo thumbnails;
 
-//    @SerializedName("orderUnits")
-//    private OrderUnitsVo orderUnits;
+    @SerializedName("orderUnits")
+    private List<OrderUnitsVo> orderUnits;
 
     @SerializedName("productCategory")
     private ProductCategoryVo productCategory;
@@ -121,20 +120,20 @@ public class ProductVo {
         this.description = description;
     }
 
-    public List<Integer> getThumbnailIdsList() {
-        return thumbnailIdsList;
-    }
-
-    public void setThumbnailIdsList(List<Integer> thumbnailIdsList) {
-        this.thumbnailIdsList = thumbnailIdsList;
-    }
-
     public ProductDetailsVo getProductDetailsVo() {
         return productDetailsVo;
     }
 
     public void setProductDetailsVo(ProductDetailsVo productDetailsVo) {
         this.productDetailsVo = productDetailsVo;
+    }
+
+    public List<Integer> getThumbnailIdsList() {
+        return thumbnailIdsList;
+    }
+
+    public void setThumbnailIdsList(List<Integer> thumbnailIdsList) {
+        this.thumbnailIdsList = thumbnailIdsList;
     }
 
     public ThumbnailsVo getThumbnails() {
@@ -145,13 +144,13 @@ public class ProductVo {
         this.thumbnails = thumbnails;
     }
 
-//    public OrderUnitsVo getOrderUnits() {
-//        return orderUnits;
-//    }
-//
-//    public void setOrderUnits(OrderUnitsVo orderUnits) {
-//        this.orderUnits = orderUnits;
-//    }
+    public List<OrderUnitsVo> getOrderUnits() {
+        return orderUnits;
+    }
+
+    public void setOrderUnits(List<OrderUnitsVo> orderUnits) {
+        this.orderUnits = orderUnits;
+    }
 
     public ProductCategoryVo getProductCategory() {
         return productCategory;

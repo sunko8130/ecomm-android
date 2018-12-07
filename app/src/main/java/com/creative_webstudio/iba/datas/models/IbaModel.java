@@ -10,9 +10,14 @@ import com.creative_webstudio.iba.datas.vos.CriteriaVo;
 import com.creative_webstudio.iba.datas.vos.HCInfoVO;
 import com.creative_webstudio.iba.datas.vos.ProductVo;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
+import com.creative_webstudio.iba.enents.TokenEvent;
 import com.creative_webstudio.iba.networks.HCInfoResponse;
 import com.creative_webstudio.iba.utils.AppConstants;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +39,7 @@ public class IbaModel extends BaseModel {
         super(context);
         infoVOList = new ArrayList<>();
         ibaPreference = new IBAPreferenceManager(context);
+        EventBus.getDefault().register(this);
     }
 
     public static void initAppModel(Context context) {
@@ -60,7 +66,7 @@ public class IbaModel extends BaseModel {
                     }
 
                     @Override
-                    public void onNext(Response response) {
+                    public void onNext(Response<TokenVO> response) {
                         if (response.code() == 200) {
                             Log.e("auth", "onNext: " + response.code());
                             TokenVO tokenVO = (TokenVO) response.body();
@@ -72,7 +78,7 @@ public class IbaModel extends BaseModel {
                             mResponseCode.setValue(response.code());
                             Log.e("auth", "noData: " + response.code());
                         } else {
-                            mResponseCode.setValue(400);
+                            mResponseCode.setValue(300);
                             Log.e("auth", "severError: " + response.code());
                         }
                     }
@@ -116,16 +122,19 @@ public class IbaModel extends BaseModel {
                     public void onNext(Response<TokenVO> response) {
                         if (response.code() == 200) {
                             Log.e("auth", "onNext: " + response.code());
-                            TokenVO tokenVO = (TokenVO) response.body();
+                            TokenVO tokenVO = response.body();
                             ibaPreference.toPreference("AccessToken", tokenVO.getAccessToken());
                             ibaPreference.toPreference("RefreshToken", tokenVO.getRefreshToken());
-                            getProductSearchList(criteriaVo,productSearList,responseCode);
+                            TokenEvent event = new TokenEvent(response.code());
+                            EventBus.getDefault().post(event);
 
                         } else if (response.code() == 204) {
                             //no data
-                            Log.e("auth", "noData: " + response.code());
+                            TokenEvent event = new TokenEvent(response.code());
+                            EventBus.getDefault().post(event);
                         } else {
-                            Log.e("auth", "severError: " + response.code());
+                            TokenEvent event = new TokenEvent(300);
+                            EventBus.getDefault().post(event);
                         }
                     }
 
@@ -133,8 +142,14 @@ public class IbaModel extends BaseModel {
                     public void onError(Throwable e) {
                         //network error
                         if (e instanceof IOException) {
+                            TokenEvent event = new TokenEvent(666);
+                            EventBus.getDefault().post(event);
                         } else if (e instanceof NetworkErrorException) {
+                            TokenEvent event = new TokenEvent(777);
+                            EventBus.getDefault().post(event);
                         } else {
+                            TokenEvent event = new TokenEvent(888);
+                            EventBus.getDefault().post(event);
                         }
                     }
 
@@ -147,7 +162,6 @@ public class IbaModel extends BaseModel {
 
     public void getProductSearchList(final CriteriaVo criteriaVo, final MutableLiveData<List<ProductVo>> productSearList, final MutableLiveData<Integer>responseCode) {
         String base = ibaPreference.fromPreference("AccessToken", "");
-//        String base = "48ac24bb-7964-4811-aad2-1de8cb12c24b";
         String userAuth = "Bearer " + base;
         theApiProductSearch.getProductSearch(userAuth, criteriaVo)
                 .subscribeOn(Schedulers.io())
@@ -160,19 +174,31 @@ public class IbaModel extends BaseModel {
 
                     @Override
                     public void onNext(Response<List<ProductVo>> listResponse) {
-                        Log.e("productsearch", "success" + listResponse.code());
                         if(listResponse.code()==401){
                             getTokenByRefresh(criteriaVo,productSearList,responseCode);
-                        }else {
-                            Log.e("hhhhhh", "onNext: "+listResponse.code() );
-                            ArrayList<ProductVo> productVo = (ArrayList<ProductVo>) listResponse.body();
-                            Log.e("hhhhhh", "onNext: "+listResponse.code() +productVo.size());
+                        }else if (listResponse.code() == 200) {
+                           productSearList.setValue(listResponse.body());
+                        } else if (listResponse.code() == 204) {
+                            //no data
+                            responseCode.setValue(listResponse.code());
+                            Log.e("auth", "noData: " + listResponse.code());
+                        } else {
+                            responseCode.setValue(300);
+                            Log.e("auth", "severError: " + listResponse.code());
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("productsearch", "error" + e.getMessage());
+                        //network error
+                        if (e instanceof IOException) {
+                            responseCode.setValue(666);
+                        } else if (e instanceof NetworkErrorException) {
+                            responseCode.setValue(777);
+                        } else {
+                            responseCode.setValue(888);
+                        }
+
                     }
 
                     @Override

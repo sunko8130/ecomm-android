@@ -36,6 +36,7 @@ import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
 import com.creative_webstudio.iba.datas.vos.HCInfoVO;
+import com.creative_webstudio.iba.datas.vos.ProductVo;
 import com.creative_webstudio.iba.mvp.presenters.ProductPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductView;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
@@ -99,7 +100,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
     private ProductPresenter mPresenter;
 
-    private List<HCInfoVO> infoVOList;
+    private List<ProductVo> productVoList;
 
 
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
@@ -116,7 +117,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         ButterKnife.bind(this, this);
         mPresenter = ViewModelProviders.of(this).get(ProductPresenter.class);
         mPresenter.initPresenter(this);
-        infoVOList = new ArrayList<>();
+        productVoList = new ArrayList<>();
 
         NamesVo namesVo = new NamesVo("start");
         names = namesVo.getNames();
@@ -213,11 +214,11 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         mPresenter.forceRefresh();
         productAdapter.clearData();
         Snackbar.make(rvProduct, "Refreshing new data.", Snackbar.LENGTH_LONG).show();
-        mPresenter.getInfoList().observe(this, new Observer<List<HCInfoVO>>() {
+        mPresenter.getProductList().observe(this, new Observer<List<ProductVo>>() {
             @Override
-            public void onChanged(@Nullable List<HCInfoVO> hcInfoVOS) {
-                infoVOList = hcInfoVOS;
-                productAdapter.setNewData(hcInfoVOS);
+            public void onChanged(@Nullable List<ProductVo> productVos) {
+                productVoList = productVos;
+//                productAdapter.setNewData(productVoList);
                 swipeRefreshLayout.setRefreshing(false);
                 //expand
                 final float scale = getResources().getDisplayMetrics().density;
@@ -226,9 +227,9 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
                 params.height = height; // HEIGHT
                 appBar.setLayoutParams(params);
                 appBar.setExpanded(true);
-                mPresenter.setErrorNull();
             }
         });
+
         mPresenter.getErrorLD().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -284,22 +285,27 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
     @Override
     public void showProductDetail(Double infoId) {
-        HCInfoVO info = null;
-        for (HCInfoVO i : infoVOList) {
-            if (i.getId() == infoId) info = i;
+        ProductVo productVo = null;
+        for (ProductVo i : productVoList) {
+            if (i.getId() == infoId) productVo = i;
         }
         startActivity(ProductDetailsActivity.newIntent(this, "Product", infoId));
 //        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
     }
 
     @Override
-    public void onTapSearch() {
+    public void goProductSearchScreen() {
 
         // startActivity(ProductSearchActivity.newIntent(this));
     }
 
     @Override
     public void onTapShoppingCart() {
+
+    }
+
+    @Override
+    public void showTokenError(Integer errorCode) {
 
     }
 
