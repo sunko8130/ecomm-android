@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.creative_webstudio.iba.datas.models.IbaModel;
 import com.creative_webstudio.iba.datas.vos.CriteriaVo;
-import com.creative_webstudio.iba.datas.vos.HCInfoVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
 import com.creative_webstudio.iba.enents.TokenEvent;
@@ -22,7 +21,7 @@ import java.util.List;
 public class ProductPresenter extends BasePresenter<ProductView> implements ProductDelegate {
 
     private MutableLiveData<List<ProductVO>> mProductList;
-
+    private int mOffset = 0;
     @Override
     public void initPresenter(ProductView mView) {
         super.initPresenter(mView);
@@ -31,18 +30,22 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
             eventBus.register(this);
         }
         mProductList = new MutableLiveData<>();
-        forceRefresh();
     }
 
-    public void forceRefresh() {
-        CriteriaVo criteriaVo = new CriteriaVo(0, 10);
+    public void getProduct(int page) {
+        int limit=10;
+        mOffset =limit*page;
+        CriteriaVo criteriaVo = new CriteriaVo(mOffset, limit);
         IbaModel.getInstance().getProductPaging(criteriaVo, mProductList,mResponseCode);
+//        IbaModel.getInstance().getProduct(criteriaVo, mApiResposne);
     }
+
 
 
     public LiveData<List<ProductVO>> getProductList() {
         return mProductList;
     }
+
 
     public void showTokenError(Integer errorCode){
         mView.showTokenError(errorCode);
@@ -50,7 +53,7 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
 
 
     @Override
-    public void onTapView(Double infoId) {
+    public void onTapView(Long infoId) {
         mView.showProductDetail(infoId);
     }
 
@@ -60,17 +63,13 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
         mView.goProductSearchScreen();
     }
 
-    @Override
-    public void onTapShoppingCart() {
-        mView.onTapShoppingCart();
-    }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccessByRefreshToken(TokenEvent event){
         int responseCode = event.getResponseCode();
         if(responseCode==200){
-            forceRefresh();
+            getProduct(mOffset);
         }else {
             showTokenError(responseCode);
         }

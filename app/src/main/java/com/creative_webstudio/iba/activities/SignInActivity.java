@@ -44,6 +44,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
     CustomRetryDialog dialog;
 
     private IBAPreferenceManager ibaShared;
+
     public static Intent newIntent(Context context) {
         return new Intent(context, SignInActivity.class);
     }
@@ -58,40 +59,44 @@ public class SignInActivity extends BaseActivity implements SignInView {
         mPresenter.initPresenter(this);
         ibaShared = new IBAPreferenceManager(this);
 
-        dialog=new CustomRetryDialog(SignInActivity.this);
+        dialog = new CustomRetryDialog(SignInActivity.this);
         dialog.setCanceledOnTouchOutside(false);
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               tryConnection();
+                signIn();
             }
         });
     }
 
-    public void tryConnection(){
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+    public void signIn() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             //we are connected to a network
             connected = true;
-        }
-        else
+        } else {
             connected = false;
-        if (etUserName.getText().toString().trim().equalsIgnoreCase("")) {
-            etUserName.setError("Enter UserName");
-        }else if(etPassword.getText().toString().trim().equalsIgnoreCase("")){
-            etPassword.setError("Enter Password");
-        }else if(!connected){
+        }
+
+        if (!connected) {
             dialog.show();
             dialog.tvRetry.setText("No Internet Connection");
             dialog.btnRetry.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    tryConnection();
                     dialog.dismiss();
+                    signIn();
                 }
             });
-        }else {
+            return;
+        }
+
+        if (etUserName.getText().toString().trim().equalsIgnoreCase("")) {
+            etUserName.setError("Enter UserName");
+        } else if (etPassword.getText().toString().trim().equalsIgnoreCase("")) {
+            etPassword.setError("Enter Password");
+        } else {
             btnSignIn.setClickable(false);
             mPresenter.getToken(etUserName.getText().toString(), etPassword.getText().toString());
         }
@@ -126,7 +131,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
                         dialog.btnRetry.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                tryConnection();
+                                signIn();
                                 dialog.dismiss();
                             }
                         });

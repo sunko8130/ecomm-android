@@ -91,16 +91,12 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     @BindView(R.id.btn_refresh_empty)
     TextView tvEmpty;
 
-
     private ProductAdapter productAdapter;
     private List<NamesVo> names = new ArrayList<>();
-    CirclePageIndicator titlePageIndicator;
-    SearchAdapter searchAdapter;
-
+    private CirclePageIndicator titlePageIndicator;
     private ProductPresenter mPresenter;
-
     private List<ProductVO> productVoList;
-
+    private int page=0;
 
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
     private String chooseItem;
@@ -116,13 +112,13 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         ButterKnife.bind(this, this);
         mPresenter = ViewModelProviders.of(this).get(ProductPresenter.class);
         mPresenter.initPresenter(this);
+        mPresenter.getProduct(page);
         productVoList = new ArrayList<>();
-
         rvProduct.setEmptyView(vpEmpty);
         productAdapter = new ProductAdapter(this, mPresenter);
         rvProduct.setAdapter(productAdapter);
         rvProduct.setLayoutManager(new GridLayoutManager(this, 2));
-
+        observeProduct();
         if (productAdapter.getItemCount() == 0) {
             appBar.setExpanded(false);
         } else {
@@ -133,7 +129,8 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
             public void onListEndReach() {
                 aniLoadMore.setVisibility(View.VISIBLE);
                 Log.e("hhhhhhh", "onListEndReach: " + "Scroll End");
-//                mPresenter.onNewsListEndReach(getApplicationContext());
+                page++;
+                mPresenter.getProduct(page);
             }
         });
 
@@ -142,6 +139,8 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                page=0;
+                mPresenter.getProduct(page);
                 //collapse
 //                final float scale = getResources().getDisplayMetrics().density;
 //                int height  = (int) (10 * scale);
@@ -160,7 +159,6 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 //                params.height = height; // HEIGHT
 //                appBar.setLayoutParams(params);
 //                appBar.setExpanded(true);
-                forceRefresh();
 //                mPresenter.onForceRefresh(getApplicationContext());
             }
         });
@@ -168,7 +166,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         tvEmpty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                forceRefresh();
+                mPresenter.getProduct(page);
             }
         });
 
@@ -205,15 +203,12 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         setupViewPager();
     }
 
-    private void forceRefresh() {
-        mPresenter.forceRefresh();
-        productAdapter.clearData();
-        Snackbar.make(rvProduct, "Refreshing new data.", Snackbar.LENGTH_LONG).show();
+    private void observeProduct() {
         mPresenter.getProductList().observe(this, new Observer<List<ProductVO>>() {
             @Override
             public void onChanged(@Nullable List<ProductVO> productVos) {
                 productVoList = productVos;
-//                productAdapter.setNewData(productVoList);
+                productAdapter.appendNewData(productVoList);
                 assert swipeRefreshLayout != null;
                 swipeRefreshLayout.setRefreshing(false);
                 //expand
@@ -226,18 +221,13 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
                 appBar.setExpanded(true);
             }
         });
-
-
-        mPresenter.getErrorLD().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                swipeRefreshLayout.setRefreshing(false);
-                Snackbar.make(toolbar, s, Snackbar.LENGTH_LONG).show();
-            }
-        });
-//        productAdapter.setNewData(names);
-
+        //        productAdapter.setNewData(names);
     }
+
+    private void observeError(){
+        Log.e("Error", "observeError: "+"blah" );
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -282,7 +272,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     }
 
     @Override
-    public void showProductDetail(Double infoId) {
+    public void showProductDetail(Long infoId) {
 //        ProductVo productVo = null;
 //        for (ProductVo i : productVoList) {
 //            if (i.getId() == infoId) productVo = i;
@@ -304,6 +294,21 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
     @Override
     public void showTokenError(Integer errorCode) {
+
+    }
+
+    @Override
+    public void showProductList() {
+
+    }
+
+    @Override
+    public void onProductItemClick() {
+
+    }
+
+    @Override
+    public void onLoadMoreData() {
 
     }
 
@@ -338,7 +343,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
             }
         }
 
-        searchAdapter.setNewData(mName);
+//        searchAdapter.setNewData(mName);
         return true;
     }
 
@@ -355,6 +360,5 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         // start auto scroll when onResume
         viewPager.startAutoScroll();
     }
-
 
 }

@@ -15,13 +15,11 @@ public abstract class BasePresenter<T extends BaseView> extends ViewModel {
     protected MutableLiveData<String> mErrorLD;
 
     protected MutableLiveData<Integer> mResponseCode;
-    protected MutableLiveData<ProductVO> mProuductSearchVo;
 
     public void initPresenter(final T mView) {
         this.mView = mView;
         mErrorLD = new MutableLiveData<>();
         mResponseCode = new MutableLiveData<>();
-        mProuductSearchVo = new MutableLiveData<>();
 
     }
 

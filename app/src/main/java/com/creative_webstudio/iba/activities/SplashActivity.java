@@ -26,7 +26,6 @@ import butterknife.ButterKnife;
  */
 
 public class SplashActivity extends AppCompatActivity implements SplashView {
-
     @Nullable
     @BindView(R.id.ivSplash)
     ImageView ivSplash;
@@ -34,6 +33,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
     private IBAPreferenceManager ibaShared;
     private SplashPresenter mPresenter;
     private String refreshToken = "";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,18 +42,18 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
         ibaShared = new IBAPreferenceManager(this);
         mPresenter = ViewModelProviders.of(this).get(SplashPresenter.class);
         mPresenter.initPresenter(this);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        refreshToken = ibaShared.fromPreference("RefreshToken","");
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        refreshToken = ibaShared.fromPreference("RefreshToken", null);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(refreshToken.equals("")){
+                if (refreshToken == null) {
                     startActivity(SignInActivity.newIntent(SplashActivity.this));
-                }else {
+                } else {
                     startActivity(ProductActivity.newIntent(SplashActivity.this));
                 }
             }
-        }, 5000);
+        }, 2000);
     }
 
 }

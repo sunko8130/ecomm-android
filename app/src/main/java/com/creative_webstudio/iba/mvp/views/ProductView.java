@@ -1,8 +1,12 @@
 package com.creative_webstudio.iba.mvp.views;
 
 public interface ProductView extends BaseView{
-    void showProductDetail(Double infoId);
+    void showProductDetail(Long infoId);
     void goProductSearchScreen();
     void onTapShoppingCart();
     void showTokenError(Integer errorCode);
+
+    void showProductList();
+    void onProductItemClick();
+    void onLoadMoreData();
 }

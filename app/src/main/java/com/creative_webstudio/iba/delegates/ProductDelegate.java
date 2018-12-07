@@ -2,7 +2,6 @@ package com.creative_webstudio.iba.delegates;
 
 
 public interface ProductDelegate {
-    void onTapView(Double productId);
+    void onTapView(Long productId);
     void onTapSearch();
-    void onTapShoppingCart();
 }

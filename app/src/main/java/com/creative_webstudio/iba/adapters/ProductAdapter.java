@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 
 
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.activities.ProductActivity;
 import com.creative_webstudio.iba.datas.vos.HCInfoVO;
+import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.vieholders.ProductViewHolder;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
@@ -15,15 +17,19 @@ import com.creative_webstudio.iba.delegates.ProductDelegate;
 import java.util.List;
 
 
-public class ProductAdapter extends BaseRecyclerAdapter<ProductViewHolder,HCInfoVO> {
+public class ProductAdapter extends BaseRecyclerAdapter<ProductViewHolder,ProductVO> {
 
     private ProductDelegate mProductDelegate;
     private List<NamesVo> names;
 
 
-    public ProductAdapter(Context context,ProductDelegate productDelegate) {
+    public ProductAdapter(Context context, ProductDelegate productDelegate) {
         super(context);
         this.mProductDelegate = productDelegate;
+    }
+
+    public ProductAdapter(Context context) {
+        super(context);
     }
 
     @NonNull
