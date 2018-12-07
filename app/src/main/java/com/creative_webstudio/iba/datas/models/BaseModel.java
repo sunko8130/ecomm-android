@@ -48,5 +48,6 @@ public abstract class BaseModel {
                 .client(okHttpClient)
                 .build();
         theApiProductSearch = retrofitProductSearch.create(IbaAPI.class);
+
     }
 }

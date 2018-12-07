@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ProductVo {
+public class ProductVO {
 
     @SerializedName("id")
     private long id;

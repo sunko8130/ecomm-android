@@ -8,7 +8,7 @@ import android.util.Log;
 import com.creative_webstudio.iba.datas.models.IbaModel;
 import com.creative_webstudio.iba.datas.vos.CriteriaVo;
 import com.creative_webstudio.iba.datas.vos.HCInfoVO;
-import com.creative_webstudio.iba.datas.vos.ProductVo;
+import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
 import com.creative_webstudio.iba.enents.TokenEvent;
 import com.creative_webstudio.iba.mvp.views.ProductView;

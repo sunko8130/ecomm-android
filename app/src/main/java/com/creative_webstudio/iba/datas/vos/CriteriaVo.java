@@ -6,8 +6,8 @@ public class CriteriaVo {
     private int offset;
     private int limit;
 
-    public CriteriaVo(String word, int offset, int limit) {
-        this.word = word;
+    public CriteriaVo(int offset, int limit) {
+
         this.offset = offset;
         this.limit = limit;
     }
