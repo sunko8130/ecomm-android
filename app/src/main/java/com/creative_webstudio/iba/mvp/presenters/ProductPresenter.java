@@ -66,7 +66,7 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAccessByRefreshToken(TokenEvent event){
+    public void onAccessByRefreshToken(TokenEvent event) {
         int responseCode = event.getResponseCode();
         if(responseCode==200){
             getProduct(mOffset);

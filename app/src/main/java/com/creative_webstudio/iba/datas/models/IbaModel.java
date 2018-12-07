@@ -184,6 +184,7 @@ public class IbaModel extends BaseModel {
                         if (listResponse.code() == 401) {
                             getTokenByRefresh();
                         } else if (listResponse.code() == 200) {
+                            Log.e("auth", "getProductSearch onNext: " + listResponse.body().size());
                             productSearList.setValue(listResponse.body());
                         } else if (listResponse.code() == 204) {
                             //no data
@@ -195,7 +196,6 @@ public class IbaModel extends BaseModel {
                         }
                     }
 
-
                     @Override
                     public void onError(Throwable e) {
                         //network error
@@ -206,13 +206,14 @@ public class IbaModel extends BaseModel {
                         } else {
                             responseCode.setValue(888);
                         }
-
                     }
 
                     @Override
                     public void onComplete() {
 
                     }
+
+
                 });
 
     }

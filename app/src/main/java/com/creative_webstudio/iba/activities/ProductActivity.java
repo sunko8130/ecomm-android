@@ -24,7 +24,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.MyOnPageChangeListener;
 import com.creative_webstudio.iba.R;
@@ -35,6 +34,7 @@ import com.creative_webstudio.iba.components.CountDrawable;
 import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
+
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.mvp.presenters.ProductPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductView;
@@ -283,8 +283,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
     @Override
     public void goProductSearchScreen() {
-
-        // startActivity(ProductSearchActivity.newIntent(this));
+        startActivity(ProductSearchActivity.newIntent(this));
     }
 
     @Override
