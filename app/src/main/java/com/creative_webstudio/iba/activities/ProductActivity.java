@@ -35,8 +35,7 @@ import com.creative_webstudio.iba.components.CountDrawable;
 import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
-import com.creative_webstudio.iba.datas.vos.HCInfoVO;
-import com.creative_webstudio.iba.datas.vos.ProductVo;
+import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.mvp.presenters.ProductPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductView;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
@@ -100,7 +99,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
     private ProductPresenter mPresenter;
 
-    private List<ProductVo> productVoList;
+    private List<ProductVO> productVoList;
 
 
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
@@ -119,12 +118,8 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         mPresenter.initPresenter(this);
         productVoList = new ArrayList<>();
 
-        NamesVo namesVo = new NamesVo("start");
-        names = namesVo.getNames();
-
         rvProduct.setEmptyView(vpEmpty);
         productAdapter = new ProductAdapter(this, mPresenter);
-//        productAdapter.setNewData(names);
         rvProduct.setAdapter(productAdapter);
         rvProduct.setLayoutManager(new GridLayoutManager(this, 2));
 
@@ -214,21 +209,24 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         mPresenter.forceRefresh();
         productAdapter.clearData();
         Snackbar.make(rvProduct, "Refreshing new data.", Snackbar.LENGTH_LONG).show();
-        mPresenter.getProductList().observe(this, new Observer<List<ProductVo>>() {
+        mPresenter.getProductList().observe(this, new Observer<List<ProductVO>>() {
             @Override
-            public void onChanged(@Nullable List<ProductVo> productVos) {
+            public void onChanged(@Nullable List<ProductVO> productVos) {
                 productVoList = productVos;
 //                productAdapter.setNewData(productVoList);
+                assert swipeRefreshLayout != null;
                 swipeRefreshLayout.setRefreshing(false);
                 //expand
                 final float scale = getResources().getDisplayMetrics().density;
                 int height = (int) (300 * scale);
+                assert appBar != null;
                 CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
                 params.height = height; // HEIGHT
                 appBar.setLayoutParams(params);
                 appBar.setExpanded(true);
             }
         });
+
 
         mPresenter.getErrorLD().observe(this, new Observer<String>() {
             @Override
@@ -285,11 +283,11 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
     @Override
     public void showProductDetail(Double infoId) {
-        ProductVo productVo = null;
-        for (ProductVo i : productVoList) {
-            if (i.getId() == infoId) productVo = i;
-        }
-        startActivity(ProductDetailsActivity.newIntent(this, "Product", infoId));
+//        ProductVo productVo = null;
+//        for (ProductVo i : productVoList) {
+//            if (i.getId() == infoId) productVo = i;
+//        }
+//        startActivity(ProductDetailsActivity.newIntent(this, "Product", infoId));
 //        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
     }
 

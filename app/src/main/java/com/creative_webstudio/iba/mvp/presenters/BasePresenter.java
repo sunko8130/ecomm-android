@@ -22,10 +22,7 @@ public abstract class BasePresenter<T extends BaseView> extends ViewModel {
         mErrorLD = new MutableLiveData<>();
         mResponseCode = new MutableLiveData<>();
         mProuductSearchVo = new MutableLiveData<>();
-        EventBus eventBus = EventBus.getDefault();
-        if (!eventBus.isRegistered(this)) {
-            eventBus.register(this);
-        }
+
     }
 
     public LiveData<String> getErrorLD() {
@@ -36,10 +33,5 @@ public abstract class BasePresenter<T extends BaseView> extends ViewModel {
         return mResponseCode;
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        EventBus eventBus = EventBus.getDefault();
-        eventBus.unregister(this);
-    }
+
 }

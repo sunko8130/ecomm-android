@@ -13,6 +13,7 @@ import com.creative_webstudio.iba.delegates.ProductDelegate;
 import com.creative_webstudio.iba.enents.TokenEvent;
 import com.creative_webstudio.iba.mvp.views.ProductView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -20,22 +21,26 @@ import java.util.List;
 
 public class ProductPresenter extends BasePresenter<ProductView> implements ProductDelegate {
 
-    private MutableLiveData<List<ProductVo>> mProductList;
+    private MutableLiveData<List<ProductVO>> mProductList;
 
     @Override
     public void initPresenter(ProductView mView) {
         super.initPresenter(mView);
+        EventBus eventBus = EventBus.getDefault();
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
         mProductList = new MutableLiveData<>();
         forceRefresh();
     }
 
     public void forceRefresh() {
-        CriteriaVo criteriaVo = new CriteriaVo("e", 0, 10);
-        IbaModel.getInstance().getProductSearchList(criteriaVo, mProductList,mResponseCode);
+        CriteriaVo criteriaVo = new CriteriaVo(0, 10);
+        IbaModel.getInstance().getProductPaging(criteriaVo, mProductList,mResponseCode);
     }
 
 
-    public LiveData<List<ProductVo>> getProductList() {
+    public LiveData<List<ProductVO>> getProductList() {
         return mProductList;
     }
 
@@ -69,5 +74,12 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
         }else {
             showTokenError(responseCode);
         }
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        EventBus eventBus = EventBus.getDefault();
+        eventBus.unregister(this);
     }
 }

@@ -16,6 +16,8 @@ public class AppConstants {
 
     public static final Integer NETWORK_SUCCESS = 200;
 
+    public static final Integer ERROR_ACCESSTOKEN = 789;
+
     public static final String BaseProductSearchUrl = "http://192.168.100.100:8282/iba-api/api/";
 
 }

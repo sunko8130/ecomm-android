@@ -40,7 +40,7 @@ public class IbaModel extends BaseModel {
         super(context);
         infoVOList = new ArrayList<>();
         ibaPreference = new IBAPreferenceManager(context);
-        EventBus.getDefault().register(this);
+
     }
 
     public static void initAppModel(Context context) {
@@ -106,7 +106,7 @@ public class IbaModel extends BaseModel {
 
     }
 
-    public void getTokenByRefresh(final CriteriaVo criteriaVo, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
+    public void getTokenByRefresh() {
         String refreshToken = ibaPreference.fromPreference("RefreshToken", "");
         String base = AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET;
         String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
@@ -134,7 +134,7 @@ public class IbaModel extends BaseModel {
                             TokenEvent event = new TokenEvent(response.code());
                             EventBus.getDefault().post(event);
                         } else {
-                            TokenEvent event = new TokenEvent(300);
+                            TokenEvent event = new TokenEvent(789);
                             EventBus.getDefault().post(event);
                         }
                     }
@@ -174,11 +174,11 @@ public class IbaModel extends BaseModel {
                     }
 
                     @Override
-                    public void onNext(Response<List<ProductVo>> listResponse) {
+                    public void onNext(Response<List<ProductVO>> listResponse) {
                         if(listResponse.code()==401){
-                            getTokenByRefresh(criteriaVo,productSearList,responseCode);
+                            getTokenByRefresh();
                         }else if (listResponse.code() == 200) {
-                           productSearList.setValue(listResponse.body());
+                            productSearList.setValue(listResponse.body());
                         } else if (listResponse.code() == 204) {
                             //no data
                             responseCode.setValue(listResponse.code());
@@ -188,6 +188,7 @@ public class IbaModel extends BaseModel {
                             Log.e("auth", "severError: " + listResponse.code());
                         }
                     }
+
 
                     @Override
                     public void onError(Throwable e) {
@@ -210,7 +211,7 @@ public class IbaModel extends BaseModel {
 
     }
 
-    public void getProductPaging(CriteriaVo criteriaVo) {
+    public void getProductPaging(CriteriaVo criteriaVo, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
         String base = ibaPreference.fromPreference("AccessToken", "");
         String auth = "Bearer " + base;
         theApiProductSearch.getProductPaging(auth, criteriaVo)
@@ -223,8 +224,20 @@ public class IbaModel extends BaseModel {
                     }
 
                     @Override
-                    public void onNext(Response<ProductPagingVO> productPagingVOResponse) {
-                        Log.e("success", "onNext:Product Paging " + productPagingVOResponse.body().getProductVOList().size());
+                    public void onNext(Response<ProductPagingVO> response) {
+                        if(response.code()==401){
+                            getTokenByRefresh();
+                        }else if (response.code() == 200) {
+                            mProductList.setValue(response.body().getProductVOList());
+                            Log.e("productList", "onNext: "+response.body().getProductVOList().size() );
+                        } else if (response.code() == 204) {
+                            //no data
+                            responseCode.setValue(response.code());
+                            Log.e("auth", "noData: " + response.code());
+                        } else {
+                            responseCode.setValue(300);
+                            Log.e("auth", "severError: " + response.code());
+                        }
                     }
 
                     @Override
