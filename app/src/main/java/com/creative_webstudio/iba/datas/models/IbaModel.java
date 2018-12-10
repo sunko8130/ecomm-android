@@ -68,22 +68,17 @@ public class IbaModel extends BaseModel {
                     @Override
                     public void onNext(Response<TokenVO> response) {
                         if (response.isSuccessful()) {
-                            // .setValue();
-                        } else {
-
-                        }
-
-
-                        if (response.code() == 200) {
-                            Log.e("auth", "onNext: " + response.code());
-                            TokenVO tokenVO = (TokenVO) response.body();
-                            ibaPreference.toPreference("AccessToken", tokenVO.getAccessToken());
-                            ibaPreference.toPreference("RefreshToken", tokenVO.getRefreshToken());
-                            mResponseCode.setValue(response.code());
-                        } else if (response.code() == 204) {
-                            //no data
-                            mResponseCode.setValue(response.code());
-                            Log.e("auth", "noData: " + response.code());
+                            if (response.code() == 200) {
+                                Log.e("auth", "onNext: " + response.code());
+                                TokenVO tokenVO = (TokenVO) response.body();
+                                ibaPreference.toPreference("AccessToken", tokenVO.getAccessToken());
+                                ibaPreference.toPreference("RefreshToken", tokenVO.getRefreshToken());
+                                mResponseCode.setValue(response.code());
+                            } else if (response.code() == 204) {
+                                //no data
+                                mResponseCode.setValue(response.code());
+                                Log.e("auth", "noData: " + response.code());
+                            }
                         } else {
                             mResponseCode.setValue(400);
                             Log.e("auth", "severError: " + response.code());
@@ -94,11 +89,14 @@ public class IbaModel extends BaseModel {
                     public void onError(Throwable e) {
                         //network error
                         if (e instanceof IOException) {
-                            mResponseCode.setValue(666);
+                            TokenEvent event = new TokenEvent(AppConstants.ERROR_IOEXCEPTION);
+                            EventBus.getDefault().post(event);
                         } else if (e instanceof NetworkErrorException) {
-                            mResponseCode.setValue(777);
+                            TokenEvent event = new TokenEvent(AppConstants.ERROR_NETWORK);
+                            EventBus.getDefault().post(event);
                         } else {
-                            mResponseCode.setValue(888);
+                            TokenEvent event = new TokenEvent(AppConstants.ERROR_UNKNOWN);
+                            EventBus.getDefault().post(event);
                         }
                         Log.e("auth", "onError: " + e.getMessage());
                         Log.e("auth", "onError: " + e.getLocalizedMessage());
@@ -135,12 +133,12 @@ public class IbaModel extends BaseModel {
                             TokenEvent event = new TokenEvent(response.code());
                             EventBus.getDefault().post(event);
 
-                        } else if (response.code() == 204) {
+                        } else if (response.code() == AppConstants.ERROR_NODATA) {
                             //no data
                             TokenEvent event = new TokenEvent(response.code());
                             EventBus.getDefault().post(event);
                         } else {
-                            TokenEvent event = new TokenEvent(789);
+                            TokenEvent event = new TokenEvent(AppConstants.ERROR_ACCESSTOKEN);
                             EventBus.getDefault().post(event);
                         }
                     }
@@ -149,13 +147,13 @@ public class IbaModel extends BaseModel {
                     public void onError(Throwable e) {
                         //network error
                         if (e instanceof IOException) {
-                            TokenEvent event = new TokenEvent(666);
+                            TokenEvent event = new TokenEvent(AppConstants.ERROR_IOEXCEPTION);
                             EventBus.getDefault().post(event);
                         } else if (e instanceof NetworkErrorException) {
-                            TokenEvent event = new TokenEvent(777);
+                            TokenEvent event = new TokenEvent(AppConstants.ERROR_NETWORK);
                             EventBus.getDefault().post(event);
                         } else {
-                            TokenEvent event = new TokenEvent(888);
+                            TokenEvent event = new TokenEvent(AppConstants.ERROR_UNKNOWN);
                             EventBus.getDefault().post(event);
                         }
                     }
@@ -218,40 +216,8 @@ public class IbaModel extends BaseModel {
 
     }
 
-    public void getProduct(CriteriaVo criteria, final MutableLiveData<ApiResponse> apiCallBack) {
-        final ApiResponse<Response> pResponse = new ApiResponse<>();
-        String base = ibaPreference.fromPreference("AccessToken", "");
-        String auth = "Bearer " + base;
-        theApiProductSearch.getProductPaging(auth, criteria)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<ProductPagingVO>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
 
-                    }
-
-                    @Override
-                    public void onNext(Response<ProductPagingVO> response) {
-//                        APICallback apiCallback = new APICallback() ;
-                        pResponse.setData(response);
-                        response.body();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        pResponse.setApiException(e);
-                    }
-
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    public void getProductPaging(CriteriaVo criteriaVo, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
+    public void getProductByPaging(CriteriaVo criteriaVo, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
         String base = ibaPreference.fromPreference("AccessToken", "");
         String auth = "Bearer " + base;
         theApiProductSearch.getProductPaging(auth, criteriaVo)
@@ -273,6 +239,7 @@ public class IbaModel extends BaseModel {
                             Log.e("productList", "onNext: " + response.body().getProductVOList().size());
                         } else if (response.code() == 204) {
                             // Response has no data
+                            Log.e("productList", "onNext: "+"No Data" );
                             responseCode.setValue(response.code());
                             Log.e("auth", "noData: " + response.code());
                         } else {
@@ -284,41 +251,15 @@ public class IbaModel extends BaseModel {
                     @Override
                     public void onError(Throwable e) {
                         Log.e("success", "onError: ErrorMsg :: " + e.getMessage());
-                    }
-
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    public void loadHCInfo(final MutableLiveData<List<HCInfoVO>> mHCInfoList,
-                           final MutableLiveData<String> error) {
-        theApiSample.loadHCInfo("b002c7e1a528b7cb460933fc2875e916")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<HCInfoResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(HCInfoResponse hcInfoResponse) {
-                        if (hcInfoResponse != null) {
-                            infoVOList = hcInfoResponse.getInfoVOList();
-                            mHCInfoList.setValue(hcInfoResponse.getInfoVOList());
+                        if (e instanceof IOException) {
+                            responseCode.setValue(666);
+                        } else if (e instanceof NetworkErrorException) {
+                            responseCode.setValue(777);
                         } else {
-                            error.setValue("NoData");
+                            responseCode.setValue(888);
                         }
                     }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        error.setValue(e.getMessage());
-                    }
 
                     @Override
                     public void onComplete() {
@@ -327,13 +268,46 @@ public class IbaModel extends BaseModel {
                 });
     }
 
-    public HCInfoVO getInfoById(double infoId) {
-        HCInfoVO info = null;
-        for (HCInfoVO i : infoVOList) {
-            if (i.getId() == infoId) info = i;
-        }
-        return info;
-    }
+//    public void loadHCInfo(final MutableLiveData<List<HCInfoVO>> mHCInfoList,
+//                           final MutableLiveData<String> error) {
+//        theApiSample.loadHCInfo("b002c7e1a528b7cb460933fc2875e916")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<HCInfoResponse>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(HCInfoResponse hcInfoResponse) {
+//                        if (hcInfoResponse != null) {
+//                            infoVOList = hcInfoResponse.getInfoVOList();
+//                            mHCInfoList.setValue(hcInfoResponse.getInfoVOList());
+//                        } else {
+//                            error.setValue("NoData");
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        error.setValue(e.getMessage());
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+//    }
+//
+//    public HCInfoVO getInfoById(double infoId) {
+//        HCInfoVO info = null;
+//        for (HCInfoVO i : infoVOList) {
+//            if (i.getId() == infoId) info = i;
+//        }
+//        return info;
+//    }
 
 
 }

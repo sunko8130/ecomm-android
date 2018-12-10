@@ -33,10 +33,10 @@ public class ProductPresenter extends BasePresenter<ProductView> implements Prod
     }
 
     public void getProduct(int page) {
-        int limit=10;
+        int limit=2;
         mOffset =limit*page;
         CriteriaVo criteriaVo = new CriteriaVo(mOffset, limit);
-        IbaModel.getInstance().getProductPaging(criteriaVo, mProductList,mResponseCode);
+        IbaModel.getInstance().getProductByPaging(criteriaVo, mProductList,mResponseCode);
 //        IbaModel.getInstance().getProduct(criteriaVo, mApiResposne);
     }
 

@@ -182,7 +182,7 @@
                     android:id="@+id/vp_empty_product"
                     layout="@layout/view_pod_empty"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/aniLoadMore"
@@ -193,6 +193,17 @@
                     app:lottie_loop="true"
                     app:lottie_colorFilter="@color/colorAccent"
                     android:layout_alignParentBottom="true"
+                    android:visibility="gone"/>
+
+                <org.mmtextview.components.MMTextView
+                    android:id="@+id/tvNoMoreData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No more Data"
+                    android:gravity="center"
+                    android:textSize="@dimen/text_regular_2x"
+                    android:layout_alignBottom="@+id/rv_product"
+                    android:textColor="@color/colorAccent"
                     android:visibility="gone"/>
 
             </RelativeLayout>

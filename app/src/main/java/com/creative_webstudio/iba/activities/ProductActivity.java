@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -28,7 +27,6 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.MyOnPageChangeListener;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.ProductAdapter;
-import com.creative_webstudio.iba.adapters.SearchAdapter;
 import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
 import com.creative_webstudio.iba.components.EmptyViewPod;
@@ -42,6 +40,8 @@ import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.fragments.FragmentOne;
 import com.creative_webstudio.iba.fragments.FragmentTwo;
 import com.viewpagerindicator.CirclePageIndicator;
+
+import org.mmtextview.components.MMTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,12 +91,18 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     @BindView(R.id.btn_refresh_empty)
     TextView tvEmpty;
 
+    //no more Items
+    @Nullable
+    @BindView(R.id.tvNoMoreData)
+    MMTextView tvNoMoreData;
+
     private ProductAdapter productAdapter;
     private List<NamesVo> names = new ArrayList<>();
     private CirclePageIndicator titlePageIndicator;
     private ProductPresenter mPresenter;
     private List<ProductVO> productVoList;
-    private int page=0;
+    private int page = 0;
+    private boolean endList = false;
 
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
     private String chooseItem;
@@ -124,23 +130,17 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         } else {
             appBar.setExpanded(true);
         }
-        mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
-            @Override
-            public void onListEndReach() {
-                aniLoadMore.setVisibility(View.VISIBLE);
-                Log.e("hhhhhhh", "onListEndReach: " + "Scroll End");
-                page++;
-                mPresenter.getProduct(page);
-            }
-        });
 
-        rvProduct.addOnScrollListener(mSmartScrollListener);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page=0;
-                mPresenter.getProduct(page);
+                tvNoMoreData.setVisibility(View.VISIBLE);
+                mPresenter.getProductList().removeObservers(ProductActivity.this);
+                    page = 0;
+                    mPresenter.getProduct(page);
+                    productAdapter.clearData();
+                    observeProduct();
                 //collapse
 //                final float scale = getResources().getDisplayMetrics().density;
 //                int height  = (int) (10 * scale);
@@ -207,25 +207,52 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         mPresenter.getProductList().observe(this, new Observer<List<ProductVO>>() {
             @Override
             public void onChanged(@Nullable List<ProductVO> productVos) {
-                productVoList = productVos;
-                productAdapter.appendNewData(productVoList);
+                if(productVos.size()==0){
+                    endList=true;
+                }else {
+                    endList=false;
+                }
+//                productVoList = productVos;
+                productAdapter.appendNewData(productVos);
                 assert swipeRefreshLayout != null;
                 swipeRefreshLayout.setRefreshing(false);
-                //expand
-                final float scale = getResources().getDisplayMetrics().density;
-                int height = (int) (300 * scale);
-                assert appBar != null;
-                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
-                params.height = height; // HEIGHT
-                appBar.setLayoutParams(params);
-                appBar.setExpanded(true);
+                aniLoadMore.setVisibility(View.GONE);
+                setUpScrollListener();
+                if (page == 0) {
+                    //expand
+                    final float scale = getResources().getDisplayMetrics().density;
+                    int height = (int) (300 * scale);
+                    assert appBar != null;
+                    CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+                    params.height = height; // HEIGHT
+                    appBar.setLayoutParams(params);
+                    appBar.setExpanded(true);
+                }
             }
         });
-        //        productAdapter.setNewData(names);
     }
 
-    private void observeError(){
-        Log.e("Error", "observeError: "+"blah" );
+    private void setUpScrollListener() {
+        mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
+            @Override
+            public void onListEndReach() {
+                if (!endList) {
+                    aniLoadMore.setVisibility(View.VISIBLE);
+                    Log.e("productList", "onListEndReach: " + "Scroll End");
+                    page++;
+                    mPresenter.getProduct(page);
+                }else {
+                    tvNoMoreData.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        rvProduct.addOnScrollListener(mSmartScrollListener);
+    }
+
+
+    private void observeError() {
+        Log.e("Error", "observeError: " + "blah");
     }
 
 
@@ -287,27 +314,7 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     }
 
     @Override
-    public void onTapShoppingCart() {
-
-    }
-
-    @Override
     public void showTokenError(Integer errorCode) {
-
-    }
-
-    @Override
-    public void showProductList() {
-
-    }
-
-    @Override
-    public void onProductItemClick() {
-
-    }
-
-    @Override
-    public void onLoadMoreData() {
 
     }
 
