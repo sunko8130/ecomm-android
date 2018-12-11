@@ -33,16 +33,20 @@ import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
 
+import com.creative_webstudio.iba.datas.ApiResponse;
+import com.creative_webstudio.iba.datas.vos.ProductPagingVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.mvp.presenters.ProductPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductView;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.fragments.FragmentOne;
 import com.creative_webstudio.iba.fragments.FragmentTwo;
+import com.creative_webstudio.iba.networks.ProductViewModel;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import org.mmtextview.components.MMTextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,59 +54,50 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
 
-public class ProductActivity extends BaseDrawerActivity implements SearchView.OnQueryTextListener, ProductView {
+public class ProductActivity extends BaseDrawerActivity implements SearchView.OnQueryTextListener {
 
-    @Nullable
     @BindView(R.id.rv_product)
     SmartRecyclerView rvProduct;
-    @Nullable
+
     @BindView(R.id.btn_product)
     Button btnProduct;
 
-    AlertDialog productDialog;
-    @Nullable
     @BindView(R.id.view_pager)
     AutoScrollViewPager viewPager;
-    @Nullable
+
     @BindView(R.id.appbar)
     AppBarLayout appBar;
-    @Nullable
+
     @BindView(R.id.ll)
     RelativeLayout ll;
 
-    //for swipe refresh
-    @Nullable
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    //load more animation
-    @Nullable
+    // Load more animation
     @BindView(R.id.aniLoadMore)
     LottieAnimationView aniLoadMore;
 
     private SmartScrollListener mSmartScrollListener;
 
     //empty view
-    @Nullable
+
     @BindView(R.id.vp_empty_product)
     EmptyViewPod vpEmpty;
 
-    @Nullable
+
     @BindView(R.id.btn_refresh_empty)
     TextView tvEmpty;
 
     //no more Items
-    @Nullable
+
     @BindView(R.id.tvNoMoreData)
     MMTextView tvNoMoreData;
 
-    private ProductAdapter productAdapter;
+    private ProductAdapter mProductAdapter;
     private List<NamesVo> names = new ArrayList<>();
     private CirclePageIndicator titlePageIndicator;
-    private ProductPresenter mPresenter;
-    private List<ProductVO> productVoList;
-    private int page = 0;
-    private boolean endList = false;
+    private int mCurrentPage;
 
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
     private String chooseItem;
@@ -112,149 +107,65 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setMyView(R.layout.activity_product);
         ButterKnife.bind(this, this);
-        mPresenter = ViewModelProviders.of(this).get(ProductPresenter.class);
-        mPresenter.initPresenter(this);
-        mPresenter.getProduct(page);
-        productVoList = new ArrayList<>();
+
         rvProduct.setEmptyView(vpEmpty);
-        productAdapter = new ProductAdapter(this, mPresenter);
-        rvProduct.setAdapter(productAdapter);
+        rvProduct.setAdapter(mProductAdapter);
         rvProduct.setLayoutManager(new GridLayoutManager(this, 2));
-        observeProduct();
-        if (productAdapter.getItemCount() == 0) {
-            appBar.setExpanded(false);
-        } else {
-            appBar.setExpanded(true);
-        }
+//        if (mProductAdapter.getItemCount() == 0) {
+//            appBar.setExpanded(false);
+//        } else {
+//            appBar.setExpanded(true);
+//        }
 
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                tvNoMoreData.setVisibility(View.VISIBLE);
-                mPresenter.getProductList().removeObservers(ProductActivity.this);
-                    page = 0;
-                    mPresenter.getProduct(page);
-                    productAdapter.clearData();
-                    observeProduct();
-                //collapse
-//                final float scale = getResources().getDisplayMetrics().density;
-//                int height  = (int) (10 * scale);
-//                CoordinatorLayout.LayoutParams params =(CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
-//                params.height = height; // HEIGHT
-//                appBar.setLayoutParams(params);
-//                appBar.setExpanded(true);
-//                viewPager.setVisibility(View.GONE);
-//                Snackbar.make(rvProduct, "Refreshing new data.", Snackbar.LENGTH_LONG).show();
-//                productAdapter.setNewData(names);
-//                swipeRefreshLayout.setRefreshing(false);
-//                //expand
-//                final float scale = getResources().getDisplayMetrics().density;
-//                int height = (int) (300 * scale);
-//                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
-//                params.height = height; // HEIGHT
-//                appBar.setLayoutParams(params);
-//                appBar.setExpanded(true);
-//                mPresenter.onForceRefresh(getApplicationContext());
             }
         });
 
         tvEmpty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.getProduct(page);
             }
         });
 
 
-        btnProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(ProductActivity.this);
-                builder.setTitle("Filter by");
-                builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        chooseItem = items[item];
-                    }
+        btnProduct.setOnClickListener(v -> {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ProductActivity.this);
+            builder.setTitle("Filter by");
+            builder.setSingleChoiceItems(items, -1, (dialog, item) -> chooseItem = items[item]);
+            builder.setPositiveButton("Ok", (dialog, which) -> btnProduct.setText(chooseItem));
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+            AlertDialog productDialog = builder.create();
+            productDialog.show();
 
-                });
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        btnProduct.setText(chooseItem);
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        productDialog.dismiss();
-                    }
-                });
-                productDialog = builder.create();
-                productDialog.show();
-
-            }
         });
         setupViewPager();
+        getProduct(mCurrentPage + 1);
     }
 
-    private void observeProduct() {
-        mPresenter.getProductList().observe(this, new Observer<List<ProductVO>>() {
-            @Override
-            public void onChanged(@Nullable List<ProductVO> productVos) {
-                if(productVos.size()==0){
-                    endList=true;
-                }else {
-                    endList=false;
-                }
-//                productVoList = productVos;
-                productAdapter.appendNewData(productVos);
-                assert swipeRefreshLayout != null;
-                swipeRefreshLayout.setRefreshing(false);
-                aniLoadMore.setVisibility(View.GONE);
-                setUpScrollListener();
-                if (page == 0) {
-                    //expand
-                    final float scale = getResources().getDisplayMetrics().density;
-                    int height = (int) (300 * scale);
-                    assert appBar != null;
-                    CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
-                    params.height = height; // HEIGHT
-                    appBar.setLayoutParams(params);
-                    appBar.setExpanded(true);
+    private void getProduct(int page) {
+        ProductViewModel viewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
+        viewModel.getProduct(page).observe(this, apiResponse -> {
+            aniLoadMore.setVisibility(View.GONE);
+
+            if (apiResponse.getData() != null) {
+                mCurrentPage++;
+                mProductAdapter.setNewData(apiResponse.getData().getProductVOList());
+            } else {
+                if (apiResponse.getError() instanceof IOException) {
+                    // Can't connect.
+                } else {
+                    // Something went wrong. Please try again.
                 }
             }
         });
     }
-
-    private void setUpScrollListener() {
-        mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
-            @Override
-            public void onListEndReach() {
-                if (!endList) {
-                    aniLoadMore.setVisibility(View.VISIBLE);
-                    Log.e("productList", "onListEndReach: " + "Scroll End");
-                    page++;
-                    mPresenter.getProduct(page);
-                }else {
-                    tvNoMoreData.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        rvProduct.addOnScrollListener(mSmartScrollListener);
-    }
-
-
-    private void observeError() {
-        Log.e("Error", "observeError: " + "blah");
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -289,33 +200,12 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_search) {
-            mPresenter.onTapSearch();
             return true;
         } else if (item.getItemId() == R.id.menu_cart) {
             startActivity(CartActivity.newIntent(this));
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void showProductDetail(Long infoId) {
-//        ProductVo productVo = null;
-//        for (ProductVo i : productVoList) {
-//            if (i.getId() == infoId) productVo = i;
-//        }
-//        startActivity(ProductDetailsActivity.newIntent(this, "Product", infoId));
-//        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
-    }
-
-    @Override
-    public void goProductSearchScreen() {
-        startActivity(ProductSearchActivity.newIntent(this));
-    }
-
-    @Override
-    public void showTokenError(Integer errorCode) {
-
     }
 
     private void setupViewPager() {

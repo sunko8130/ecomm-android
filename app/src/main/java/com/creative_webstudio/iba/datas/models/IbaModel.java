@@ -217,7 +217,7 @@ public class IbaModel extends BaseModel {
     }
 
 
-    public void getProductByPaging(CriteriaVo criteriaVo, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
+    public void getProduct(CriteriaVo criteriaVo, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
         String base = ibaPreference.fromPreference("AccessToken", "");
         String auth = "Bearer " + base;
         theApiProductSearch.getProductPaging(auth, criteriaVo)
@@ -236,21 +236,16 @@ public class IbaModel extends BaseModel {
                             getTokenByRefresh();
                         } else if (response.code() == 200) {
                             mProductList.setValue(response.body().getProductVOList());
-                            Log.e("productList", "onNext: " + response.body().getProductVOList().size());
                         } else if (response.code() == 204) {
                             // Response has no data
-                            Log.e("productList", "onNext: "+"No Data" );
                             responseCode.setValue(response.code());
-                            Log.e("auth", "noData: " + response.code());
                         } else {
                             responseCode.setValue(300);
-                            Log.e("auth", "severError: " + response.code());
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("success", "onError: ErrorMsg :: " + e.getMessage());
                         if (e instanceof IOException) {
                             responseCode.setValue(666);
                         } else if (e instanceof NetworkErrorException) {
@@ -259,7 +254,6 @@ public class IbaModel extends BaseModel {
                             responseCode.setValue(888);
                         }
                     }
-
 
                     @Override
                     public void onComplete() {

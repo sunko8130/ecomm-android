@@ -1,11 +1,7 @@
 package com.creative_webstudio.iba.mvp.views;
 
-public interface ProductView extends BaseView{
-    void showProductDetail(Long infoId);
-    void goProductSearchScreen();
-    void showTokenError(Integer errorCode);
+import com.creative_webstudio.iba.datas.ApiResponse;
 
-//    void showProductList();
-//    void onProductItemClick();
-//    void onLoadMoreData();
+public interface ProductView extends BaseView {
+    void setData(ApiResponse response);
 }
