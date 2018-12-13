@@ -34,7 +34,7 @@ public abstract class BaseModel {
         theApiSample = retrofitSample.create(IbaAPI.class);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.100.100:8281/iba-uae/")
+                .baseUrl(AppConstants.BASE_OAUTH_URL)
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)

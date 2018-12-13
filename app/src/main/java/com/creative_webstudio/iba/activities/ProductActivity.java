@@ -1,21 +1,18 @@
 package com.creative_webstudio.iba.activities;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,11 +30,8 @@ import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
 
-import com.creative_webstudio.iba.datas.ApiResponse;
-import com.creative_webstudio.iba.datas.vos.ProductPagingVO;
-import com.creative_webstudio.iba.datas.vos.ProductVO;
-import com.creative_webstudio.iba.mvp.presenters.ProductPresenter;
-import com.creative_webstudio.iba.mvp.views.ProductView;
+import com.creative_webstudio.iba.datas.vos.TokenVO;
+import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.fragments.FragmentOne;
 import com.creative_webstudio.iba.fragments.FragmentTwo;
@@ -46,58 +40,61 @@ import com.viewpagerindicator.CirclePageIndicator;
 
 import org.mmtextview.components.MMTextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
+import retrofit2.Response;
 
 public class ProductActivity extends BaseDrawerActivity implements SearchView.OnQueryTextListener {
 
-    @BindView(R.id.rv_product)
+    @Nullable @BindView(R.id.rv_product)
     SmartRecyclerView rvProduct;
 
-    @BindView(R.id.btn_product)
+    @Nullable @BindView(R.id.btn_product)
     Button btnProduct;
 
-    @BindView(R.id.view_pager)
+    @Nullable @BindView(R.id.view_pager)
     AutoScrollViewPager viewPager;
 
-    @BindView(R.id.appbar)
+    @Nullable @BindView(R.id.appbar)
     AppBarLayout appBar;
 
-    @BindView(R.id.ll)
+    @Nullable @BindView(R.id.ll)
     RelativeLayout ll;
 
-    @BindView(R.id.swipe_refresh_layout)
+    @Nullable @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
     // Load more animation
-    @BindView(R.id.aniLoadMore)
+    @Nullable @BindView(R.id.aniLoadMore)
     LottieAnimationView aniLoadMore;
 
     private SmartScrollListener mSmartScrollListener;
 
     //empty view
 
-    @BindView(R.id.vp_empty_product)
+    @Nullable @BindView(R.id.vp_empty_product)
     EmptyViewPod vpEmpty;
 
 
-    @BindView(R.id.btn_refresh_empty)
+    @Nullable @BindView(R.id.btn_refresh_empty)
     TextView tvEmpty;
 
     //no more Items
 
-    @BindView(R.id.tvNoMoreData)
+    @Nullable @BindView(R.id.tvNoMoreData)
     MMTextView tvNoMoreData;
 
     private ProductAdapter mProductAdapter;
     private List<NamesVo> names = new ArrayList<>();
     private CirclePageIndicator titlePageIndicator;
+
     private int mCurrentPage;
+    private boolean mIsLoading;
+    private boolean mIsNoMoreData;
 
     private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
     private String chooseItem;
@@ -113,13 +110,15 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         ButterKnife.bind(this, this);
 
         rvProduct.setEmptyView(vpEmpty);
-        rvProduct.setAdapter(mProductAdapter);
-        rvProduct.setLayoutManager(new GridLayoutManager(this, 2));
-//        if (mProductAdapter.getItemCount() == 0) {
-//            appBar.setExpanded(false);
-//        } else {
-//            appBar.setExpanded(true);
-//        }
+        mProductAdapter = new ProductAdapter(this);
+        // TODO: specify the span count in res directory for phone and tablet size.
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        rvProduct.setLayoutManager(layoutManager);
+        if (mProductAdapter.getItemCount() == 0) {
+            appBar.setExpanded(false);
+        } else {
+            appBar.setExpanded(true);
+        }
 
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -145,8 +144,20 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
             productDialog.show();
 
         });
+
+        rvProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!mIsLoading && !mIsNoMoreData && layoutManager.findLastVisibleItemPosition() == mProductAdapter.getItemCount() - 1) {
+                    getProduct(mCurrentPage + 1);
+                    mIsLoading = true; // Prevent duplicate request while fetching from server
+                }
+            }
+        });
+
         setupViewPager();
-        getProduct(mCurrentPage + 1);
+        getProduct(mCurrentPage++);
     }
 
     private void getProduct(int page) {
@@ -156,15 +167,42 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
             if (apiResponse.getData() != null) {
                 mCurrentPage++;
+                mIsLoading = false;
                 mProductAdapter.setNewData(apiResponse.getData().getProductVOList());
             } else {
-                if (apiResponse.getError() instanceof IOException) {
-                    // Can't connect.
+                if (apiResponse.getError() instanceof ApiException) {
+                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                    if (errorCode == 401) {
+                        super.refreshAccessToken();
+                    } else if (errorCode == 204) {
+                        // TODO: Server response successful but there is no data (Empty response).
+                    }
                 } else {
-                    // Something went wrong. Please try again.
+                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
                 }
             }
         });
+    }
+
+    @Override
+    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
+        getProduct(mCurrentPage);
+    }
+
+    @Override
+    public void onAccessTokenRefreshFailure(Throwable t) {
+        if (t instanceof ApiException) {
+            // Server response with one of the HTTP error status code.
+            int errorCode = ((ApiException) t).getErrorCode();
+            if (errorCode == 401) {
+                // Refresh token is expired.
+                startActivity(new Intent(this, SignInActivity.class));
+            } else {
+                // TODO: Show the retry button
+            }
+        } else {
+            // TODO: Show the retry button for network related error.
+        }
     }
 
     @Override

@@ -109,8 +109,12 @@ public class IBAPreferenceManager {
         return phNum;
     }
 
-    public String getSessionId() {
-        return fromPreference("SessionId", "");
+    public String getAccessToken() {
+        return fromPreference("AccessToken", null);
+    }
+
+    public String getRefreshToken() {
+        return fromPreference("RefreshToken", null);
     }
 
     public String getPlanEng() {

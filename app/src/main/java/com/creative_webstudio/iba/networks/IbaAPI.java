@@ -50,6 +50,7 @@ public interface IbaAPI {
             @Body CriteriaVo criteriaVo);
 
     @GET("product/search/paging")
-    Observable<Response<ProductPagingVO>> getProduct(@Query("page_number") int pageNumber);
+    Observable<Response<ProductPagingVO>> getProduct(@Header("Authorization") String authHeader,
+                                                     @Query("pageNumber") int pageNumber);
 
 }
