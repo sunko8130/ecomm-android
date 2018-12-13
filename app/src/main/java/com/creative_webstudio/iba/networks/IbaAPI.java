@@ -49,8 +49,8 @@ public interface IbaAPI {
             @Header("Authorization") String authHeader,
             @Body CriteriaVo criteriaVo);
 
-    @GET("product/search/paging")
+    @POST("product/search/paging")
     Observable<Response<ProductPagingVO>> getProduct(@Header("Authorization") String authHeader,
-                                                     @Query("pageNumber") int pageNumber);
+                                                     @Body CriteriaVo criteriaVo);
 
 }

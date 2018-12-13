@@ -30,12 +30,14 @@ import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
 
+import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.fragments.FragmentOne;
 import com.creative_webstudio.iba.fragments.FragmentTwo;
 import com.creative_webstudio.iba.networks.ProductViewModel;
+import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import org.mmtextview.components.MMTextView;
@@ -48,7 +50,7 @@ import butterknife.ButterKnife;
 import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
 import retrofit2.Response;
 
-public class ProductActivity extends BaseDrawerActivity implements SearchView.OnQueryTextListener {
+public class ProductActivity extends BaseDrawerActivity {
 
     @Nullable @BindView(R.id.rv_product)
     SmartRecyclerView rvProduct;
@@ -114,22 +116,26 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         // TODO: specify the span count in res directory for phone and tablet size.
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvProduct.setLayoutManager(layoutManager);
+        rvProduct.setAdapter(mProductAdapter);
         if (mProductAdapter.getItemCount() == 0) {
             appBar.setExpanded(false);
         } else {
             appBar.setExpanded(true);
         }
 
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mProductAdapter.clearData();
+                mCurrentPage=1;
+                getProduct(mCurrentPage);
             }
         });
 
         tvEmpty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getProduct(mCurrentPage);
             }
         });
 
@@ -157,18 +163,20 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         });
 
         setupViewPager();
-        getProduct(mCurrentPage++);
+        getProduct(++mCurrentPage);
     }
 
     private void getProduct(int page) {
         ProductViewModel viewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
         viewModel.getProduct(page).observe(this, apiResponse -> {
+            if(swipeRefreshLayout.isRefreshing()){
+                swipeRefreshLayout.setRefreshing(false);
+            }
             aniLoadMore.setVisibility(View.GONE);
-
             if (apiResponse.getData() != null) {
                 mCurrentPage++;
                 mIsLoading = false;
-                mProductAdapter.setNewData(apiResponse.getData().getProductVOList());
+                mProductAdapter.appendNewData(apiResponse.getData().getProductVOList());
             } else {
                 if (apiResponse.getError() instanceof ApiException) {
                     int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
@@ -262,24 +270,6 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
 
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        String userInput = newText.toLowerCase();
-        List<NamesVo> mName = new ArrayList<>();
-        for (NamesVo name : names) {
-            if (name.getName().toLowerCase().contains(userInput)) {
-                mName.add(name);
-            }
-        }
-
-//        searchAdapter.setNewData(mName);
-        return true;
-    }
 
     @Override
     protected void onPause() {
@@ -295,4 +285,9 @@ public class ProductActivity extends BaseDrawerActivity implements SearchView.On
         viewPager.startAutoScroll();
     }
 
+    public void onItemClick(ProductVO data) {
+        Gson gson = new Gson();
+        String json = gson.toJson(data);
+        startActivity(ProductDetailsActivity.newIntent(this, "Product",json));
+    }
 }

@@ -33,7 +33,6 @@
         <activity
             android:name=".activities.ProductActivity"
             android:label="Product"
-            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CartActivity"

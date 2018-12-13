@@ -24,11 +24,13 @@ public class SmartRecyclerView extends RecyclerView {
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
             super.onItemRangeInserted(positionStart, itemCount);
+            checkIfEmpty();
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
             super.onItemRangeRemoved(positionStart, itemCount);
+            checkIfEmpty();
         }
     };
 
@@ -66,12 +68,10 @@ public class SmartRecyclerView extends RecyclerView {
      * check if adapter connected to SRV is empty. If so, show emptyView.
      */
     private void checkIfEmpty() {
-        if (mEmptyView == null) {
-            return;
-        }
-
         boolean isEmpty = getAdapter().getItemCount() == 0;
-        mEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.INVISIBLE);
-        setVisibility(isEmpty ? View.INVISIBLE : View.VISIBLE);
+        if(mEmptyView !=null) {
+            mEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.INVISIBLE);
+            setVisibility(isEmpty ? View.INVISIBLE : View.VISIBLE);
+        }
     }
 }

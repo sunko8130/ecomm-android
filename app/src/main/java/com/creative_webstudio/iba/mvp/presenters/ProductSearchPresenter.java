@@ -28,9 +28,9 @@ public class ProductSearchPresenter extends BasePresenter<ProductSearchView> imp
 
     @Override
     public void onTapSearch(String word) {
-        CriteriaVo criteriaVo = new CriteriaVo(0, 10);
-        criteriaVo.setWord(word);
-        IbaModel.getInstance().getProductSearchList(criteriaVo, mListMutableLiveData, mResponseCode);
+//        CriteriaVo criteriaVo = new CriteriaVo(0, 10);
+//        criteriaVo.setWord(word);
+//        IbaModel.getInstance().getProductSearchList(criteriaVo, mListMutableLiveData, mResponseCode);
     }
 
     public MutableLiveData<List<ProductVO>> getmListMutableLiveData() {

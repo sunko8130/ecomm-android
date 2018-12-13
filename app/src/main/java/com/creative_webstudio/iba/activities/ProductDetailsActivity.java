@@ -17,8 +17,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.datas.vos.HCInfoVO;
+import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.mvp.presenters.ProductDetailsPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductDetailView;
+import com.google.gson.Gson;
 
 import org.mmtextview.components.MMTextView;
 
@@ -39,8 +41,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @BindView(R.id.iv_back_toolbar)
     ImageView ivBackToolBar;
 
-    @BindView(R.id.iv_back_rl)
-    ImageView ivBack;
+//    @BindView(R.id.iv_back_rl)
+//    ImageView ivBack;
 
     @BindView(R.id.appbar)
     AppBarLayout appBarLayout;
@@ -57,16 +59,18 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     private ProductDetailsPresenter mPresenter;
 
+    private ProductVO productVO;
+
     public static Intent newIntent(Context context, String backActivity) {
         Intent intent = new Intent(context, ProductDetailsActivity.class);
         intent.putExtra("BackActivity", backActivity);
         return intent;
     }
 
-    public static Intent newIntent(Context context, String backActivity, double infoVO) {
+    public static Intent newIntent(Context context, String backActivity, String productVo) {
         Intent intent = new Intent(context, ProductDetailsActivity.class);
         intent.putExtra("BackActivity", backActivity);
-        intent.putExtra("infoVo", infoVO);
+        intent.putExtra("productVo", productVo);
         return intent;
     }
 
@@ -86,9 +90,12 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         mPresenter = ViewModelProviders.of(this).get(ProductDetailsPresenter.class);
         mPresenter.initPresenter(this);
-        if (getIntent().hasExtra("infoVo")) {
-            double infoId = getIntent().getDoubleExtra("infoVo",0);
-            mPresenter.getInfoById(infoId);
+        if (getIntent().hasExtra("productVo")) {
+            String json = getIntent().getStringExtra("productVo");
+            Gson gson = new Gson();
+            productVO = gson.fromJson(json,ProductVO.class);
+            tvItemName.setText(productVO.getProductName());
+            tvItemContent.setText(productVO.getDescription());
         }
 
 //        ivBackToolBar.setOnClickListener(new View.OnClickListener() {

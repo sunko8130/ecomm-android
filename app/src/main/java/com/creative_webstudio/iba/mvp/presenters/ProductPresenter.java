@@ -32,7 +32,7 @@ public class ProductPresenter extends BasePresenter<ProductView> {
     public void getProduct(int page) {
         int limit = 2;
         mOffset = limit * page;
-        CriteriaVo criteriaVo = new CriteriaVo(mOffset, limit);
+//        CriteriaVo criteriaVo = new CriteriaVo(mOffset, limit);
 //        IbaModel.getInstance().getProductByPaging(criteriaVo, mProductList, mResponseCode);
     }
 

@@ -156,15 +156,6 @@
                 android:visibility="gone" />
 
 
-            <ImageView
-                android:id="@+id/iv_plus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/tv_price"
-                android:layout_below="@+id/tv_price"
-                android:src="@drawable/ic_add_black_24dp" />
-
-
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 

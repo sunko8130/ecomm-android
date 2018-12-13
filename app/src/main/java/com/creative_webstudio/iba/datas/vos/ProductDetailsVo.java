@@ -4,11 +4,12 @@ package com.creative_webstudio.iba.datas.vos;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Map;
 
 public class ProductDetailsVo {
 
     @SerializedName("value")
-    private List<ValueVo> valueList;
+    private Map<String, String> valueList;
 
     @SerializedName("empty")
     private Boolean empty;

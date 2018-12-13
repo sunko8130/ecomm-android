@@ -21,15 +21,12 @@ public class ProductViewHolder extends BaseViewHolder<ProductVO> {
     @BindView(R.id.iv_product)
     ImageView ivProduct;
 
-    private ProductDelegate mDelecate;
-    private ProductVO productVO;
+//    private ProductVO productVO;
 
-    public ProductViewHolder(@NonNull View itemView, final ProductDelegate productDelegate) {
+    public ProductViewHolder(@NonNull View itemView) {
         super(itemView);
-        mDelecate=productDelegate;
 
     }
-
 
     @Override
     public void setData(ProductVO data) {
@@ -39,11 +36,11 @@ public class ProductViewHolder extends BaseViewHolder<ProductVO> {
 //                    .load(data.getImage())
 //                    .into(ivProduct);
 //        }
-        productVO =data;
+//        productVO =data;
     }
 
     @Override
     public void onClick(View v) {
-        mDelecate.onTapView(productVO.getId());
+//        mDelecate.onTapView(productVO.getId());
     }
 }

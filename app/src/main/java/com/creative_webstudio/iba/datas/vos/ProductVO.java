@@ -33,6 +33,10 @@ public class ProductVO {
     @SerializedName("description")
     private String description;
 
+
+    @SerializedName("status")
+    private String status;
+
     @SerializedName("productDetails")
     private ProductDetailsVo productDetailsVo;
 
@@ -158,6 +162,14 @@ public class ProductVO {
 
     public void setProductCategory(ProductCategoryVo productCategory) {
         this.productCategory = productCategory;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
 
