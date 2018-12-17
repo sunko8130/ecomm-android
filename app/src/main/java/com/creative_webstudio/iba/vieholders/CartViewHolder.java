@@ -8,14 +8,12 @@ import android.widget.TextView;
 
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.delegates.CartDelegate;
-import com.creative_webstudio.iba.datas.vos.NamesVo;
 
 import org.mmtextview.components.MMTextView;
 
 public class CartViewHolder extends RecyclerView.ViewHolder {
 
     private MMTextView tvProductName;
-    private NamesVo mNames;
     private ImageView ivProduct;
     int width;
 
@@ -33,9 +31,7 @@ public class CartViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void setNames(NamesVo names) {
-        this.mNames = names;
-        tvProductName.setText(names.getName());
+    public void setNames(String names) {
         /*width = (BottomSheet.width / 2);
         ivProduct.getLayoutParams().width = Math.round(width / Resources.getSystem().getDisplayMetrics().density);
         ;*/

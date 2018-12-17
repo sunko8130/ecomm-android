@@ -6,14 +6,12 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.creative_webstudio.iba.datas.vos.CriteriaVo;
+import com.creative_webstudio.iba.datas.vos.CriteriaVO;
 import com.creative_webstudio.iba.datas.vos.HCInfoVO;
-import com.creative_webstudio.iba.datas.vos.ProductPagingVO;
+import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.enents.TokenEvent;
-import com.creative_webstudio.iba.networks.ApiResponse;
-import com.creative_webstudio.iba.networks.HCInfoResponse;
 import com.creative_webstudio.iba.utils.AppConstants;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
@@ -165,10 +163,10 @@ public class IbaModel extends BaseModel {
                 });
     }
 
-    public void getProductSearchList(final CriteriaVo criteriaVo, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
+    public void getProductSearchList(final CriteriaVO criteriaVO, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
         String base = ibaPreference.fromPreference("AccessToken", "");
         String userAuth = "Bearer " + base;
-        theApiProductSearch.getProductSearch(userAuth, criteriaVo)
+        theApiProductSearch.getProductSearch(userAuth, criteriaVO)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Response<List<ProductVO>>>() {
@@ -217,20 +215,20 @@ public class IbaModel extends BaseModel {
     }
 
 
-    public void getProduct(CriteriaVo criteriaVo, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
+    public void getProduct(CriteriaVO criteriaVO, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
         String base = ibaPreference.fromPreference("AccessToken", "");
         String auth = "Bearer " + base;
-        theApiProductSearch.getProductPaging(auth, criteriaVo)
+        theApiProductSearch.getProductPaging(auth, criteriaVO)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<ProductPagingVO>>() {
+                .subscribe(new Observer<Response<ProductResponse>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(Response<ProductPagingVO> response) {
+                    public void onNext(Response<ProductResponse> response) {
                         if (response.code() == 401) {
                             // Access token expire.
                             getTokenByRefresh();

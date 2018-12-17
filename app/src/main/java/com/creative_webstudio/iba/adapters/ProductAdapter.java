@@ -7,13 +7,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.activities.ProductActivity;
-import com.creative_webstudio.iba.datas.vos.HCInfoVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
+import com.creative_webstudio.iba.utils.AppConstants;
+import com.creative_webstudio.iba.utils.IBAPreferenceManager;
+import com.creative_webstudio.iba.utils.LoadImage;
 import com.creative_webstudio.iba.vieholders.BaseViewHolder;
 import com.creative_webstudio.iba.vieholders.ProductViewHolder;
-import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.delegates.ProductDelegate;
 
 import org.mmtextview.components.MMTextView;
@@ -29,6 +32,7 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
     private ProductDelegate mProductDelegate;
     Context mContext;
     protected List<ProductVO> mData;
+    IBAPreferenceManager mIbaShared;
 
 
     public ProductAdapter(Context context, ProductDelegate productDelegate) {
@@ -39,6 +43,7 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
     public ProductAdapter(Context context) {
         super(context);
         mContext = context;
+        mIbaShared = new IBAPreferenceManager(mContext);
     }
 
 //    public void addData(List<ProductVO> newData) {
@@ -84,11 +89,12 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
         @Override
         public void setData(ProductVO data) {
             tvProductName.setText(data.getProductName());
-//        if(data.getImage()!=null){
-//            Glide.with(itemView.getContext())
-//                    .load(data.getImage())
-//                    .into(ivProduct);
-//        }
+            GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken());
+            Glide.with(itemView.getContext())
+                    .asBitmap()
+                    .apply(LoadImage.getOption())
+                    .load(glideUrl)
+                    .into(ivProduct);
         productVO =data;
         }
 

@@ -42,7 +42,7 @@ public abstract class BaseModel {
         theApi = retrofit.create(IbaAPI.class);
 
         Retrofit retrofitProductSearch = new Retrofit.Builder()
-                .baseUrl(AppConstants.BaseProductSearchUrl)
+                .baseUrl(AppConstants.BASE_PRODUCT_SEARCH_URL)
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(okHttpClient)

@@ -6,19 +6,22 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.MyOnPageChangeListener;
@@ -33,17 +36,13 @@ import com.creative_webstudio.iba.components.SmartScrollListener;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
-import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.fragments.FragmentOne;
 import com.creative_webstudio.iba.fragments.FragmentTwo;
-import com.creative_webstudio.iba.networks.ProductViewModel;
+import com.creative_webstudio.iba.networks.viewmodels.ProductViewModel;
 import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import org.mmtextview.components.MMTextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,7 +90,6 @@ public class ProductActivity extends BaseDrawerActivity {
     MMTextView tvNoMoreData;
 
     private ProductAdapter mProductAdapter;
-    private List<NamesVo> names = new ArrayList<>();
     private CirclePageIndicator titlePageIndicator;
 
     private int mCurrentPage;
@@ -156,8 +154,15 @@ public class ProductActivity extends BaseDrawerActivity {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (!mIsLoading && !mIsNoMoreData && layoutManager.findLastVisibleItemPosition() == mProductAdapter.getItemCount() - 1) {
-                    getProduct(mCurrentPage + 1);
-                    mIsLoading = true; // Prevent duplicate request while fetching from server
+                    mIsLoading = true;
+                    aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
+                    getProduct(mCurrentPage);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//
+//                        }
+//                    }, 5000);
                 }
             }
         });
@@ -174,6 +179,9 @@ public class ProductActivity extends BaseDrawerActivity {
             }
             aniLoadMore.setVisibility(View.GONE);
             if (apiResponse.getData() != null) {
+                if(mCurrentPage==1){
+                    expand();
+                }
                 mCurrentPage++;
                 mIsLoading = false;
                 mProductAdapter.appendNewData(apiResponse.getData().getProductVOList());
@@ -184,6 +192,9 @@ public class ProductActivity extends BaseDrawerActivity {
                         super.refreshAccessToken();
                     } else if (errorCode == 204) {
                         // TODO: Server response successful but there is no data (Empty response).
+                    }else if(errorCode == 200){
+                        // TODO: Reach End of List
+                        Snackbar.make(rvProduct,"End of Product List",Snackbar.LENGTH_LONG).show();
                     }
                 } else {
                     // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
@@ -289,5 +300,14 @@ public class ProductActivity extends BaseDrawerActivity {
         Gson gson = new Gson();
         String json = gson.toJson(data);
         startActivity(ProductDetailsActivity.newIntent(this, "Product",json));
+    }
+
+    public void expand(){
+        final float scale = getResources().getDisplayMetrics().density;
+        int height = (int)(300*scale);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+        params.height = height; // HEIGHT
+        appBar.setLayoutParams(params);
+        appBar.setExpanded(true);
     }
 }

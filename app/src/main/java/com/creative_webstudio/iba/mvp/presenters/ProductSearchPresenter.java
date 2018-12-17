@@ -2,8 +2,6 @@ package com.creative_webstudio.iba.mvp.presenters;
 
 import android.arch.lifecycle.MutableLiveData;
 
-import com.creative_webstudio.iba.datas.models.IbaModel;
-import com.creative_webstudio.iba.datas.vos.CriteriaVo;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
 import com.creative_webstudio.iba.mvp.views.ProductSearchView;

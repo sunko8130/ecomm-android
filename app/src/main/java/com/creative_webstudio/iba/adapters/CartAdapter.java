@@ -9,19 +9,15 @@ import android.view.ViewGroup;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.delegates.CartDelegate;
 import com.creative_webstudio.iba.vieholders.CartViewHolder;
-import com.creative_webstudio.iba.datas.vos.NamesVo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
 
     private CartDelegate mproductDelegate;
-    private List<NamesVo> names;
 
 
-    public CartAdapter(List<NamesVo> names,CartDelegate productDelegate) {
-        this.names = names;
+    public CartAdapter(List<String> names,CartDelegate productDelegate) {
         this.mproductDelegate = productDelegate;
     }
 
@@ -35,17 +31,16 @@ public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder viewHolder, int i) {
-        viewHolder.setNames(names.get(i));
+        viewHolder.setNames(null);
     }
 
     @Override
     public int getItemCount() {
-        return names.size();
+        return 0;
     }
 
-    public void updateProductList(List<NamesVo> newList) {
-        names = new ArrayList<>();
-        names.addAll(newList);
+
+    public void updateProductList(List<String> newList) {
         notifyDataSetChanged();
     }
 }

@@ -192,7 +192,7 @@
                     app:lottie_rawRes="@raw/load_more"
                     app:lottie_loop="true"
                     app:lottie_colorFilter="@color/colorAccent"
-                    android:layout_alignParentBottom="true"
+                    android:layout_alignBottom="@+id/rv_product"
                     android:visibility="gone"/>
 
                 <org.mmtextview.components.MMTextView

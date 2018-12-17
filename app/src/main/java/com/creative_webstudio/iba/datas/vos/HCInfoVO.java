@@ -16,7 +16,6 @@ public class HCInfoVO implements Parcelable {
     @SerializedName("short-description")
     private String shortDec="";
 
-    private AuthorVO author;
 
     @SerializedName("published-date")
     private String pubDate="";
@@ -77,13 +76,7 @@ public class HCInfoVO implements Parcelable {
         this.shortDec = shortDec;
     }
 
-    public AuthorVO getAuthor() {
-        return author;
-    }
 
-    public void setAuthor(AuthorVO author) {
-        this.author = author;
-    }
 
     public String getPubDate() {
         return pubDate;

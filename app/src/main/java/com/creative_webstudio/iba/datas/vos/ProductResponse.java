@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ProductPagingVO {
+public class ProductResponse {
     @SerializedName("aaData")
     private List<ProductVO> productVOList;
 

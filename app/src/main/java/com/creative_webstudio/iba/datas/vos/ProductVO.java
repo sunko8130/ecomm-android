@@ -47,7 +47,7 @@ public class ProductVO {
     private ThumbnailsVo thumbnails;
 
     @SerializedName("orderUnits")
-    private List<OrderUnitsVo> orderUnits;
+    private List<OrderUnitVO> orderUnits;
 
     @SerializedName("productCategory")
     private ProductCategoryVo productCategory;
@@ -148,11 +148,11 @@ public class ProductVO {
         this.thumbnails = thumbnails;
     }
 
-    public List<OrderUnitsVo> getOrderUnits() {
+    public List<OrderUnitVO> getOrderUnits() {
         return orderUnits;
     }
 
-    public void setOrderUnits(List<OrderUnitsVo> orderUnits) {
+    public void setOrderUnits(List<OrderUnitVO> orderUnits) {
         this.orderUnits = orderUnits;
     }
 

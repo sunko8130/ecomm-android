@@ -12,7 +12,6 @@ import android.view.MenuItem;
 
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.CartAdapter;
-import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.mvp.presenters.CartPresenter;
 import com.creative_webstudio.iba.mvp.views.CartView;
 
@@ -27,7 +26,6 @@ public class CartActivity extends BaseActivity implements CartView {
     @Nullable
     @BindView(R.id.rv_card_list)
     RecyclerView rvCard;
-    List<NamesVo> names = new ArrayList<>();
     private CartPresenter mPresenter;
 
     public static Intent newIntent(Context context) {
@@ -44,10 +42,8 @@ public class CartActivity extends BaseActivity implements CartView {
 
         mPresenter = ViewModelProviders.of(this).get(CartPresenter.class);
         mPresenter.initPresenter(this);
-        NamesVo namesVo = new NamesVo("start");
-        names = namesVo.getNames();
-        CartAdapter cartAdapter = new CartAdapter(names, mPresenter);
-        rvCard.setAdapter(cartAdapter);
+//        CartAdapter cartAdapter = new CartAdapter(names, mPresenter);
+//        rvCard.setAdapter(cartAdapter);
         rvCard.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -73,6 +69,7 @@ public class CartActivity extends BaseActivity implements CartView {
 
     @Override
     public void onBackPressed() {
-        startActivity(ProductActivity.newIntent(this));
+        super.onBackPressed();
+//        startActivity(ProductActivity.newIntent(this));
     }
 }

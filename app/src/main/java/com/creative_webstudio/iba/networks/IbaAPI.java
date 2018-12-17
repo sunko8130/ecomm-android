@@ -1,7 +1,8 @@
 package com.creative_webstudio.iba.networks;
 
-import com.creative_webstudio.iba.datas.vos.CriteriaVo;
-import com.creative_webstudio.iba.datas.vos.ProductPagingVO;
+import com.creative_webstudio.iba.datas.vos.CriteriaVO;
+import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
+import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 
@@ -12,10 +13,8 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public interface IbaAPI {
 
@@ -42,15 +41,19 @@ public interface IbaAPI {
     @POST("product/search/list")
     Observable<Response<List<ProductVO>>> getProductSearch(
             @Header("Authorization") String authHeader,
-            @Body CriteriaVo criteriaVo);
+            @Body CriteriaVO criteriaVO);
 
     @POST("product/search/paging")
-    Observable<Response<ProductPagingVO>> getProductPaging(
+    Observable<Response<ProductResponse>> getProductPaging(
             @Header("Authorization") String authHeader,
-            @Body CriteriaVo criteriaVo);
+            @Body CriteriaVO criteriaVO);
 
     @POST("product/search/paging")
-    Observable<Response<ProductPagingVO>> getProduct(@Header("Authorization") String authHeader,
-                                                     @Body CriteriaVo criteriaVo);
+    Observable<Response<ProductResponse>> getProduct(@Header("Authorization") String authHeader,
+                                                     @Body CriteriaVO criteriaVO);
+
+//    @POST("order_unit/search/list")
+//    Observable<Response<List<OrderUnitVO>>> getOrderUnit(@Header("Authorization") String authHeader,
+//                                                         @Body CriteriaVO criteriaVO);
 
 }

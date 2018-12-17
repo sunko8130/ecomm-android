@@ -1,15 +1,15 @@
-package com.creative_webstudio.iba.networks;
+package com.creative_webstudio.iba.networks.viewmodels;
 
-import android.annotation.SuppressLint;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
-import android.util.Log;
 
 import com.creative_webstudio.iba.datas.ApiResponse;
-import com.creative_webstudio.iba.datas.vos.CriteriaVo;
-import com.creative_webstudio.iba.datas.vos.ProductPagingVO;
+import com.creative_webstudio.iba.datas.vos.CriteriaVO;
+import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.exception.ApiException;
+import com.creative_webstudio.iba.networks.IbaAPI;
+import com.creative_webstudio.iba.networks.ServiceGenerator;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,24 +22,21 @@ public class ProductViewModel extends AndroidViewModel {
         super(application);
     }
 
-
-
-    public MutableLiveData<ApiResponse<ProductPagingVO>> getProduct(int page) {
-        int limit = 2;
-        mOffset = limit * page;
-        CriteriaVo criteriaVo = new CriteriaVo();
-        criteriaVo.setPageNumber(page);
-        MutableLiveData<ApiResponse<ProductPagingVO>> result = new MutableLiveData<>();
-        ApiResponse<ProductPagingVO> apiResponse = new ApiResponse();
+    public MutableLiveData<ApiResponse<ProductResponse>> getProduct(int page) {
+        CriteriaVO criteriaVO = new CriteriaVO();
+        criteriaVO.setPageNumber(page);
+        criteriaVO.setWithOrderUnits(true);
+        MutableLiveData<ApiResponse<ProductResponse>> result = new MutableLiveData<>();
+        ApiResponse<ProductResponse> apiResponse = new ApiResponse();
         IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
         IBAPreferenceManager prefs = new IBAPreferenceManager(getApplication());
         String accessToken = prefs.getAccessToken();
         String userAuth = "Bearer " + accessToken;
-        api.getProduct(userAuth, criteriaVo)
+        api.getProduct(userAuth, criteriaVO)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    ProductPagingVO body = response.body();
+                    ProductResponse body = response.body();
                     if (response.isSuccessful() && body != null && body.getProductVOList() != null && !body.getProductVOList().isEmpty()) {
                         apiResponse.setData(body);
                     } else {

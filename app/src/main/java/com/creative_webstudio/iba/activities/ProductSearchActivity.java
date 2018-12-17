@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.SearchAdapter;
 import com.creative_webstudio.iba.datas.models.IbaModel;
-import com.creative_webstudio.iba.datas.vos.NamesVo;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.mvp.presenters.ProductSearchPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductSearchView;
@@ -46,7 +45,6 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
     TextView tvResult;
 
     SearchAdapter searchAdapter;
-    private List<NamesVo> names = new ArrayList<>();
     private ProductSearchPresenter mPresenter;
 
     private List<ProductVO> mProductVOS;
@@ -66,8 +64,6 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
         mPresenter = ViewModelProviders.of(this).get(ProductSearchPresenter.class);
         mPresenter.initPresenter(this);
 
-        NamesVo namesVo = new NamesVo("start");
-        names = namesVo.getNames();
         Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
         searchAdapter = new SearchAdapter(this, mPresenter);
         //searchAdapter.setNewData(names);

@@ -1,13 +1,15 @@
 package com.creative_webstudio.iba.datas.vos;
 
-public class CriteriaVo {
+public class CriteriaVO {
 
     private String word;
     private int offset;
     private int limit;
     private int pageNumber;
+    private long productId;
+    private boolean withOrderUnits;
 
-    public CriteriaVo() {
+    public CriteriaVO() {
     }
 
     public String getWord() {
@@ -40,5 +42,21 @@ public class CriteriaVo {
 
     public void setPageNumber(int pageNumber) {
         this.pageNumber = pageNumber;
+    }
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(long productId) {
+        this.productId = productId;
+    }
+
+    public boolean isWithOrderUnits() {
+        return withOrderUnits;
+    }
+
+    public void setWithOrderUnits(boolean withOrderUnits) {
+        this.withOrderUnits = withOrderUnits;
     }
 }

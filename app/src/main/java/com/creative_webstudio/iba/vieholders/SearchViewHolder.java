@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
-import com.creative_webstudio.iba.datas.vos.NamesVo;
 
 import org.mmtextview.components.MMTextView;
 

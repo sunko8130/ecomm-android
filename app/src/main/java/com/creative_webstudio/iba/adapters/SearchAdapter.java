@@ -10,7 +10,6 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
 import com.creative_webstudio.iba.vieholders.SearchViewHolder;
-import com.creative_webstudio.iba.datas.vos.NamesVo;
 
 public class SearchAdapter extends BaseRecyclerAdapter<SearchViewHolder, ProductVO> {
 

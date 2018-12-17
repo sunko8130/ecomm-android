@@ -1,7 +1,5 @@
 package com.creative_webstudio.iba.networks;
 
-import android.content.Context;
-
 import com.creative_webstudio.iba.utils.AppConstants;
 import com.google.gson.Gson;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -29,7 +27,7 @@ public class ServiceGenerator {
                     .build();
 
             RETROFIT = new Retrofit.Builder()
-                    .baseUrl(AppConstants.BaseProductSearchUrl)
+                    .baseUrl(AppConstants.BASE_PRODUCT_SEARCH_URL)
                     .addConverterFactory(GsonConverterFactory.create(new Gson()))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .client(okHttpClient)
