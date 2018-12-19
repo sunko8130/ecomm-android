@@ -8,18 +8,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.activities.CartActivity;
+import com.creative_webstudio.iba.activities.ProductActivity;
 import com.creative_webstudio.iba.datas.vos.CartShowVO;
 import com.creative_webstudio.iba.vieholders.BaseViewHolder;
 
 import org.mmtextview.components.MMTextView;
 
+
 import butterknife.BindView;
 
 public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder, CartShowVO> {
 
-
+    Context mContext;
     public CartAdapter(Context context) {
         super(context);
+        mContext = context;
     }
 
     @NonNull
@@ -28,7 +32,6 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
         View view = mLayoutInflator.inflate(R.layout.view_holder_cart_list, parent, false);
         return new CartViewHolder(view);
     }
-
 
     public class CartViewHolder extends BaseViewHolder<CartShowVO> {
 
@@ -41,22 +44,27 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
         @BindView(R.id.tv_price)
         MMTextView tvPrice;
 
-        @BindView(R.id.tv_quantity)
+        @BindView(R.id.tv_Count)
         MMTextView tvQuantity;
 
         @BindView(R.id.btn_delete)
         ImageView btnDelete;
 
-        public CartViewHolder(View itemView) {
+        public CartViewHolder(@NonNull View itemView) {
             super(itemView);
         }
-
 
         @Override
         public void setData(CartShowVO data) {
             tvProductName.setText(data.getProductName());
-            tvPrice.setText(data.getItemQuantity());
-            tvQuantity.setText(data.getItemQuantity());
+            tvPrice.setText("");
+//            tvQuantity.setText(data.getItemQuantity());
+            btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((CartActivity) mContext).onClickItem(1,null);
+                }
+            });
         }
 
         @Override

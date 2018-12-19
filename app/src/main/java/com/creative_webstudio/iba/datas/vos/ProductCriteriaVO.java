@@ -1,21 +1,13 @@
 package com.creative_webstudio.iba.datas.vos;
 
-public class ProductCriteriaVO extends BaseCriteriaVO{
+public class ProductCriteriaVO {
 
-
-    private long[] productId;
+    private long[] includeIds;
     private boolean withOrderUnits;
     private int pageNumber;
+    private String productCategoryId;
     private boolean withThumbnails;
     private int thumbnailType;
-
-    public long[] getProductId() {
-        return productId;
-    }
-
-    public void setProductId(long[] productId) {
-        this.productId = productId;
-    }
 
     public boolean isWithOrderUnits() {
         return withOrderUnits;
@@ -33,6 +25,14 @@ public class ProductCriteriaVO extends BaseCriteriaVO{
         this.pageNumber = pageNumber;
     }
 
+    public String getProductCategoryId() {
+        return productCategoryId;
+    }
+
+    public void setProductCategoryId(String productCategoryId) {
+        this.productCategoryId = productCategoryId;
+    }
+
     public boolean isWithThumbnails() {
         return withThumbnails;
     }
@@ -47,5 +47,13 @@ public class ProductCriteriaVO extends BaseCriteriaVO{
 
     public void setThumbnailType(int thumbnailType) {
         this.thumbnailType = thumbnailType;
+    }
+
+    public long[] getIncludeIds() {
+        return includeIds;
+    }
+
+    public void setIncludeIds(long[] includeIds) {
+        this.includeIds = includeIds;
     }
 }

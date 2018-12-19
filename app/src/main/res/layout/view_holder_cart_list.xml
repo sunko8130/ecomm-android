@@ -35,7 +35,7 @@
             android:padding="5dp"/>
 
         <org.mmtextview.components.MMTextView
-            android:id="@+id/tv_quantity"
+            android:id="@+id/tv_Count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center|top"

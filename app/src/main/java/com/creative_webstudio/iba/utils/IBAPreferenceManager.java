@@ -161,7 +161,16 @@ public class IBAPreferenceManager {
             TypeToken<List<CartVO>> token = new TypeToken<List<CartVO>>() {};
             cartList = gson.fromJson(stringList, token.getType());
         }
-        cartList.add(cartVO);
+        boolean adding =false;
+        for(CartVO cart:cartList){
+            if(cart.getProductId()==cartVO.getProductId() && cart.getUnitId()==cartVO.getUnitId()){
+                cart.setItemQuantity(cartVO.getItemQuantity());
+                adding = true;
+            }
+        }
+        if(!adding) {
+            cartList.add(cartVO);
+        }
         stringList = gson.toJson(cartList);
         toPreference("CartList", stringList);
         Toast.makeText(mContext, "This Item is add to Cart!", Toast.LENGTH_LONG).show();

@@ -6,7 +6,8 @@ public class CartShowVO {
     private int itemQuantity;
     private int thumbnailId;
     private String productName;
-    private int unitInStock;
+    private String unitShow;
+    private long pricePerUnit;
 
     public long getProductId() {
         return productId;
@@ -48,11 +49,19 @@ public class CartShowVO {
         this.productName = productName;
     }
 
-    public int getUnitInStock() {
-        return unitInStock;
+    public String getUnitShow() {
+        return unitShow;
     }
 
-    public void setUnitInStock(int unitInStock) {
-        this.unitInStock = unitInStock;
+    public void setUnitShow(String unitShow) {
+        this.unitShow = unitShow;
+    }
+
+    public long getPricePerUnit() {
+        return pricePerUnit;
+    }
+
+    public void setPricePerUnit(long pricePerUnit) {
+        this.pricePerUnit = pricePerUnit;
     }
 }

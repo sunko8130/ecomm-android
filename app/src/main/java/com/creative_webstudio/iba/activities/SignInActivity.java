@@ -67,6 +67,8 @@ public class SignInActivity extends BaseActivity implements SignInView {
                 signIn();
             }
         });
+
+        getResponse();
     }
 
     public void signIn() {
@@ -102,9 +104,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    public void getResponse(){
         mPresenter.getResponseCode().observe(this, new Observer<Integer>() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -140,6 +140,10 @@ public class SignInActivity extends BaseActivity implements SignInView {
                 }
             }
         });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
 }

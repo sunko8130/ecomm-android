@@ -119,7 +119,7 @@ public class ProductActivity extends BaseDrawerActivity {
     private IBAPreferenceManager ibaShared;
 
     //category id
-    private long categoryId = -1;
+    private int categoryId = -1;
 
     private ArrayList<CategoryVO> mCategoryList;
 
@@ -154,6 +154,9 @@ public class ProductActivity extends BaseDrawerActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                categoryId = -1;
+                checkedItem = -1;
+                btnProduct.setText(items[0]);
                 refreshData();
             }
         });
@@ -193,9 +196,7 @@ public class ProductActivity extends BaseDrawerActivity {
             builder.setPositiveButton("Ok", (dialog, which) -> {
                 btnProduct.setText(chooseItem);
                 mCurrentPage = 1;
-                if (categoryId != -1) {
-                    refreshData();
-                }
+                refreshData();
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
             AlertDialog productDialog = builder.create();
@@ -209,12 +210,14 @@ public class ProductActivity extends BaseDrawerActivity {
 
     private void refreshData() {
         mProductAdapter.clearData();
+        mIsLoading = true;
         mCurrentPage = 1;
         if (categoryId == -1) {
             getProduct(mCurrentPage, categoryId);
         } else {
-            getProduct(mCurrentPage, mCategoryList.get((int) categoryId).getId());
-//            getProduct(mCurrentPage,36);
+            mCurrentPage =35;
+         //   getProduct(mCurrentPage,mCategoryList.get(categoryId).getId());
+            getProduct(mCurrentPage,6);
         }
     }
 
@@ -249,8 +252,8 @@ public class ProductActivity extends BaseDrawerActivity {
         }
     }
 
-    private void getProduct(int page, long categoryId) {
-        mProductViewModel.getProduct(page, categoryId).observe(this, apiResponse -> {
+    private void getProduct(int page, long productCategoryId) {
+        mProductViewModel.getProduct(page, productCategoryId).observe(this, apiResponse -> {
             if (swipeRefreshLayout.isRefreshing()) {
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -259,6 +262,7 @@ public class ProductActivity extends BaseDrawerActivity {
                 if (mCurrentPage == 1) {
                     expand();
                 }
+                categoryId = (int) productCategoryId;
                 mCurrentPage++;
                 mIsLoading = false;
                 mProductAdapter.appendNewData(apiResponse.getData().getProductVOList());
