@@ -215,9 +215,9 @@ public class ProductActivity extends BaseDrawerActivity {
         if (categoryId == -1) {
             getProduct(mCurrentPage, categoryId);
         } else {
-            mCurrentPage =35;
-         //   getProduct(mCurrentPage,mCategoryList.get(categoryId).getId());
-            getProduct(mCurrentPage,6);
+//            mCurrentPage =35;
+            getProduct(mCurrentPage,mCategoryList.get(categoryId).getId());
+//            getProduct(mCurrentPage,6);
         }
     }
 
@@ -339,7 +339,7 @@ public class ProductActivity extends BaseDrawerActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_search) {
-            //ibaShared.removePreference("CartList");
+            ibaShared.removePreference("CartList");
             startActivity(ProductSearchActivity.newIntent(this));
             return true;
         } else if (item.getItemId() == R.id.menu_cart) {
@@ -382,7 +382,7 @@ public class ProductActivity extends BaseDrawerActivity {
         if (ibaShared.getItemsFromCart() != null) {
             cartItems = 0;
             for (CartVO cartVO : ibaShared.getItemsFromCart()) {
-                cartItems += cartVO.getItemQuantity();
+                cartItems += cartVO.getQuantity();
             }
 
         } else {

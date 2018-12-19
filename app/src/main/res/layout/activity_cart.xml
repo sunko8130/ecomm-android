@@ -138,10 +138,12 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btnOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/small_rounded_indian_red_bg"
-        android:text="@string/check_out"
+        android:text="Order Now"
+        android:textAllCaps="false"
         android:textColor="@color/backgroundColor"
         app:layout_constraintTop_toBottomOf="@id/guideBottomTop" />
 

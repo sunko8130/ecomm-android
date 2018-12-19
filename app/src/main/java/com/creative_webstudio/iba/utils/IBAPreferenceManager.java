@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.creative_webstudio.iba.BuildConfig;
 import com.creative_webstudio.iba.datas.vos.CartVO;
-import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -163,8 +162,8 @@ public class IBAPreferenceManager {
         }
         boolean adding =false;
         for(CartVO cart:cartList){
-            if(cart.getProductId()==cartVO.getProductId() && cart.getUnitId()==cartVO.getUnitId()){
-                cart.setItemQuantity(cartVO.getItemQuantity());
+            if(cart.getProductId()==cartVO.getProductId() && cart.getOrderUnitId()==cartVO.getOrderUnitId()){
+                cart.setQuantity(cart.getQuantity()+cartVO.getQuantity());
                 adding = true;
             }
         }

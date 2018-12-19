@@ -31,16 +31,26 @@ public class ProductViewModel extends AndroidViewModel {
         super(application);
     }
 
+    public MutableLiveData<ApiResponse<ProductResponse>> getProduct(int page) {
+        return getProduct(page, -1);
+    }
+
+    /**
+     * @param categoryId The category id or -1 to ignore to get all products.
+     */
     public MutableLiveData<ApiResponse<ProductResponse>> getProduct(int page, long categoryId) {
         ProductCriteriaVO criteriaVO = new ProductCriteriaVO();
-        if(categoryId==-1)
-        {
+        if(categoryId == -1) {
             criteriaVO.setPageNumber(page);
             criteriaVO.setWithOrderUnits(true);
             criteriaVO.setProductCategoryId(null);
+            criteriaVO.setThumbnailType(1);
+            criteriaVO.setWithThumbnails(true);
         }else {
             criteriaVO.setPageNumber(page);
             criteriaVO.setWithOrderUnits(true);
+            criteriaVO.setThumbnailType(1);
+            criteriaVO.setWithThumbnails(true);
             criteriaVO.setProductCategoryId(String.valueOf(categoryId));
         }
         MutableLiveData<ApiResponse<ProductResponse>> result = new MutableLiveData<>();

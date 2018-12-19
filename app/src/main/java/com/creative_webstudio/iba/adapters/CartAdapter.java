@@ -57,8 +57,8 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
         @Override
         public void setData(CartShowVO data) {
             tvProductName.setText(data.getProductName());
-            tvPrice.setText("");
-//            tvQuantity.setText(data.getItemQuantity());
+            tvPrice.setText(data.getPricePerUnit()+" MMK");
+            tvQuantity.setText(data.getItemQuantity()+" "+data.getUnitShow());
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

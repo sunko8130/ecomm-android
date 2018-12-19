@@ -1,6 +1,5 @@
 package com.creative_webstudio.iba.activities;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -28,7 +27,6 @@ import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.SpinnerVO;
 import com.creative_webstudio.iba.mvp.presenters.ProductDetailsPresenter;
-import com.creative_webstudio.iba.mvp.views.ProductDetailView;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
 import com.google.gson.Gson;
@@ -143,7 +141,7 @@ public class ProductDetailsActivity extends BaseActivity{
             }
             orderUnitVOList = productVO.getOrderUnits();
             tvPrice.setText(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit()) + " MMK");
-            GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken());
+            GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(),productVO.getThumbnailIdsList().get(0));
             Glide.with(this).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(ivDetailTopImage);
             setUpSpinner();
             btnAddToCart.setOnClickListener(new View.OnClickListener() {
@@ -158,8 +156,8 @@ public class ProductDetailsActivity extends BaseActivity{
     private void addToCart() {
         cartVO = new CartVO();
         cartVO.setProductId(productVO.getId());
-        cartVO.setUnitId(orderUnitVOList.get(selectedItem).getId());
-        cartVO.setItemQuantity(quantity);
+        cartVO.setOrderUnitId(orderUnitVOList.get(selectedItem).getId());
+        cartVO.setQuantity(quantity);
         ibaShared.addItemToCart(cartVO);
         onResume();
     }
@@ -260,7 +258,7 @@ public class ProductDetailsActivity extends BaseActivity{
         if (ibaShared.getItemsFromCart() != null) {
             cartItems = 0;
             for (CartVO cartVO : ibaShared.getItemsFromCart()) {
-                cartItems += cartVO.getItemQuantity();
+                cartItems += cartVO.getQuantity();
             }
 
         } else {
