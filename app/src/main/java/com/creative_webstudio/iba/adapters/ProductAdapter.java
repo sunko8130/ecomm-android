@@ -101,4 +101,5 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
         }
     }
 
+
 }

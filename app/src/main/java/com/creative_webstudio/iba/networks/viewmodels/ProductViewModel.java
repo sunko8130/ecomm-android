@@ -1,8 +1,10 @@
 package com.creative_webstudio.iba.networks.viewmodels;
 
+import android.accounts.NetworkErrorException;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
+import android.util.Log;
 
 import com.creative_webstudio.iba.datas.ApiResponse;
 import com.creative_webstudio.iba.datas.vos.CategoryCriteriaVO;
@@ -14,10 +16,14 @@ import com.creative_webstudio.iba.networks.IbaAPI;
 import com.creative_webstudio.iba.networks.ServiceGenerator;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
+import java.io.IOException;
 import java.util.List;
 
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 public class ProductViewModel extends AndroidViewModel {
 
@@ -62,7 +68,7 @@ public class ProductViewModel extends AndroidViewModel {
         return result;
     }
 
-    public MutableLiveData<ApiResponse<List<CategoryVO>>> getCategory(){
+    public MutableLiveData<ApiResponse<List<CategoryVO>>> getCategory() {
         CategoryCriteriaVO criteriaVO = new CategoryCriteriaVO();
         criteriaVO.setType("MAIN");
         MutableLiveData<ApiResponse<List<CategoryVO>>> result = new MutableLiveData<>();
@@ -75,8 +81,8 @@ public class ProductViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    List<CategoryVO> body=response.body();
-                    if (response.isSuccessful() && body != null && body!= null && !body.isEmpty()) {
+                    List<CategoryVO> body = response.body();
+                    if (response.isSuccessful() && body != null && body != null && !body.isEmpty()) {
                         apiResponse.setData(body);
                     } else {
                         apiResponse.setError(new ApiException(response.code()));
@@ -88,4 +94,6 @@ public class ProductViewModel extends AndroidViewModel {
                 });
         return result;
     }
+
+
 }

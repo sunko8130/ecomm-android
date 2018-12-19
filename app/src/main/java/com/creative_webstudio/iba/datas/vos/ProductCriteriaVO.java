@@ -8,6 +8,15 @@ public class ProductCriteriaVO {
     private String productCategoryId;
     private boolean withThumbnails;
     private int thumbnailType;
+    private String word;
+
+    public long[] getIncludeIds() {
+        return includeIds;
+    }
+
+    public void setIncludeIds(long[] includeIds) {
+        this.includeIds = includeIds;
+    }
 
     public boolean isWithOrderUnits() {
         return withOrderUnits;
@@ -49,11 +58,11 @@ public class ProductCriteriaVO {
         this.thumbnailType = thumbnailType;
     }
 
-    public long[] getIncludeIds() {
-        return includeIds;
+    public String getWord() {
+        return word;
     }
 
-    public void setIncludeIds(long[] includeIds) {
-        this.includeIds = includeIds;
+    public void setWord(String word) {
+        this.word = word;
     }
 }

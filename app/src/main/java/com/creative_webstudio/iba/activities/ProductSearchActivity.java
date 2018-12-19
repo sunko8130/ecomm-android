@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,9 +23,15 @@ import android.widget.Toast;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.SearchAdapter;
 import com.creative_webstudio.iba.datas.models.IbaModel;
+import com.creative_webstudio.iba.datas.vos.CartVO;
+import com.creative_webstudio.iba.datas.vos.CriteriaVO;
+import com.creative_webstudio.iba.datas.vos.ProductCriteriaVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
+import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.mvp.presenters.ProductSearchPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductSearchView;
+import com.creative_webstudio.iba.networks.viewmodels.ProductSearchViewModel;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +40,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ProductSearchActivity extends AppCompatActivity implements ProductSearchView, SearchView.OnQueryTextListener {
+public class ProductSearchActivity extends BaseActivity implements ProductSearchView, SearchView.OnQueryTextListener {
 
     @BindView(R.id.search_product_toolbar)
     Toolbar toolbar;
@@ -46,8 +53,9 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
 
     SearchAdapter searchAdapter;
     private ProductSearchPresenter mPresenter;
-
     private List<ProductVO> mProductVOS;
+    private ProductSearchViewModel mProductSearchViewModel;
+    private ArrayList<ProductVO> mProductList;
 
     public static Intent newIntent(Context context) {
         return new Intent(context, ProductSearchActivity.class);
@@ -65,10 +73,13 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
         mPresenter.initPresenter(this);
 
         Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
-        searchAdapter = new SearchAdapter(this, mPresenter);
+        searchAdapter = new SearchAdapter(this);
         //searchAdapter.setNewData(names);
         rvSearch.setAdapter(searchAdapter);
         rvSearch.setLayoutManager(new LinearLayoutManager(this));
+
+        mProductSearchViewModel = ViewModelProviders.of(this).get(ProductSearchViewModel.class);
+        mProductList = new ArrayList<>();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -106,30 +117,60 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
+        Toast.makeText(getApplicationContext(), query, Toast.LENGTH_LONG).show();
+        String userInput = query.toLowerCase();
+        // mPresenter.onTapSearch(userInput);
+        ProductCriteriaVO criteriaVO = new ProductCriteriaVO();
+        criteriaVO.setWord(userInput);
+        criteriaVO.setPageNumber(0);
+        criteriaVO.setWithOrderUnits(true);
+        criteriaVO.setProductCategoryId(null);
+        getProductSearch(criteriaVO);
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-
-        String userInput = newText.toLowerCase();
-        mPresenter.onTapSearch(userInput);
-        mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
-            @Override
-            public void onChanged(@Nullable List<ProductVO> productVOS) {
-                searchAdapter.setNewData(productVOS);
-                mProductVOS = productVOS;
-            }
-        });
+//        mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
+//            @Override
+//            public void onChanged(@Nullable List<ProductVO> productVOS) {
+//                searchAdapter.setNewData(productVOS);
+//                mProductVOS = productVOS;
+//            }
+//        });
         List<ProductVO> productVo = new ArrayList<>();
-        for (ProductVO product : mProductVOS) {
+        for (ProductVO product : mProductList) {
             if (product.getProductName().toLowerCase().contains(userInput)) {
                 productVo.add(product);
             }
         }
 
-        searchAdapter.setNewData(productVo);
+        searchAdapter.appendNewData(productVo);
         return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+
+//        String userInput = newText.toLowerCase();
+//        // mPresenter.onTapSearch(userInput);
+//        ProductCriteriaVO criteriaVO = new ProductCriteriaVO();
+//        criteriaVO.setWord(userInput);
+//        criteriaVO.setPageNumber(0);
+//        getProductSearch(criteriaVO);
+//        searchAdapter.setNewData(mProductList);
+////        mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
+////            @Override
+////            public void onChanged(@Nullable List<ProductVO> productVOS) {
+////                searchAdapter.setNewData(productVOS);
+////                mProductVOS = productVOS;
+////            }
+////        });
+//        List<ProductVO> productVo = new ArrayList<>();
+//        for (ProductVO product : mProductList) {
+//            if (product.getProductName().toLowerCase().contains(userInput)) {
+//                productVo.add(product);
+//            }
+//        }
+//
+//        searchAdapter.setNewData(productVo);
+        return false;
     }
 
     @Override
@@ -145,5 +186,34 @@ public class ProductSearchActivity extends AppCompatActivity implements ProductS
     public void onBackPressed() {
         super.onBackPressed();
 //       startActivity(ProductActivity.newIntent(this));
+    }
+
+    public void getProductSearch(ProductCriteriaVO criteriaVO) {
+        mProductSearchViewModel.getProductSearchList(criteriaVO).observe(this, apiResponse -> {
+            if (apiResponse.getData() != null) {
+                mProductList = (ArrayList<ProductVO>) apiResponse.getData();
+                searchAdapter.setNewData(apiResponse.getData());
+            } else {
+                if (apiResponse.getError() instanceof ApiException) {
+                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                    if (errorCode == 401) {
+                        super.refreshAccessToken();
+                    } else if (errorCode == 204) {
+                        // TODO: Server response successful but there is no data (Empty response).
+                    } else if (errorCode == 200) {
+                        // TODO: Reach End of List
+                        Snackbar.make(rvSearch, "End of Product List", Snackbar.LENGTH_LONG).show();
+                    }
+                } else {
+                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
+                }
+            }
+        });
+    }
+
+    public void onItemClick(ProductVO data) {
+        Gson gson = new Gson();
+        String json = gson.toJson(data);
+        startActivity(ProductDetailsActivity.newIntent(this, "ProductSearch", json));
     }
 }
