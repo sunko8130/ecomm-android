@@ -5,10 +5,18 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.creative_webstudio.iba.BuildConfig;
+import com.creative_webstudio.iba.datas.vos.CartVO;
+import com.creative_webstudio.iba.datas.vos.ProductVO;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
 public class IBAPreferenceManager {
 
     static final String PREFS_NAME = "IBAPreference";
@@ -142,5 +150,34 @@ public class IBAPreferenceManager {
             }
         }
         return true;
+    }
+
+    public void addItemToCart(CartVO cartVO) {
+        String stringList;
+        ArrayList<CartVO> cartList = new ArrayList<>();
+        Gson gson = new Gson();
+        if (fromPreference("CartList", null) != null) {
+            stringList = fromPreference("CartList", null);
+            TypeToken<List<CartVO>> token = new TypeToken<List<CartVO>>() {};
+            cartList = gson.fromJson(stringList, token.getType());
+        }
+        cartList.add(cartVO);
+        stringList = gson.toJson(cartList);
+        toPreference("CartList", stringList);
+        Toast.makeText(mContext, "This Item is add to Cart!", Toast.LENGTH_LONG).show();
+    }
+
+    public List<CartVO> getItemsFromCart() {
+        String stringList;
+        ArrayList<CartVO> cartList = new ArrayList<>();
+        Gson gson = new Gson();
+        stringList = fromPreference("CartList", null);
+        if (stringList != null) {
+            TypeToken<List<CartVO>> token = new TypeToken<List<CartVO>>() {};
+            cartList = gson.fromJson(stringList, token.getType());
+            return cartList;
+        } else {
+            return null;
+        }
     }
 }

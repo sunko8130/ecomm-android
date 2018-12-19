@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -21,7 +20,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.MyOnPageChangeListener;
@@ -33,16 +31,21 @@ import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
 
+import com.creative_webstudio.iba.datas.vos.CartVO;
+import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.fragments.FragmentOne;
 import com.creative_webstudio.iba.fragments.FragmentTwo;
 import com.creative_webstudio.iba.networks.viewmodels.ProductViewModel;
+import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import org.mmtextview.components.MMTextView;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,42 +54,52 @@ import retrofit2.Response;
 
 public class ProductActivity extends BaseDrawerActivity {
 
-    @Nullable @BindView(R.id.rv_product)
+    @Nullable
+    @BindView(R.id.rv_product)
     SmartRecyclerView rvProduct;
 
-    @Nullable @BindView(R.id.btn_product)
+    @Nullable
+    @BindView(R.id.btn_product)
     Button btnProduct;
 
-    @Nullable @BindView(R.id.view_pager)
+    @Nullable
+    @BindView(R.id.view_pager)
     AutoScrollViewPager viewPager;
 
-    @Nullable @BindView(R.id.appbar)
+    @Nullable
+    @BindView(R.id.appbar)
     AppBarLayout appBar;
 
-    @Nullable @BindView(R.id.ll)
+    @Nullable
+    @BindView(R.id.ll)
     RelativeLayout ll;
 
-    @Nullable @BindView(R.id.swipe_refresh_layout)
+    @Nullable
+    @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
     // Load more animation
-    @Nullable @BindView(R.id.aniLoadMore)
+    @Nullable
+    @BindView(R.id.aniLoadMore)
     LottieAnimationView aniLoadMore;
 
     private SmartScrollListener mSmartScrollListener;
 
     //empty view
 
-    @Nullable @BindView(R.id.vp_empty_product)
+    @Nullable
+    @BindView(R.id.vp_empty_product)
     EmptyViewPod vpEmpty;
 
 
-    @Nullable @BindView(R.id.btn_refresh_empty)
+    @Nullable
+    @BindView(R.id.btn_refresh_empty)
     TextView tvEmpty;
 
     //no more Items
 
-    @Nullable @BindView(R.id.tvNoMoreData)
+    @Nullable
+    @BindView(R.id.tvNoMoreData)
     MMTextView tvNoMoreData;
 
     private ProductAdapter mProductAdapter;
@@ -96,8 +109,22 @@ public class ProductActivity extends BaseDrawerActivity {
     private boolean mIsLoading;
     private boolean mIsNoMoreData;
 
-    private String[] items = {"All Products", "Sport Drink", "Cold Drinks", "Coffee"};
+    private String[] items = {"All Product"};
     private String chooseItem;
+    private int checkedItem = -1;
+
+    //cart items
+    private int cartItems = 0;
+
+    private IBAPreferenceManager ibaShared;
+
+    //category id
+    private long categoryId = -1;
+
+    private ArrayList<CategoryVO> mCategoryList;
+
+    private ProductViewModel mProductViewModel;
+
 
     public static Intent newIntent(Context context) {
         return new Intent(context, ProductActivity.class);
@@ -108,13 +135,16 @@ public class ProductActivity extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
         setMyView(R.layout.activity_product);
         ButterKnife.bind(this, this);
-
+        ibaShared = new IBAPreferenceManager(this);
         rvProduct.setEmptyView(vpEmpty);
         mProductAdapter = new ProductAdapter(this);
+        mCategoryList = new ArrayList<>();
         // TODO: specify the span count in res directory for phone and tablet size.
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvProduct.setLayoutManager(layoutManager);
         rvProduct.setAdapter(mProductAdapter);
+        mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
+        getCategory();
         if (mProductAdapter.getItemCount() == 0) {
             appBar.setExpanded(false);
         } else {
@@ -124,29 +154,15 @@ public class ProductActivity extends BaseDrawerActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mProductAdapter.clearData();
-                mCurrentPage=1;
-                getProduct(mCurrentPage);
+                refreshData();
             }
         });
 
         tvEmpty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getProduct(mCurrentPage);
+                getProduct(mCurrentPage, categoryId);
             }
-        });
-
-
-        btnProduct.setOnClickListener(v -> {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(ProductActivity.this);
-            builder.setTitle("Filter by");
-            builder.setSingleChoiceItems(items, -1, (dialog, item) -> chooseItem = items[item]);
-            builder.setPositiveButton("Ok", (dialog, which) -> btnProduct.setText(chooseItem));
-            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-            AlertDialog productDialog = builder.create();
-            productDialog.show();
-
         });
 
         rvProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -156,7 +172,7 @@ public class ProductActivity extends BaseDrawerActivity {
                 if (!mIsLoading && !mIsNoMoreData && layoutManager.findLastVisibleItemPosition() == mProductAdapter.getItemCount() - 1) {
                     mIsLoading = true;
                     aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
-                    getProduct(mCurrentPage);
+                    getProduct(mCurrentPage, categoryId);
 //                    new Handler().postDelayed(new Runnable() {
 //                        @Override
 //                        public void run() {
@@ -167,19 +183,80 @@ public class ProductActivity extends BaseDrawerActivity {
             }
         });
 
+        btnProduct.setOnClickListener(v -> {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ProductActivity.this);
+            builder.setTitle("Filter by");
+            builder.setSingleChoiceItems(items, checkedItem, (dialog, item) -> {
+                chooseItem = items[item];
+                categoryId = item - 1;
+            });
+            builder.setPositiveButton("Ok", (dialog, which) -> {
+                btnProduct.setText(chooseItem);
+                mCurrentPage = 1;
+                if (categoryId != -1) {
+                    refreshData();
+                }
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+            AlertDialog productDialog = builder.create();
+            productDialog.show();
+
+        });
+
         setupViewPager();
-        getProduct(++mCurrentPage);
+        getProduct(++mCurrentPage, categoryId);
     }
 
-    private void getProduct(int page) {
-        ProductViewModel viewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
-        viewModel.getProduct(page).observe(this, apiResponse -> {
-            if(swipeRefreshLayout.isRefreshing()){
+    private void refreshData() {
+        mProductAdapter.clearData();
+        mCurrentPage = 1;
+        if (categoryId == -1) {
+            getProduct(mCurrentPage, categoryId);
+        } else {
+            getProduct(mCurrentPage, mCategoryList.get((int) categoryId).getId());
+//            getProduct(mCurrentPage,36);
+        }
+    }
+
+    private void getCategory() {
+        mProductViewModel.getCategory().observe(this, apiResponse -> {
+            if (apiResponse.getData() != null) {
+                mCategoryList = (ArrayList<CategoryVO>) apiResponse.getData();
+                setupCategory();
+            } else {
+                if (apiResponse.getError() instanceof ApiException) {
+                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                    if (errorCode == 401) {
+                        super.refreshAccessToken();
+                    } else if (errorCode == 204) {
+                        // TODO: Server response successful but there is no data (Empty response).
+                    } else if (errorCode == 200) {
+                        // TODO: Reach End of List
+                        Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
+                    }
+                } else {
+                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
+                }
+            }
+        });
+    }
+
+    private void setupCategory() {
+        items = new String[mCategoryList.size() + 1];
+        items[0] = "All Product";
+        for (int i = 0; i < mCategoryList.size(); i++) {
+            items[i + 1] = mCategoryList.get(i).getName();
+        }
+    }
+
+    private void getProduct(int page, long categoryId) {
+        mProductViewModel.getProduct(page, categoryId).observe(this, apiResponse -> {
+            if (swipeRefreshLayout.isRefreshing()) {
                 swipeRefreshLayout.setRefreshing(false);
             }
             aniLoadMore.setVisibility(View.GONE);
             if (apiResponse.getData() != null) {
-                if(mCurrentPage==1){
+                if (mCurrentPage == 1) {
                     expand();
                 }
                 mCurrentPage++;
@@ -192,9 +269,9 @@ public class ProductActivity extends BaseDrawerActivity {
                         super.refreshAccessToken();
                     } else if (errorCode == 204) {
                         // TODO: Server response successful but there is no data (Empty response).
-                    }else if(errorCode == 200){
+                    } else if (errorCode == 200) {
                         // TODO: Reach End of List
-                        Snackbar.make(rvProduct,"End of Product List",Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
                     }
                 } else {
                     // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
@@ -205,7 +282,7 @@ public class ProductActivity extends BaseDrawerActivity {
 
     @Override
     public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
-        getProduct(mCurrentPage);
+        getProduct(mCurrentPage, categoryId);
     }
 
     @Override
@@ -232,11 +309,12 @@ public class ProductActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        setCount(this, "99");
+        setCount(this, cartItems);
         return true;
     }
 
-    private void setCount(Context context, String count) {
+
+    private void setCount(Context context, int count) {
         MenuItem menuItem = toolbar.getMenu().findItem(R.id.menu_cart);
         LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
         CountDrawable badge;
@@ -249,7 +327,7 @@ public class ProductActivity extends BaseDrawerActivity {
             badge = new CountDrawable(context);
         }
 
-        badge.setCount(count);
+        badge.setCount(String.valueOf(count));
         icon.mutate();
         icon.setDrawableByLayerId(R.id.ic_group_count, badge);
     }
@@ -257,6 +335,7 @@ public class ProductActivity extends BaseDrawerActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_search) {
+            ibaShared.removePreference("CartList");
             return true;
         } else if (item.getItemId() == R.id.menu_cart) {
             startActivity(CartActivity.newIntent(this));
@@ -294,17 +373,28 @@ public class ProductActivity extends BaseDrawerActivity {
         super.onResume();
         // start auto scroll when onResume
         viewPager.startAutoScroll();
+        //load cart items
+        if (ibaShared.getItemsFromCart() != null) {
+            cartItems = 0;
+            for (CartVO cartVO : ibaShared.getItemsFromCart()) {
+                cartItems += cartVO.getItemQuantity();
+            }
+
+        } else {
+            cartItems = 0;
+        }
+        invalidateOptionsMenu();
     }
 
     public void onItemClick(ProductVO data) {
         Gson gson = new Gson();
         String json = gson.toJson(data);
-        startActivity(ProductDetailsActivity.newIntent(this, "Product",json));
+        startActivity(ProductDetailsActivity.newIntent(this, "Product", json));
     }
 
-    public void expand(){
+    public void expand() {
         final float scale = getResources().getDisplayMetrics().density;
-        int height = (int)(300*scale);
+        int height = (int) (300 * scale);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
         params.height = height; // HEIGHT
         appBar.setLayoutParams(params);

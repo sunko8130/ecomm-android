@@ -1,46 +1,69 @@
 package com.creative_webstudio.iba.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.creative_webstudio.iba.R;
-import com.creative_webstudio.iba.delegates.CartDelegate;
-import com.creative_webstudio.iba.vieholders.CartViewHolder;
+import com.creative_webstudio.iba.datas.vos.CartShowVO;
+import com.creative_webstudio.iba.vieholders.BaseViewHolder;
 
-import java.util.List;
+import org.mmtextview.components.MMTextView;
 
-public class CartAdapter extends RecyclerView.Adapter<CartViewHolder> {
+import butterknife.BindView;
 
-    private CartDelegate mproductDelegate;
+public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder, CartShowVO> {
 
 
-    public CartAdapter(List<String> names,CartDelegate productDelegate) {
-        this.mproductDelegate = productDelegate;
+    public CartAdapter(Context context) {
+        super(context);
     }
 
     @NonNull
     @Override
-    public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.view_holder_cart_list, parent, false);
-        return new CartViewHolder(view, mproductDelegate);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull CartViewHolder viewHolder, int i) {
-        viewHolder.setNames(null);
-    }
-
-    @Override
-    public int getItemCount() {
-        return 0;
+    public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = mLayoutInflator.inflate(R.layout.view_holder_cart_list, parent, false);
+        return new CartViewHolder(view);
     }
 
 
-    public void updateProductList(List<String> newList) {
-        notifyDataSetChanged();
+    public class CartViewHolder extends BaseViewHolder<CartShowVO> {
+
+        @BindView(R.id.tv_product_name)
+        MMTextView tvProductName;
+
+        @BindView(R.id.iv_product)
+        ImageView ivProduct;
+
+        @BindView(R.id.tv_price)
+        MMTextView tvPrice;
+
+        @BindView(R.id.tv_quantity)
+        MMTextView tvQuantity;
+
+        @BindView(R.id.btn_delete)
+        ImageView btnDelete;
+
+        public CartViewHolder(View itemView) {
+            super(itemView);
+        }
+
+
+        @Override
+        public void setData(CartShowVO data) {
+            tvProductName.setText(data.getProductName());
+            tvPrice.setText(data.getItemQuantity());
+            tvQuantity.setText(data.getItemQuantity());
+        }
+
+        @Override
+        public void onClick(View view) {
+
+        }
     }
 }
+
+

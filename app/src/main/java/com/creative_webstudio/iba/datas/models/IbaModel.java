@@ -6,9 +6,7 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.creative_webstudio.iba.datas.vos.CriteriaVO;
-import com.creative_webstudio.iba.datas.vos.HCInfoVO;
-import com.creative_webstudio.iba.datas.vos.ProductResponse;
+import com.creative_webstudio.iba.datas.vos.ProductCriteriaVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.enents.TokenEvent;
@@ -30,12 +28,10 @@ import retrofit2.Response;
 
 public class IbaModel extends BaseModel {
     public static IbaModel objInstance;
-    public List<HCInfoVO> infoVOList;
     IBAPreferenceManager ibaPreference;
 
     protected IbaModel(Context context) {
         super(context);
-        infoVOList = new ArrayList<>();
         ibaPreference = new IBAPreferenceManager(context);
 
     }
@@ -163,7 +159,7 @@ public class IbaModel extends BaseModel {
                 });
     }
 
-    public void getProductSearchList(final CriteriaVO criteriaVO, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
+    public void getProductSearchList(final ProductCriteriaVO criteriaVO, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
         String base = ibaPreference.fromPreference("AccessToken", "");
         String userAuth = "Bearer " + base;
         theApiProductSearch.getProductSearch(userAuth, criteriaVO)
@@ -215,50 +211,50 @@ public class IbaModel extends BaseModel {
     }
 
 
-    public void getProduct(CriteriaVO criteriaVO, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
-        String base = ibaPreference.fromPreference("AccessToken", "");
-        String auth = "Bearer " + base;
-        theApiProductSearch.getProductPaging(auth, criteriaVO)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<ProductResponse>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Response<ProductResponse> response) {
-                        if (response.code() == 401) {
-                            // Access token expire.
-                            getTokenByRefresh();
-                        } else if (response.code() == 200) {
-                            mProductList.setValue(response.body().getProductVOList());
-                        } else if (response.code() == 204) {
-                            // Response has no data
-                            responseCode.setValue(response.code());
-                        } else {
-                            responseCode.setValue(300);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (e instanceof IOException) {
-                            responseCode.setValue(666);
-                        } else if (e instanceof NetworkErrorException) {
-                            responseCode.setValue(777);
-                        } else {
-                            responseCode.setValue(888);
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
+//    public void getProduct(CriteriaVO criteriaVO, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
+//        String base = ibaPreference.fromPreference("AccessToken", "");
+//        String auth = "Bearer " + base;
+//        theApiProductSearch.getProductPaging(auth, criteriaVO)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<Response<ProductResponse>>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Response<ProductResponse> response) {
+//                        if (response.code() == 401) {
+//                            // Access token expire.
+//                            getTokenByRefresh();
+//                        } else if (response.code() == 200) {
+//                            mProductList.setValue(response.body().getProductVOList());
+//                        } else if (response.code() == 204) {
+//                            // Response has no data
+//                            responseCode.setValue(response.code());
+//                        } else {
+//                            responseCode.setValue(300);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        if (e instanceof IOException) {
+//                            responseCode.setValue(666);
+//                        } else if (e instanceof NetworkErrorException) {
+//                            responseCode.setValue(777);
+//                        } else {
+//                            responseCode.setValue(888);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+//    }
 
 //    public void loadHCInfo(final MutableLiveData<List<HCInfoVO>> mHCInfoList,
 //                           final MutableLiveData<String> error) {

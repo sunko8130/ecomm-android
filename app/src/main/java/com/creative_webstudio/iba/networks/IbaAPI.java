@@ -1,9 +1,14 @@
 package com.creative_webstudio.iba.networks;
 
+import com.creative_webstudio.iba.datas.vos.BaseCriteriaVO;
+import com.creative_webstudio.iba.datas.vos.CategoryCriteriaVO;
+import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.datas.vos.CriteriaVO;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
+import com.creative_webstudio.iba.datas.vos.ProductCriteriaVO;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
+import com.creative_webstudio.iba.datas.vos.ProductWithCategoryCriteriaVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 
 import java.util.List;
@@ -41,19 +46,23 @@ public interface IbaAPI {
     @POST("product/search/list")
     Observable<Response<List<ProductVO>>> getProductSearch(
             @Header("Authorization") String authHeader,
-            @Body CriteriaVO criteriaVO);
+            @Body ProductCriteriaVO criteriaVO);
 
-    @POST("product/search/paging")
-    Observable<Response<ProductResponse>> getProductPaging(
-            @Header("Authorization") String authHeader,
-            @Body CriteriaVO criteriaVO);
+//    @POST("product/search/paging")
+//    Observable<Response<ProductResponse>> getProductPaging(
+//            @Header("Authorization") String authHeader,
+//            @Body CriteriaVO criteriaVO);
 
     @POST("product/search/paging")
     Observable<Response<ProductResponse>> getProduct(@Header("Authorization") String authHeader,
-                                                     @Body CriteriaVO criteriaVO);
+                                                     @Body ProductWithCategoryCriteriaVO criteriaVO);
 
 //    @POST("order_unit/search/list")
 //    Observable<Response<List<OrderUnitVO>>> getOrderUnit(@Header("Authorization") String authHeader,
 //                                                         @Body CriteriaVO criteriaVO);
+
+    @POST("product_category/search/list")
+    Observable<Response<List<CategoryVO>>> getCategory(@Header("Authorization") String authHeader,
+                                                       @Body CategoryCriteriaVO criteriaVO);
 
 }

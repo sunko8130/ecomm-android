@@ -1,6 +1,5 @@
 package com.creative_webstudio.iba.activities;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +11,9 @@ import android.view.MenuItem;
 
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.CartAdapter;
-import com.creative_webstudio.iba.mvp.presenters.CartPresenter;
-import com.creative_webstudio.iba.mvp.views.CartView;
+import com.creative_webstudio.iba.datas.vos.CartVO;
+import com.creative_webstudio.iba.datas.vos.CriteriaVO;
+import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +22,15 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CartActivity extends BaseActivity implements CartView {
+public class CartActivity extends BaseActivity {
     @Nullable
-    @BindView(R.id.rv_card_list)
-    RecyclerView rvCard;
-    private CartPresenter mPresenter;
+    @BindView(R.id.rv_cart_list)
+    RecyclerView rvCart;
+
+    private CartAdapter mCartAdapter;
+    private List<CartVO> cartVOList;
+    private IBAPreferenceManager ibaShared;
+    private CriteriaVO criteriaVO;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, CartActivity.class);
@@ -39,18 +43,17 @@ public class CartActivity extends BaseActivity implements CartView {
         setContentView(R.layout.activity_cart);
         ButterKnife.bind(this, this);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
-        mPresenter = ViewModelProviders.of(this).get(CartPresenter.class);
-        mPresenter.initPresenter(this);
-//        CartAdapter cartAdapter = new CartAdapter(names, mPresenter);
-//        rvCard.setAdapter(cartAdapter);
-        rvCard.setLayoutManager(new LinearLayoutManager(this));
+        ibaShared = new IBAPreferenceManager(this);
+        mCartAdapter= new CartAdapter(this);
+        rvCart.setAdapter(mCartAdapter);
+        rvCart.setLayoutManager(new LinearLayoutManager(this));
+        if(ibaShared.getItemsFromCart()!=null){
+            cartVOList=ibaShared.getItemsFromCart();
+        }else {
+            cartVOList = new ArrayList<>();
+        }
     }
 
-    @Override
-    public void onTapView() {
-        startActivity(ProductDetailsActivity.newIntent(this, "Cart"));
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

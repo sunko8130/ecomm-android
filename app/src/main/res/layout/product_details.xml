@@ -228,6 +228,7 @@
     </android.support.v4.widget.NestedScrollView>
 
     <Button
+        android:id="@+id/btn_addToCart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

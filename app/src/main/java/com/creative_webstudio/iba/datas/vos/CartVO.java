@@ -1,26 +1,26 @@
 package com.creative_webstudio.iba.datas.vos;
 
 public class CartVO {
-    private int productId;
-    private int unitId;
+    private long productId;
+    private long unitId;
     private int itemQuantity;
 
     public CartVO() {
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(long productId) {
         this.productId = productId;
     }
 
-    public int getUnitId() {
+    public long getUnitId() {
         return unitId;
     }
 
-    public void setUnitId(int unitId) {
+    public void setUnitId(long unitId) {
         this.unitId = unitId;
     }
 

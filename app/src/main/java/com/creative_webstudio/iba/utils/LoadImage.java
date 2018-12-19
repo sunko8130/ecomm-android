@@ -27,34 +27,8 @@ public class LoadImage {
                 .error(R.drawable.coco_coffee);
     }
 
+
+
 }
-//        new AsyncTask<Void, Void, Void>() {
-//            @Override
-//            protected Void doInBackground(Void... params) {
-////                Looper.prepare();
-//                try {
-//                    bitmap = Glide
-//                            .with(SplashActivity.this)
-//                            .asBitmap()
-//                            .apply(options)
-//                            .load(glideUrl)
-//                            .submit()
-//                            .get();
-//                } catch (final ExecutionException e) {
-//                    Log.e("ImageError", e.getMessage());
-//                } catch (final InterruptedException e) {
-//                    Log.e("ImageError", e.getMessage());
-//                }
-//                return null;
-//            }
-//            @Override
-//            protected void onPostExecute(Void dummy) {
-//                if (null != bitmap) {
-//                    // The full bitmap should be available here
-//                    ivSplash.setImageBitmap(bitmap);
-//                    Log.d("ImageError", "Image loaded");
-//                };
-//            }
-//        }.execute();
-//    }
+
 
