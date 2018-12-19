@@ -335,7 +335,8 @@ public class ProductActivity extends BaseDrawerActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_search) {
-            ibaShared.removePreference("CartList");
+            //ibaShared.removePreference("CartList");
+            startActivity(ProductSearchActivity.newIntent(this));
             return true;
         } else if (item.getItemId() == R.id.menu_cart) {
             startActivity(CartActivity.newIntent(this));
