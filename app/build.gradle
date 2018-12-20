@@ -2,20 +2,20 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'org.moallemi.advanced-build-version'
 
-advancedVersioning{
+advancedVersioning {
 
-    nameOptions{
+    nameOptions {
         versionMajor 1
         versionMinor 0
         versionPatch 1
     }
 
-    codeOptions{
+    codeOptions {
         versionCodeType org.moallemi.gradle.internal.VersionCodeType.AUTO_INCREMENT_ONE_STEP
         dependsOnTasks 'release'
     }
 
-    outputOptions{
+    outputOptions {
         renameOutput true
         nameFormat 'Japatomo-v${versionName}'
     }

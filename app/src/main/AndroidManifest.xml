@@ -29,23 +29,21 @@
         <activity
             android:name=".activities.SignInActivity"
             android:label="@string/sign_in"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ProductActivity"
             android:label="Product"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CartActivity"
-            android:label="Cart" >
-
-        </activity>
+            android:label="Cart"></activity>
         <activity
             android:name=".activities.ProductDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".activities.ProductSearchActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.OrderHistoryActivity"></activity>
     </application>
 
 </manifest>

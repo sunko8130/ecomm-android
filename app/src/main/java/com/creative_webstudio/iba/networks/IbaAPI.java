@@ -3,6 +3,8 @@ package com.creative_webstudio.iba.networks;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.CategoryCriteriaVO;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
+import com.creative_webstudio.iba.datas.vos.OrderHistoryCriteria;
+import com.creative_webstudio.iba.datas.vos.OrderHistoryVO;
 import com.creative_webstudio.iba.datas.vos.ProductCriteriaVO;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
@@ -69,5 +71,9 @@ public interface IbaAPI {
     @POST("order/add")
     Observable<Response<Integer>> sendOrder(@Header("Authorization") String authHeader,
                                                        @Body List<CartVO> criteriaVO);
+
+    @POST("product/search/paging")
+    Observable<Response<OrderHistoryVO>> getOrderHistory(@Header("Authorization") String authHeader,
+                                                         @Body OrderHistoryCriteria criteriaVO);
 
 }

@@ -52,6 +52,7 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
                 } else {
                     startActivity(ProductActivity.newIntent(SplashActivity.this));
                 }
+                finish();
             }
         }, 2000);
     }

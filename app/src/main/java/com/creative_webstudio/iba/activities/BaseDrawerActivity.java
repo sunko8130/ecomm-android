@@ -1,6 +1,7 @@
 package com.creative_webstudio.iba.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -119,6 +120,9 @@ public class BaseDrawerActivity extends BaseActivity {
 //                            finish();
 //                        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
                         }
+                        break;
+                    case (R.id.orderHistory):
+                        startActivity(new Intent(context, OrderHistoryActivity.class));
                         break;
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);

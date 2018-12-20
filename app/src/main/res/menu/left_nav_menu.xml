@@ -4,15 +4,18 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/menuProduct"
-            android:title="Product"
             android:icon="@drawable/ic_shopping_cart_black_24dp"
-            />
+            android:title="Product" />
 
         <item
             android:id="@+id/menuCart"
-            android:title="Cart"
             android:icon="@drawable/ic_shopping_cart_black_24dp"
-            />
+            android:title="Cart" />
+
+        <item
+            android:id="@+id/orderHistory"
+            android:icon="@drawable/ic_shopping_cart_black_24dp"
+            android:title="Order History" />
 
     </group>
 

@@ -8,17 +8,17 @@ public class OrderHistoryVO {
 
     @SerializedName("aaData")
     @Expose
-    private List<AaDatum> aaData = null;
+    private List<AaDatum> orderHistoryList = null;
     @SerializedName("iTotalDisplayRecords")
     @Expose
     private Integer iTotalDisplayRecords;
 
-    public List<AaDatum> getAaData() {
-        return aaData;
+    public List<AaDatum> getOrderHistoryList() {
+        return orderHistoryList;
     }
 
-    public void setAaData(List<AaDatum> aaData) {
-        this.aaData = aaData;
+    public void setOrderHistoryList(List<AaDatum> aaData) {
+        this.orderHistoryList = aaData;
     }
 
     public Integer getITotalDisplayRecords() {
