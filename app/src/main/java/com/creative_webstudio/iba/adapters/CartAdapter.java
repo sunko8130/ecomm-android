@@ -26,6 +26,7 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
 
     Context mContext;
     IBAPreferenceManager mIbaShared;
+
     public CartAdapter(Context context) {
         super(context);
         mContext = context;
@@ -45,7 +46,11 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((CartActivity) mContext).onClickItem(1,null,position);
+                CartShowVO cart = getItem(position);
+                if (cart != null) {
+                    ((CartActivity) mContext).onRemoveCart(cart);
+                }
+                //((CartActivity) mContext).onClickItem(1,null,position);
             }
         });
     }
@@ -75,9 +80,9 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
         @Override
         public void setData(CartShowVO data) {
             tvProductName.setText(data.getProductName());
-            tvPrice.setText(data.getPricePerUnit()+" MMK");
-            tvQuantity.setText(data.getItemQuantity()+" "+data.getUnitShow());
-            GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(),data.getThumbnailId());
+            tvPrice.setText(data.getPricePerUnit() + " MMK");
+            tvQuantity.setText(data.getItemQuantity() + " " + data.getUnitShow());
+            GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(), data.getThumbnailId());
             Glide.with(itemView.getContext())
                     .asBitmap()
                     .apply(LoadImage.getOption())

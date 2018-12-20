@@ -175,6 +175,24 @@ public class IBAPreferenceManager {
         Toast.makeText(mContext, "This Item is add to Cart!", Toast.LENGTH_LONG).show();
     }
 
+    public boolean removeCart(CartVO removeCart) {
+        String json = fromPreference("CartList", null);
+        TypeToken<List<CartVO>> token = new TypeToken<List<CartVO>>() {};
+        Gson gson = new Gson();
+        List<CartVO> cartList = gson.fromJson(json, token.getType());
+        if (cartList != null) {
+            for (int i = 0; i < cartList.size(); i++) {
+                if (removeCart.getProductId() == cartList.get(i).getProductId()
+                        && removeCart.getOrderUnitId() == cartList.get(i).getOrderUnitId()) {
+                    cartList.remove(i);
+                    AddListToCart(cartList);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void AddListToCart(List<CartVO> cartVOList){
         removePreference("CartList");
         String stringList;

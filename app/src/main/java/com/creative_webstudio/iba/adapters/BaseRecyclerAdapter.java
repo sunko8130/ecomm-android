@@ -45,7 +45,15 @@ public abstract class BaseRecyclerAdapter<T extends BaseViewHolder, W> extends R
     }
 
     public W getItemAt(int position) {
+        // TODO: Why use below logic
         if (position < mData.size() - 1)
+            return mData.get(position);
+
+        return null;
+    }
+
+    public W getItem(int position) {
+        if (position < mData.size())
             return mData.get(position);
 
         return null;

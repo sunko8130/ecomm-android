@@ -350,7 +350,7 @@ public class ProductActivity extends BaseDrawerActivity {
     private void setupViewPager() {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new FragmentOne());
-        adapter.addFragment(new FragmentTwo());
+//        adapter.addFragment(new FragmentTwo());
         if (viewPager != null) {
             viewPager.setAdapter(adapter);
             viewPager.addOnPageChangeListener(new MyOnPageChangeListener());

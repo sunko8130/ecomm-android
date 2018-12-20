@@ -1,5 +1,6 @@
 package com.creative_webstudio.iba.activities;
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -97,7 +98,9 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             for (int i = 0; i < cartVOList.size(); i++) {
                 productIds[i] = cartVOList.get(i).getProductId();
             }
-            if (cartVOList.size() > 1) {
+            // TODO: I have removed below line.
+//            if (cartVOList.size() > 1) {
+            if (!cartVOList.isEmpty()) {
                 getCartProducts(0, productIds);
             }
 
@@ -197,6 +200,17 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    public void onRemoveCart(CartShowVO cart) {
+        CartVO cartVO = new CartVO();
+        cartVO.setProductId(cart.getProductId());
+        cartVO.setOrderUnitId(cart.getUnitId());
+        cartVO.setQuantity(cart.getItemQuantity());
+        if (ibaShared.removeCart(cartVO)) {
+            mCartAdapter.clearData();
+            setUpData(); // Fetch data from server.
+        }
+    }
+
     private void DeleteItem(int deleteItem) {
         CartShowVO tempCartShow = cartShowVOList.get(deleteItem);
         List<CartVO> tempList = new ArrayList<>();
@@ -241,10 +255,12 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         cartViewModel.sendOrder(cartVOList).observe(this, apiResponse -> {
             if (apiResponse.getData() != null) {
                 Toast.makeText(this, "Your Order is Success", Toast.LENGTH_LONG).show();
-                cartVOList = new ArrayList<>();
-                ibaShared.AddListToCart(cartVOList);
-                setUpData();
-                mCartAdapter.clearData();
+                startActivity(new Intent(this, OrderHistoryActivity.class));
+                finish();
+//                cartVOList = new ArrayList<>();
+//                ibaShared.AddListToCart(cartVOList);
+//                setUpData();
+//                mCartAdapter.clearData();
             } else {
                 if (apiResponse.getError() instanceof ApiException) {
                     int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
