@@ -58,13 +58,12 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     private IBAPreferenceManager ibaShared;
     private long productIds[];
     private CartViewModel cartViewModel;
-    private int mCurrentPage;
     private List<CartShowVO> cartShowVOList;
     private List<ProductVO> productVOList;
     private List<CartVO> cartVOList;
 
-    private long total=0;
-    private int totalCartItem=0;
+    private long total = 0;
+    private int totalCartItem = 0;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, CartActivity.class);
@@ -85,20 +84,23 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         rvCart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvCart.setAdapter(mCartAdapter);
         setUpData();
-
-
         btnOrder.setOnClickListener(this);
 
     }
 
     private void setUpData() {
+        total = 0;
+        totalCartItem = 0;
         if (ibaShared.getItemsFromCart() != null) {
             cartVOList = ibaShared.getItemsFromCart();
             productIds = new long[cartVOList.size()];
             for (int i = 0; i < cartVOList.size(); i++) {
                 productIds[i] = cartVOList.get(i).getProductId();
             }
-            getCartProducts(0, productIds);
+            if (cartVOList.size() > 1) {
+                getCartProducts(0, productIds);
+            }
+
         } else {
             productIds = null;
             cartVOList = new ArrayList<>();
@@ -130,38 +132,38 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void setUpRecycler() {
-        long tempTotal=0;
-        cartShowVOList=new ArrayList<>();
-        ProductVO tempProduct=new ProductVO();
-        OrderUnitVO tempOrder=new OrderUnitVO();
-        for(int i=0;i<cartVOList.size();i++){
-            for(ProductVO productVO: productVOList){
-                if(productVO.getId()==cartVOList.get(i).getProductId()){
-                    tempProduct=productVO;
+        long tempTotal;
+        cartShowVOList = new ArrayList<>();
+        ProductVO tempProduct = new ProductVO();
+        OrderUnitVO tempOrder = new OrderUnitVO();
+        for (int i = 0; i < cartVOList.size(); i++) {
+            for (ProductVO productVO : productVOList) {
+                if (productVO.getId() == cartVOList.get(i).getProductId()) {
+                    tempProduct = productVO;
                 }
             }
-            for(OrderUnitVO order:tempProduct.getOrderUnits()){
-                if(order.getId()==cartVOList.get(i).getOrderUnitId()){
-                    tempOrder=order;
+            for (OrderUnitVO order : tempProduct.getOrderUnits()) {
+                if (order.getId() == cartVOList.get(i).getOrderUnitId()) {
+                    tempOrder = order;
                 }
             }
             CartShowVO cartShowVO = new CartShowVO();
             cartShowVO.setProductName(tempProduct.getProductName());
             cartShowVO.setItemQuantity(cartVOList.get(i).getQuantity());
             cartShowVO.setThumbnailId(tempProduct.getThumbnailIdsList().get(0));
-            cartShowVO.setUnitShow(tempOrder.getUnitName()+" per "+tempOrder.getItemsPerUnit()+" "+tempOrder.getItemName());
+            cartShowVO.setUnitShow("- ( 1" + tempOrder.getUnitName() + " per " + tempOrder.getItemsPerUnit() + " " + tempOrder.getItemName() + ")");
             cartShowVO.setPricePerUnit(tempOrder.getPricePerUnit());
             cartShowVO.setUnitId(tempOrder.getId());
             cartShowVO.setProductId(tempProduct.getId());
             cartShowVOList.add(cartShowVO);
-            tempTotal=cartVOList.get(i).getQuantity()*tempOrder.getPricePerUnit();
-            total+=tempTotal;
-            totalCartItem +=cartVOList.get(i).getQuantity();
+            tempTotal = cartVOList.get(i).getQuantity() * tempOrder.getPricePerUnit();
+            total += tempTotal;
+            totalCartItem += cartVOList.get(i).getQuantity();
         }
         mCartAdapter.setNewData(cartShowVOList);
-        tvTotal.setText(total+" MMK");
-        tvSubtotal.setText(total+" MMK");
-        tvCartCount.setText(totalCartItem+" Items in your cart.");
+        tvTotal.setText(total + " MMK");
+        tvSubtotal.setText(total + " MMK");
+        tvCartCount.setText(totalCartItem + " Items in your cart.");
     }
 
 
@@ -186,7 +188,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
 //        startActivity(ProductActivity.newIntent(this));
     }
 
-    public void onClickItem(int btnNo, ProductVO productVO,int deleteItem) {
+    public void onClickItem(int btnNo, ProductVO productVO, int deleteItem) {
         if (btnNo == 1) {
             DeleteItem(deleteItem);
             Snackbar.make(rvCart, "Delete Cart", Snackbar.LENGTH_LONG).show();
@@ -198,30 +200,37 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     private void DeleteItem(int deleteItem) {
         CartShowVO tempCartShow = cartShowVOList.get(deleteItem);
         List<CartVO> tempList = new ArrayList<>();
-        for(CartVO cartVO:cartVOList){
-            if(cartVO.getProductId()==tempCartShow.getProductId() && cartVO.getOrderUnitId()==tempCartShow.getUnitId()){
-            }else {
+        for (CartVO cartVO : cartVOList) {
+            if (cartVO.getProductId() == tempCartShow.getProductId() && cartVO.getOrderUnitId() == tempCartShow.getUnitId()) {
+            } else {
                 tempList.add(cartVO);
             }
         }
         cartVOList = tempList;
         ibaShared.AddListToCart(cartVOList);
-        setUpData();
         mCartAdapter.clearData();
-        setUpRecycler();
+        setUpData();
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btnOrder:
                 final AlertDialog.Builder builder = new AlertDialog.Builder(CartActivity.this);
-                builder.setTitle("Are you sure?");
-                builder.setMessage("Do you want to order now?");
-                builder.setPositiveButton("Ok", (dialog, which) -> {
-                    sendOrder();
-                });
-                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                if(cartVOList.size()<1){
+                    builder.setTitle("Denied!");
+                    builder.setMessage("You have no item to order!");
+                    builder.setPositiveButton("Ok", (dialog, which) -> {
+                        dialog.dismiss();
+                    });
+                }else {
+                    builder.setTitle("Are you sure?");
+                    builder.setMessage("Do you want to order now?");
+                    builder.setPositiveButton("Ok", (dialog, which) -> {
+                        sendOrder();
+                    });
+                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                }
                 AlertDialog productDialog = builder.create();
                 productDialog.show();
                 break;
@@ -229,9 +238,12 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void sendOrder() {
-        cartViewModel.sendOrder(cartVOList).observe(this,apiResponse->{
+        cartViewModel.sendOrder(cartVOList).observe(this, apiResponse -> {
             if (apiResponse.getData() != null) {
-                Toast.makeText(this,"Success Order",Toast.LENGTH_LONG);
+                Toast.makeText(this, "Your Order is Success", Toast.LENGTH_LONG).show();
+                cartVOList = new ArrayList<>();
+                ibaShared.AddListToCart(cartVOList);
+                setUpData();
                 mCartAdapter.clearData();
             } else {
                 if (apiResponse.getError() instanceof ApiException) {

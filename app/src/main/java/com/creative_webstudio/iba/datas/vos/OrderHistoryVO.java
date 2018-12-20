@@ -1,157 +1,130 @@
 package com.creative_webstudio.iba.datas.vos;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class OrderHistoryVO {
-
-    @SerializedName("aaData")
+    @SerializedName("id")
     @Expose
-    private List<AaDatum> orderHistoryList = null;
-    @SerializedName("iTotalDisplayRecords")
+    private Integer id;
+    @SerializedName("recordRegId")
     @Expose
-    private Integer iTotalDisplayRecords;
+    private Integer recordRegId;
+    @SerializedName("recordUpdId")
+    @Expose
+    private Integer recordUpdId;
+    @SerializedName("recordRegDate")
+    @Expose
+    private String recordRegDate;
+    @SerializedName("recordUpdDate")
+    @Expose
+    private String recordUpdDate;
+    @SerializedName("customerId")
+    @Expose
+    private Integer customerId;
+    @SerializedName("status")
+    @Expose
+    private String status;
+    @SerializedName("orderNumber")
+    @Expose
+    private String orderNumber;
+    @SerializedName("orderDate")
+    @Expose
+    private String orderDate;
+    @SerializedName("customer")
+    @Expose
+    private Object customer;
+    @SerializedName("orderItems")
+    @Expose
+    private List<OrderItemVO> orderItems = null;
 
-    public List<AaDatum> getOrderHistoryList() {
-        return orderHistoryList;
+    public Integer getId() {
+        return id;
     }
 
-    public void setOrderHistoryList(List<AaDatum> aaData) {
-        this.orderHistoryList = aaData;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Integer getITotalDisplayRecords() {
-        return iTotalDisplayRecords;
+    public Integer getRecordRegId() {
+        return recordRegId;
     }
 
-    public void setITotalDisplayRecords(Integer iTotalDisplayRecords) {
-        this.iTotalDisplayRecords = iTotalDisplayRecords;
+    public void setRecordRegId(Integer recordRegId) {
+        this.recordRegId = recordRegId;
     }
 
-    public class AaDatum {
+    public Integer getRecordUpdId() {
+        return recordUpdId;
+    }
 
-        @SerializedName("id")
-        @Expose
-        private Integer id;
-        @SerializedName("recordRegId")
-        @Expose
-        private Integer recordRegId;
-        @SerializedName("recordUpdId")
-        @Expose
-        private Integer recordUpdId;
-        @SerializedName("recordRegDate")
-        @Expose
-        private String recordRegDate;
-        @SerializedName("recordUpdDate")
-        @Expose
-        private String recordUpdDate;
-        @SerializedName("customerId")
-        @Expose
-        private Integer customerId;
-        @SerializedName("status")
-        @Expose
-        private String status;
-        @SerializedName("orderNumber")
-        @Expose
-        private String orderNumber;
-        @SerializedName("orderDate")
-        @Expose
-        private String orderDate;
-        @SerializedName("customer")
-        @Expose
-        private Object customer;
-        @SerializedName("orderItems")
-        @Expose
-        private List<Object> orderItems = null;
+    public void setRecordUpdId(Integer recordUpdId) {
+        this.recordUpdId = recordUpdId;
+    }
 
-        public Integer getId() {
-            return id;
-        }
+    public String getRecordRegDate() {
+        return recordRegDate;
+    }
 
-        public void setId(Integer id) {
-            this.id = id;
-        }
+    public void setRecordRegDate(String recordRegDate) {
+        this.recordRegDate = recordRegDate;
+    }
 
-        public Integer getRecordRegId() {
-            return recordRegId;
-        }
+    public String getRecordUpdDate() {
+        return recordUpdDate;
+    }
 
-        public void setRecordRegId(Integer recordRegId) {
-            this.recordRegId = recordRegId;
-        }
+    public void setRecordUpdDate(String recordUpdDate) {
+        this.recordUpdDate = recordUpdDate;
+    }
 
-        public Integer getRecordUpdId() {
-            return recordUpdId;
-        }
+    public Integer getCustomerId() {
+        return customerId;
+    }
 
-        public void setRecordUpdId(Integer recordUpdId) {
-            this.recordUpdId = recordUpdId;
-        }
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
+    }
 
-        public String getRecordRegDate() {
-            return recordRegDate;
-        }
+    public String getStatus() {
+        return status;
+    }
 
-        public void setRecordRegDate(String recordRegDate) {
-            this.recordRegDate = recordRegDate;
-        }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-        public String getRecordUpdDate() {
-            return recordUpdDate;
-        }
+    public String getOrderNumber() {
+        return orderNumber;
+    }
 
-        public void setRecordUpdDate(String recordUpdDate) {
-            this.recordUpdDate = recordUpdDate;
-        }
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
 
-        public Integer getCustomerId() {
-            return customerId;
-        }
+    public String getOrderDate() {
+        return orderDate;
+    }
 
-        public void setCustomerId(Integer customerId) {
-            this.customerId = customerId;
-        }
+    public void setOrderDate(String orderDate) {
+        this.orderDate = orderDate;
+    }
 
-        public String getStatus() {
-            return status;
-        }
+    public Object getCustomer() {
+        return customer;
+    }
 
-        public void setStatus(String status) {
-            this.status = status;
-        }
+    public void setCustomer(Object customer) {
+        this.customer = customer;
+    }
 
-        public String getOrderNumber() {
-            return orderNumber;
-        }
+    public List<OrderItemVO> getOrderItems() {
+        return orderItems;
+    }
 
-        public void setOrderNumber(String orderNumber) {
-            this.orderNumber = orderNumber;
-        }
-
-        public String getOrderDate() {
-            return orderDate;
-        }
-
-        public void setOrderDate(String orderDate) {
-            this.orderDate = orderDate;
-        }
-
-        public Object getCustomer() {
-            return customer;
-        }
-
-        public void setCustomer(Object customer) {
-            this.customer = customer;
-        }
-
-        public List<Object> getOrderItems() {
-            return orderItems;
-        }
-
-        public void setOrderItems(List<Object> orderItems) {
-            this.orderItems = orderItems;
-        }
-
+    public void setOrderItems(List<OrderItemVO> orderItems) {
+        this.orderItems = orderItems;
     }
 }

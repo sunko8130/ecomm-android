@@ -2,7 +2,6 @@ package com.creative_webstudio.iba.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,7 +10,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.activities.CartActivity;
-import com.creative_webstudio.iba.activities.ProductActivity;
 import com.creative_webstudio.iba.datas.vos.CartShowVO;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;

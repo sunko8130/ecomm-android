@@ -181,7 +181,6 @@ public class IBAPreferenceManager {
         Gson gson = new Gson();
         stringList = gson.toJson(cartVOList);
         toPreference("CartList", stringList);
-        Toast.makeText(mContext, "This Item List is add to Cart!", Toast.LENGTH_LONG).show();
     }
 
     public List<CartVO> getItemsFromCart() {

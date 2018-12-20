@@ -3,8 +3,10 @@ package com.creative_webstudio.iba.networks;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.CategoryCriteriaVO;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
-import com.creative_webstudio.iba.datas.vos.OrderHistoryCriteria;
-import com.creative_webstudio.iba.datas.vos.OrderHistoryVO;
+import com.creative_webstudio.iba.datas.vos.OrderHistoryCriteriaVO;
+import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
+import com.creative_webstudio.iba.datas.vos.OrderItemCriteria;
+import com.creative_webstudio.iba.datas.vos.OrderItemVO;
 import com.creative_webstudio.iba.datas.vos.ProductCriteriaVO;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
@@ -19,6 +21,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface IbaAPI {
 
@@ -72,8 +75,18 @@ public interface IbaAPI {
     Observable<Response<Integer>> sendOrder(@Header("Authorization") String authHeader,
                                                        @Body List<CartVO> criteriaVO);
 
-    @POST("product/search/paging")
-    Observable<Response<OrderHistoryVO>> getOrderHistory(@Header("Authorization") String authHeader,
-                                                         @Body OrderHistoryCriteria criteriaVO);
+    @POST("order/search/paging")
+    Observable<Response<OrderHistoryResponse>> getOrderHistory(@Header("Authorization") String authHeader,
+                                                               @Body OrderHistoryCriteriaVO criteriaVO);
+
+    @POST("order_item/search/list")
+    Observable<Response<List<OrderItemVO>>> getOrderItems(@Header("Authorization") String authHeader,
+                                                          @Body OrderItemCriteria criteriaVO);
+
+    @FormUrlEncoded
+    @PUT("order/update/status")
+    Observable<Response<Integer>> updateOrder(@Header("Authorization") String authHeader,
+                                                        @Field("orderId") long orderId,
+                                                        @Field("status") String status);
 
 }

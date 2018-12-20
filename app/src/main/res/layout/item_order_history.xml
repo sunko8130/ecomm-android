@@ -1,6 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:layout_marginStart="@dimen/margin_medium"
+    android:layout_marginEnd="@dimen/margin_medium"
+    android:elevation="5dp"
+    android:orientation="horizontal"
+    app:cardCornerRadius="5dp">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:layout_weight="3">
+
+            <org.mmtextview.components.MMTextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20-12-2018 12:12:12"
+                android:textSize="@dimen/text_regular_2x" />
+
+            <org.mmtextview.components.MMTextView
+                android:id="@+id/tvOrderId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OrderId: "
+                android:textSize="@dimen/text_regular_2x" />
+
+            <org.mmtextview.components.MMTextView
+                android:id="@+id/tvOrderPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="30000MMK"
+                android:textSize="@dimen/text_regular_2x" />
+        </LinearLayout>
+
+        <org.mmtextview.components.MMTextView
+            android:id="@+id/tvStatus"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="pending"
+            android:textSize="@dimen/text_regular_2x"
+            android:textColor="@color/limeGreen"
+            android:layout_weight="1"
+            android:gravity="center"/>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

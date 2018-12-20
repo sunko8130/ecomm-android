@@ -1,37 +1,83 @@
 package com.creative_webstudio.iba.adapters;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.activities.OrderHistoryActivity;
+import com.creative_webstudio.iba.datas.vos.OrderHistoryVO;
+import com.creative_webstudio.iba.datas.vos.OrderItemVO;
+import com.creative_webstudio.iba.vieholders.BaseViewHolder;
 
-public class OrderHistoryAdapter extends RecyclerView.Adapter {
+import org.mmtextview.components.MMTextView;
+
+import butterknife.BindView;
+
+public class OrderHistoryAdapter extends BaseRecyclerAdapter<OrderHistoryAdapter.OrderHistoryViewHolder,OrderHistoryVO> {
+
+    private Context mContext;
+    public OrderHistoryAdapter(Context context) {
+        super(context);
+        mContext=context;
+    }
+
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public OrderHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_history, parent, false);
         return new OrderHistoryViewHolder(view);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        // TODO:
-    }
 
-    @Override
-    public int getItemCount() {
-        return 0;
-    }
+    public class OrderHistoryViewHolder extends BaseViewHolder<OrderHistoryVO> {
 
-    public class OrderHistoryViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.tvDate)
+        MMTextView tvDate;
 
+        @BindView(R.id.tvOrderPrice)
+        MMTextView tvOrderPrice;
+
+        @BindView(R.id.tvStatus)
+        MMTextView tvStatus;
+
+        @BindView(R.id.tvOrderId)
+        MMTextView tvOrderId;
+
+
+        OrderHistoryVO historyVO;
         public OrderHistoryViewHolder(View itemView) {
             super(itemView);
-
             // TODO:
+        }
+
+        @Override
+        public void setData(OrderHistoryVO data) {
+            tvDate.setText(data.getOrderDate());
+            if (data.getStatus().equals("Pending")) {
+                tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.indianRed));
+            } else if (data.getStatus().equals("Cancel")){
+                tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.redFull));
+            }else {
+                tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.limeGreen));
+            }
+            tvStatus.setText(data.getStatus());
+            long price=0;
+            for (OrderItemVO order:data.getOrderItems()){
+                price+=order.getOrderPrice();
+            }
+            tvOrderPrice.setText(price+" MMK");
+            tvOrderId.setText(data.getOrderNumber());
+            historyVO = data;
+        }
+
+        @Override
+        public void onClick(View view) {
+            ((OrderHistoryActivity) mContext).onItemClick(historyVO);
         }
     }
 }

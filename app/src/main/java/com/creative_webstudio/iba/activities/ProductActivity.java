@@ -215,9 +215,7 @@ public class ProductActivity extends BaseDrawerActivity {
         if (categoryId == -1) {
             getProduct(mCurrentPage, categoryId);
         } else {
-//            mCurrentPage =35;
             getProduct(mCurrentPage,mCategoryList.get(categoryId).getId());
-//            getProduct(mCurrentPage,6);
         }
     }
 
