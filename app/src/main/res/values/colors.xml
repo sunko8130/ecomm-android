@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#6a0080</color>
     <color name="colorAccent">#d05ce3</color>
 
+    <color name="colorPrimaryTrans">#649c27b0</color>
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#757575</color>
     
@@ -36,4 +37,5 @@
     <color name="textColor">#000000</color>
     <color name="instockColor">#FFFF00</color>
     <color name="btnColor">#673ab7</color>
+    <color name="lightVioletTrans">#64673ab7</color>
 </resources>

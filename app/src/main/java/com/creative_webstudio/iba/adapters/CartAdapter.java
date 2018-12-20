@@ -7,23 +7,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.activities.CartActivity;
 import com.creative_webstudio.iba.activities.ProductActivity;
 import com.creative_webstudio.iba.datas.vos.CartShowVO;
+import com.creative_webstudio.iba.utils.IBAPreferenceManager;
+import com.creative_webstudio.iba.utils.LoadImage;
 import com.creative_webstudio.iba.vieholders.BaseViewHolder;
 
 import org.mmtextview.components.MMTextView;
 
+
+import java.util.List;
 
 import butterknife.BindView;
 
 public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder, CartShowVO> {
 
     Context mContext;
+    IBAPreferenceManager mIbaShared;
     public CartAdapter(Context context) {
         super(context);
         mContext = context;
+        mIbaShared = new IBAPreferenceManager(mContext);
     }
 
     @NonNull
@@ -31,6 +39,17 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
     public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mLayoutInflator.inflate(R.layout.view_holder_cart_list, parent, false);
         return new CartViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull CartViewHolder holder, int position, @NonNull List<Object> payloads) {
+        super.onBindViewHolder(holder, position, payloads);
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((CartActivity) mContext).onClickItem(1,null,position);
+            }
+        });
     }
 
     public class CartViewHolder extends BaseViewHolder<CartShowVO> {
@@ -54,17 +73,18 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
             super(itemView);
         }
 
+
         @Override
         public void setData(CartShowVO data) {
             tvProductName.setText(data.getProductName());
             tvPrice.setText(data.getPricePerUnit()+" MMK");
             tvQuantity.setText(data.getItemQuantity()+" "+data.getUnitShow());
-            btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ((CartActivity) mContext).onClickItem(1,null);
-                }
-            });
+            GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(),data.getThumbnailId());
+            Glide.with(itemView.getContext())
+                    .asBitmap()
+                    .apply(LoadImage.getOption())
+                    .load(glideUrl)
+                    .into(ivProduct);
         }
 
         @Override

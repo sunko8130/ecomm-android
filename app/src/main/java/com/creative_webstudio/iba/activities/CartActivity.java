@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -24,6 +25,8 @@ import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.CartViewModel;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
+import org.mmtextview.components.MMTextView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +42,18 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.btnOrder)
     Button btnOrder;
 
+    @BindView(R.id.tvCartCount)
+    MMTextView tvCartCount;
+
+    @BindView(R.id.tvSubTotal)
+    MMTextView tvSubtotal;
+
+    @BindView(R.id.tvTax)
+    MMTextView tvTax;
+
+    @BindView(R.id.tvTotal)
+    MMTextView tvTotal;
+
     private CartAdapter mCartAdapter;
     private IBAPreferenceManager ibaShared;
     private long productIds[];
@@ -47,6 +62,9 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     private List<CartShowVO> cartShowVOList;
     private List<ProductVO> productVOList;
     private List<CartVO> cartVOList;
+
+    private long total=0;
+    private int totalCartItem=0;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, CartActivity.class);
@@ -66,20 +84,25 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         mCartAdapter = new CartAdapter(this);
         rvCart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvCart.setAdapter(mCartAdapter);
+        setUpData();
+
+
+        btnOrder.setOnClickListener(this);
+
+    }
+
+    private void setUpData() {
         if (ibaShared.getItemsFromCart() != null) {
             cartVOList = ibaShared.getItemsFromCart();
             productIds = new long[cartVOList.size()];
             for (int i = 0; i < cartVOList.size(); i++) {
                 productIds[i] = cartVOList.get(i).getProductId();
             }
-            getCartProducts(++mCurrentPage, productIds);
+            getCartProducts(0, productIds);
         } else {
             productIds = null;
             cartVOList = new ArrayList<>();
         }
-
-        btnOrder.setOnClickListener(this);
-
     }
 
     private void getCartProducts(int page, long[] productIds) {
@@ -107,6 +130,8 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void setUpRecycler() {
+        long tempTotal=0;
+        cartShowVOList=new ArrayList<>();
         ProductVO tempProduct=new ProductVO();
         OrderUnitVO tempOrder=new OrderUnitVO();
         for(int i=0;i<cartVOList.size();i++){
@@ -126,13 +151,17 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             cartShowVO.setThumbnailId(tempProduct.getThumbnailIdsList().get(0));
             cartShowVO.setUnitShow(tempOrder.getUnitName()+" per "+tempOrder.getItemsPerUnit()+" "+tempOrder.getItemName());
             cartShowVO.setPricePerUnit(tempOrder.getPricePerUnit());
+            cartShowVO.setUnitId(tempOrder.getId());
+            cartShowVO.setProductId(tempProduct.getId());
             cartShowVOList.add(cartShowVO);
+            tempTotal=cartVOList.get(i).getQuantity()*tempOrder.getPricePerUnit();
+            total+=tempTotal;
+            totalCartItem +=cartVOList.get(i).getQuantity();
         }
         mCartAdapter.setNewData(cartShowVOList);
-//        cartVOList;
-//        cartShowVOList;
-//        productVOList;
-
+        tvTotal.setText(total+" MMK");
+        tvSubtotal.setText(total+" MMK");
+        tvCartCount.setText(totalCartItem+" Items in your cart.");
     }
 
 
@@ -157,19 +186,44 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
 //        startActivity(ProductActivity.newIntent(this));
     }
 
-    public void onClickItem(int btnNo, ProductVO productVO) {
+    public void onClickItem(int btnNo, ProductVO productVO,int deleteItem) {
         if (btnNo == 1) {
+            DeleteItem(deleteItem);
             Snackbar.make(rvCart, "Delete Cart", Snackbar.LENGTH_LONG).show();
         } else {
             Snackbar.make(rvCart, "Click To View", Snackbar.LENGTH_LONG).show();
         }
     }
 
+    private void DeleteItem(int deleteItem) {
+        CartShowVO tempCartShow = cartShowVOList.get(deleteItem);
+        List<CartVO> tempList = new ArrayList<>();
+        for(CartVO cartVO:cartVOList){
+            if(cartVO.getProductId()==tempCartShow.getProductId() && cartVO.getOrderUnitId()==tempCartShow.getUnitId()){
+            }else {
+                tempList.add(cartVO);
+            }
+        }
+        cartVOList = tempList;
+        ibaShared.AddListToCart(cartVOList);
+        setUpData();
+        mCartAdapter.clearData();
+        setUpRecycler();
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btnOrder:
-                sendOrder();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(CartActivity.this);
+                builder.setTitle("Are you sure?");
+                builder.setMessage("Do you want to order now?");
+                builder.setPositiveButton("Ok", (dialog, which) -> {
+                    sendOrder();
+                });
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                AlertDialog productDialog = builder.create();
+                productDialog.show();
                 break;
         }
     }

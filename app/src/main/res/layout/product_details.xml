@@ -19,6 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+
                 <ImageView
                     android:id="@+id/iv_details_top_image"
                     android:layout_width="match_parent"
@@ -27,6 +28,10 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/coco_coffee" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/blackTransparent"/>
                 <!--<ImageView-->
                     <!--android:id="@+id/iv_back_rl"-->
                     <!--android:layout_width="wrap_content"-->
@@ -70,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/product_detail"
                     android:textColor="@color/backgroundColor"
-                    android:textSize="@dimen/text_regular_3x"
+                    android:textSize="@dimen/text_regular_2x"
                     android:textStyle="bold" />
 
 

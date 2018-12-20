@@ -13,7 +13,7 @@
         app:layout_constraintGuide_percent="0.00" />
 
     <org.mmtextview.components.MMTextView
-        android:id="@+id/tvSignIn"
+        android:id="@+id/tvCartCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawablePadding="@dimen/margin_medium"
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6" />
+        app:layout_constraintGuide_percent="0.65" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideSpacing"
@@ -87,7 +87,6 @@
         app:layout_constraintTop_toBottomOf="@+id/guideSpacing">
 
         <org.mmtextview.components.MMTextView
-            android:id="@+id/tvSubTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/subtotal" />
@@ -118,16 +117,19 @@
         app:layout_constraintTop_toBottomOf="@+id/guideSpacing">
 
         <org.mmtextview.components.MMTextView
+            android:id="@+id/tvSubTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mmk_sub_total" />
 
         <org.mmtextview.components.MMTextView
+            android:id="@+id/tvTax"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mmk_tax" />
 
         <org.mmtextview.components.MMTextView
+            android:id="@+id/tvTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/mmk_total"

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -147,7 +148,15 @@ public class ProductDetailsActivity extends BaseActivity{
             btnAddToCart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addToCart();
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailsActivity.this);
+                    builder.setTitle("Sure?");
+                    builder.setMessage("Want to add to Cart?");
+                    builder.setPositiveButton("Ok", (dialog, which) -> {
+                        addToCart();
+                    });
+                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                    AlertDialog productDialog = builder.create();
+                    productDialog.show();
                 }
             });
         }

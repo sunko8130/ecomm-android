@@ -2,8 +2,6 @@ package com.creative_webstudio.iba.utils;
 
 public class AppConstants {
 
-    public static final String USERNAME = "IBA-MG0tu1002";
-    public static final String PASSWORD = "IBA-MG0tu1002P@ssw0rd";
     public static final String CLIENT_ID = "iba-mobile";
     public static final String CLIENT_SECRET = "IBAmobile@cws$S3c43T";
     public static final String GRANT_TYPE = "password";

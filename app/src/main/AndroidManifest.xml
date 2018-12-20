@@ -39,7 +39,8 @@
             android:label="Cart"></activity>
         <activity
             android:name=".activities.ProductDetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.Detail" />
+
         <activity
             android:name=".activities.ProductSearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
