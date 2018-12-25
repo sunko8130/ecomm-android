@@ -1,6 +1,7 @@
 package com.creative_webstudio.iba.components;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +29,8 @@ public class EmptyViewPod extends RelativeLayout {
     @BindView(R.id.tv_empty)
     MMTextView tvEmpty;
 
+    @BindView(R.id.btn_refresh_empty)
+    MMTextView btnRefresh;
     public EmptyViewPod(Context context) {
         super(context);
     }
@@ -59,6 +62,14 @@ public class EmptyViewPod extends RelativeLayout {
 
     public void setEmptyData(String emptyMsg) {
         tvEmpty.setText(emptyMsg);
+    }
+
+    public void setRefreshButton(boolean visible){
+        if(visible){
+            btnRefresh.setVisibility(VISIBLE);
+        }else {
+            btnRefresh.setVisibility(GONE);
+        }
     }
 
 

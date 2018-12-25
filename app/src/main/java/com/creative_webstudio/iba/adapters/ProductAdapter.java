@@ -43,17 +43,6 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
         mIbaShared = new IBAPreferenceManager(mContext);
     }
 
-//    public void addData(List<ProductVO> newData) {
-//        if (newData == null) {
-//            return;
-//        }
-//        if (mData == null) {
-//            mData = new ArrayList<>();
-//        }
-//        mData.addAll(newData);
-//        notifyDataSetChanged();
-//    }
-
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
@@ -86,13 +75,15 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
         @Override
         public void setData(ProductVO data) {
             tvProductName.setText(data.getProductName());
+            if(!data.getThumbnailIdsList().isEmpty()){
+                GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(),data.getThumbnailIdsList().get(0));
+                Glide.with(itemView.getContext())
+                        .asBitmap()
+                        .apply(LoadImage.getOption())
+                        .load(glideUrl)
+                        .into(ivProduct);
+            }
 
-            GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(),data.getThumbnailIdsList().get(0));
-            Glide.with(itemView.getContext())
-                    .asBitmap()
-                    .apply(LoadImage.getOption())
-                    .load(glideUrl)
-                    .into(ivProduct);
             productVO =data;
         }
 

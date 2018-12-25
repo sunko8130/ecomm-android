@@ -40,7 +40,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
     private SignInPresenter mPresenter;
     private boolean connected = false;
 
-    //dialog
+    //loadingDialog
     CustomRetryDialog dialog;
 
     private IBAPreferenceManager ibaShared;

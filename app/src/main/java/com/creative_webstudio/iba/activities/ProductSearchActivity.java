@@ -20,8 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.SearchAdapter;
+import com.creative_webstudio.iba.components.EmptyViewPod;
+import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.datas.models.IbaModel;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.CriteriaVO;
@@ -45,11 +48,20 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
     @BindView(R.id.search_product_toolbar)
     Toolbar toolbar;
     @BindView(R.id.rv_search)
-    RecyclerView rvSearch;
+    SmartRecyclerView rvSearch;
     @BindView(R.id.search_view)
     SearchView searchView;
     @BindView(R.id.tv_result)
     TextView tvResult;
+
+    //search loading
+    @BindView(R.id.loadingSearch)
+    LottieAnimationView loadingSearch;
+
+    //empty view
+    @Nullable
+    @BindView(R.id.vp_empty_search)
+    EmptyViewPod vpEmpty;
 
     SearchAdapter searchAdapter;
     private ProductSearchPresenter mPresenter;
@@ -68,6 +80,7 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         ButterKnife.bind(this, this);
         setSupportActionBar(toolbar);
         mProductVOS = new ArrayList<>();
+        loadingSearch.setVisibility(View.GONE);
 
         mPresenter = ViewModelProviders.of(this).get(ProductSearchPresenter.class);
         mPresenter.initPresenter(this);
@@ -77,6 +90,9 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         //searchAdapter.setNewData(names);
         rvSearch.setAdapter(searchAdapter);
         rvSearch.setLayoutManager(new LinearLayoutManager(this));
+        vpEmpty.setRefreshButton(false);
+        vpEmpty.setEmptyData("There is no match found!");
+        vpEmpty.setVisibility(View.GONE);
 
         mProductSearchViewModel = ViewModelProviders.of(this).get(ProductSearchViewModel.class);
         mProductList = new ArrayList<>();
@@ -117,14 +133,13 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Toast.makeText(getApplicationContext(), query, Toast.LENGTH_LONG).show();
         String userInput = query.toLowerCase();
-        // mPresenter.onTapSearch(userInput);
         ProductCriteriaVO criteriaVO = new ProductCriteriaVO();
         criteriaVO.setWord(userInput);
-        criteriaVO.setPageNumber(0);
+        criteriaVO.setPageNumber(null);
         criteriaVO.setWithOrderUnits(true);
-        criteriaVO.setProductCategoryId(null);
+        criteriaVO.setWithThumbnails(true);
+        criteriaVO.setThumbnailType(1);
         getProductSearch(criteriaVO);
 
 //        mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
@@ -134,14 +149,14 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
 //                mProductVOS = productVOS;
 //            }
 //        });
-        List<ProductVO> productVo = new ArrayList<>();
-        for (ProductVO product : mProductList) {
-            if (product.getProductName().toLowerCase().contains(userInput)) {
-                productVo.add(product);
-            }
-        }
-
-        searchAdapter.appendNewData(productVo);
+//        List<ProductVO> productVo = new ArrayList<>();
+//        for (ProductVO product : mProductList) {
+//            if (product.getProductName().toLowerCase().contains(userInput)) {
+//                productVo.add(product);
+//            }
+//        }
+//
+//        searchAdapter.appendNewData(productVo);
         return true;
     }
 
@@ -189,7 +204,11 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
     }
 
     public void getProductSearch(ProductCriteriaVO criteriaVO) {
+        searchAdapter.clearData();
+        loadingSearch.setVisibility(View.VISIBLE);
         mProductSearchViewModel.getProductSearchList(criteriaVO).observe(this, apiResponse -> {
+//            vpEmpty.setVisibility(View.VISIBLE);
+            loadingSearch.setVisibility(View.GONE);
             if (apiResponse.getData() != null) {
                 mProductList = (ArrayList<ProductVO>) apiResponse.getData();
                 searchAdapter.setNewData(apiResponse.getData());
@@ -199,7 +218,7 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
                     if (errorCode == 401) {
                         super.refreshAccessToken();
                     } else if (errorCode == 204) {
-                        // TODO: Server response successful but there is no data (Empty response).
+                        rvSearch.setEmptyView(vpEmpty);
                     } else if (errorCode == 200) {
                         // TODO: Reach End of List
                         Snackbar.make(rvSearch, "End of Product List", Snackbar.LENGTH_LONG).show();

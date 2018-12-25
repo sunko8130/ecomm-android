@@ -24,42 +24,12 @@
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
-
         android:id="@+id/ll_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="visible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_medium_2"
-            android:orientation="horizontal">
-
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/all" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/by_brand" />
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/by_category" />
-
-        </RadioGroup>
-
 
         <org.mmtextview.components.MMTextView
             android:id="@+id/tv_result"
@@ -76,10 +46,32 @@
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/margin_medium" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_search"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <com.creative_webstudio.iba.components.SmartRecyclerView
+                android:id="@+id/rv_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <include
+                android:id="@+id/vp_empty_search"
+                layout="@layout/view_pod_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/loadingSearch"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                app:lottie_autoPlay="true"
+                app:lottie_rawRes="@raw/search"
+                app:lottie_loop="true"
+                app:lottie_colorFilter="@color/grayDark"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

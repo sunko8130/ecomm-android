@@ -6,15 +6,14 @@
     android:orientation="vertical"
     tools:context=".activities.OrderHistoryActivity">
 
-    <org.mmtextview.components.MMTextView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Your Order Histories:"
-        android:textSize="@dimen/text_regular_3x"
-        android:padding="5dp"/>
+        android:layout_height="match_parent">
+        <com.creative_webstudio.iba.components.SmartRecyclerView
+            android:id="@+id/recycler_order_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-    <com.creative_webstudio.iba.components.SmartRecyclerView
-        android:id="@+id/recycler_order_history"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 </LinearLayout>

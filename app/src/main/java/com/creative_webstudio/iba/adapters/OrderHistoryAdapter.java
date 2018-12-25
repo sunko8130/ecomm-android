@@ -57,10 +57,10 @@ public class OrderHistoryAdapter extends BaseRecyclerAdapter<OrderHistoryAdapter
 
         @Override
         public void setData(OrderHistoryVO data) {
-            tvDate.setText(data.getOrderDate());
+            tvDate.setText("Order Date: "+data.getOrderDate());
             if (data.getStatus().equals("Pending")) {
-                tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.indianRed));
-            } else if (data.getStatus().equals("Cancel")){
+                tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.blue2));
+            } else if (data.getStatus().equals("Canceled")){
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.redFull));
             }else {
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.limeGreen));
@@ -71,7 +71,7 @@ public class OrderHistoryAdapter extends BaseRecyclerAdapter<OrderHistoryAdapter
                 price+=order.getOrderPrice();
             }
             tvOrderPrice.setText(price+" MMK");
-            tvOrderId.setText(data.getOrderNumber());
+            tvOrderId.setText("Order ID: "+data.getOrderNumber());
             historyVO = data;
         }
 

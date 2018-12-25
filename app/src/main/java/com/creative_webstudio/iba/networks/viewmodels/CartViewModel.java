@@ -29,7 +29,7 @@ public class CartViewModel extends AndroidViewModel {
         MutableLiveData<ApiResponse<ProductResponse>> result = new MutableLiveData<>();
         ProductCriteriaVO criteriaVO = new ProductCriteriaVO();
         criteriaVO.setIncludeIds(productId);
-        criteriaVO.setPageNumber(page);
+        criteriaVO.setPageNumber(String.valueOf(page));
         criteriaVO.setWithThumbnails(true);
         criteriaVO.setThumbnailType(1);
         criteriaVO.setWithOrderUnits(true);

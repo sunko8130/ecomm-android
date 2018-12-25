@@ -3,6 +3,8 @@ package com.creative_webstudio.iba.activities;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,11 +12,12 @@ import android.view.MenuItem;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.OrderHistoryAdapter;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
-import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
 import com.creative_webstudio.iba.datas.vos.OrderHistoryVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.OrderHistoryViewModel;
+import com.creative_webstudio.iba.utils.CustomDialog;
 import com.google.gson.Gson;
+
 
 
 import java.util.ArrayList;
@@ -27,16 +30,22 @@ public class OrderHistoryActivity extends BaseActivity {
     @BindView(R.id.recycler_order_history)
     SmartRecyclerView rvOrderHistory;
 
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
+
     private List<OrderHistoryVO> orderList;
     OrderHistoryAdapter mAdapter;
-    int mCurrentPage;
+    //    int mCurrentPage;
+    AlertDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_history);
-        ButterKnife.bind(this,this);
+        ButterKnife.bind(this, this);
         orderList = new ArrayList<>();
+
+        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Order History.Please wait!");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -45,8 +54,13 @@ public class OrderHistoryActivity extends BaseActivity {
         mAdapter = new OrderHistoryAdapter(this);
         rvOrderHistory.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvOrderHistory.setAdapter(mAdapter);
+        getOrderHistory();
 
-        getOrderHistory(++mCurrentPage);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            mAdapter.clearData();
+            getOrderHistory();
+        });
+
     }
 
     @Override
@@ -64,11 +78,21 @@ public class OrderHistoryActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void getOrderHistory(int page) {
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void getOrderHistory() {
+        loadingDialog.show();
         OrderHistoryViewModel viewModel = ViewModelProviders.of(this).get(OrderHistoryViewModel.class);
-        viewModel.getOrderHistory(page).observe(this, apiResponse -> {
+        viewModel.getOrderHistory().observe(this, apiResponse -> {
+            if(loadingDialog.isShowing()){
+                loadingDialog.dismiss();
+            }
+            swipeRefreshLayout.setRefreshing(false);
             if (apiResponse.getData() != null) {
-                orderList=apiResponse.getData().getOrderHistoryList();
+                orderList = apiResponse.getData().getOrderHistoryList();
                 mAdapter.appendNewData(orderList);
             } else {
                 if (apiResponse.getError() instanceof ApiException) {
@@ -88,9 +112,9 @@ public class OrderHistoryActivity extends BaseActivity {
         });
     }
 
-    public void onItemClick(OrderHistoryVO orderHistoryVO){
+    public void onItemClick(OrderHistoryVO orderHistoryVO) {
         Gson gson = new Gson();
         String json = gson.toJson(orderHistoryVO);
-        startActivity(OrderItemsActivity.newIntent(this,json));
+        startActivity(OrderItemsActivity.newIntent(this, json));
     }
 }

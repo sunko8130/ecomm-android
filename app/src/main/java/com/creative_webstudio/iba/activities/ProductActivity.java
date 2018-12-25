@@ -151,14 +151,11 @@ public class ProductActivity extends BaseDrawerActivity {
             appBar.setExpanded(true);
         }
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                categoryId = -1;
-                checkedItem = -1;
-                btnProduct.setText(items[0]);
-                refreshData();
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            categoryId = -1;
+            checkedItem = -1;
+            btnProduct.setText(items[0]);
+            refreshData();
         });
 
         tvEmpty.setOnClickListener(new View.OnClickListener() {
@@ -176,12 +173,6 @@ public class ProductActivity extends BaseDrawerActivity {
                     mIsLoading = true;
                     aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
                     getProduct(mCurrentPage, categoryId);
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//
-//                        }
-//                    }, 5000);
                 }
             }
         });

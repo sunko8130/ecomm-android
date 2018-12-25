@@ -43,16 +43,20 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position, @NonNull List<Object> payloads) {
         super.onBindViewHolder(holder, position, payloads);
-        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CartShowVO cart = getItem(position);
-                if (cart != null) {
-                    ((CartActivity) mContext).onRemoveCart(cart);
+        if(mContext instanceof CartActivity) {
+            holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    CartShowVO cart = getItem(position);
+                    if (cart != null) {
+                        ((CartActivity) mContext).onRemoveCart(cart);
+                    }
+                    //((CartActivity) mContext).onClickItem(1,null,position);
                 }
-                //((CartActivity) mContext).onClickItem(1,null,position);
-            }
-        });
+            });
+        }else {
+            holder.btnDelete.setVisibility(View.GONE);
+        }
     }
 
     public class CartViewHolder extends BaseViewHolder<CartShowVO> {

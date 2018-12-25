@@ -4,7 +4,7 @@ public class ProductCriteriaVO {
 
     private long[] includeIds;
     private boolean withOrderUnits;
-    private int pageNumber;
+    private String pageNumber;
     private String productCategoryId;
     private boolean withThumbnails;
     private int thumbnailType;
@@ -26,11 +26,11 @@ public class ProductCriteriaVO {
         this.withOrderUnits = withOrderUnits;
     }
 
-    public int getPageNumber() {
+    public String getPageNumber() {
         return pageNumber;
     }
 
-    public void setPageNumber(int pageNumber) {
+    public void setPageNumber(String pageNumber) {
         this.pageNumber = pageNumber;
     }
 

@@ -24,8 +24,10 @@ import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.CartViewModel;
+import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
+import org.mmtextview.components.MMProgressDialog;
 import org.mmtextview.components.MMTextView;
 
 import java.util.ArrayList;
@@ -153,7 +155,9 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             CartShowVO cartShowVO = new CartShowVO();
             cartShowVO.setProductName(tempProduct.getProductName());
             cartShowVO.setItemQuantity(cartVOList.get(i).getQuantity());
-            cartShowVO.setThumbnailId(tempProduct.getThumbnailIdsList().get(0));
+            if(!tempProduct.getThumbnailIdsList().isEmpty()) {
+                cartShowVO.setThumbnailId(tempProduct.getThumbnailIdsList().get(0));
+            }
             cartShowVO.setUnitShow("- ( 1" + tempOrder.getUnitName() + " per " + tempOrder.getItemsPerUnit() + " " + tempOrder.getItemName() + ")");
             cartShowVO.setPricePerUnit(tempOrder.getPricePerUnit());
             cartShowVO.setUnitId(tempOrder.getId());
@@ -252,9 +256,16 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void sendOrder() {
+        MMProgressDialog dialog=CustomDialog.loadingDialog(this,"Sending!","Your Order is sending.Please wait!");
+        dialog.show();
         cartViewModel.sendOrder(cartVOList).observe(this, apiResponse -> {
             if (apiResponse.getData() != null) {
                 Toast.makeText(this, "Your Order is Success", Toast.LENGTH_LONG).show();
+                cartVOList = new ArrayList<>();
+                ibaShared.AddListToCart(cartVOList);
+                if(dialog.isShowing()){
+                    dialog.dismiss();
+                }
                 startActivity(new Intent(this, OrderHistoryActivity.class));
                 finish();
 //                cartVOList = new ArrayList<>();

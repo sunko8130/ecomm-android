@@ -96,12 +96,16 @@ public class BaseDrawerActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navigationView.getMenu().findItem(R.id.menuProduct).setChecked(true);
+    }
+
     private void addDrawerItems() {
         if (this instanceof ProductActivity) {
             navigationView.getMenu().findItem(R.id.menuProduct).setChecked(true);
-        } /*else if (this instanceof CartActivity) {
-            navigationView.getMenu().findItem(R.id.menuCart).setChecked(true);
-        }*/
+        }
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

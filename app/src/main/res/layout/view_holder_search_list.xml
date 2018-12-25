@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/margin_medium"
     android:layout_marginStart="@dimen/margin_medium"
+    android:layout_marginEnd="@dimen/margin_medium"
     android:orientation="horizontal">
 
     <ImageView
@@ -28,7 +28,7 @@
         android:textStyle="bold" />
 
     <org.mmtextview.components.MMTextView
-        android:id="@+id/tv_stock"
+        android:id="@+id/tv_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_product_name"
@@ -36,20 +36,9 @@
         android:layout_marginStart="@dimen/margin_medium"
         android:layout_marginTop="@dimen/margin_medium"
         android:layout_toEndOf="@+id/iv_product"
-        android:text="@string/instock"
-        android:textColor="@color/instockColor"
+        android:text="@string/mmk"
+        android:textColor="@color/limeGreen"
         android:textSize="@dimen/text_regular" />
 
-    <org.mmtextview.components.MMTextView
-        android:id="@+id/tv_MMK"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="center|top"
-        android:layout_marginEnd="@dimen/margin_medium"
-        android:layout_marginTop="@dimen/margin_medium_2"
-        android:text="@string/mmk"
-        android:textColor="@color/textColor"
-        android:textSize="@dimen/text_regular_2x" />
 
 </RelativeLayout>

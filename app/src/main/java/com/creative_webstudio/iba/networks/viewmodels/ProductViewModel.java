@@ -35,13 +35,13 @@ public class ProductViewModel extends AndroidViewModel {
     public MutableLiveData<ApiResponse<ProductResponse>> getProduct(int page, long categoryId) {
         ProductCriteriaVO criteriaVO = new ProductCriteriaVO();
         if(categoryId == -1) {
-            criteriaVO.setPageNumber(page);
+            criteriaVO.setPageNumber(String.valueOf(page));
             criteriaVO.setWithOrderUnits(true);
             criteriaVO.setProductCategoryId(null);
             criteriaVO.setThumbnailType(1);
             criteriaVO.setWithThumbnails(true);
         }else {
-            criteriaVO.setPageNumber(page);
+            criteriaVO.setPageNumber(String.valueOf(page));
             criteriaVO.setWithOrderUnits(true);
             criteriaVO.setThumbnailType(1);
             criteriaVO.setWithThumbnails(true);

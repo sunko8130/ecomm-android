@@ -25,7 +25,7 @@ public class OrderHistoryViewModel extends AndroidViewModel {
     public OrderHistoryViewModel(@NonNull Application application) {
         super(application);
     }
-    public MutableLiveData<ApiResponse<OrderHistoryResponse>> getOrderHistory(int page) {
+    public MutableLiveData<ApiResponse<OrderHistoryResponse>> getOrderHistory() {
         // TODO: Handle page including criteria
         OrderHistoryCriteriaVO criteriaVO = new OrderHistoryCriteriaVO();
         criteriaVO.setWithOrderItems(true);

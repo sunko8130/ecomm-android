@@ -142,8 +142,10 @@ public class ProductDetailsActivity extends BaseActivity{
             }
             orderUnitVOList = productVO.getOrderUnits();
             tvPrice.setText(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit()) + " MMK");
-            GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(),productVO.getThumbnailIdsList().get(0));
-            Glide.with(this).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(ivDetailTopImage);
+            if(!productVO.getThumbnailIdsList().isEmpty()){
+                GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(),productVO.getThumbnailIdsList().get(0));
+                Glide.with(this).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(ivDetailTopImage);
+            }
             setUpSpinner();
             btnAddToCart.setOnClickListener(new View.OnClickListener() {
                 @Override

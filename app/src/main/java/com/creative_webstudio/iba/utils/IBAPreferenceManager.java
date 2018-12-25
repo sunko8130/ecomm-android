@@ -155,12 +155,13 @@ public class IBAPreferenceManager {
         String stringList;
         ArrayList<CartVO> cartList = new ArrayList<>();
         Gson gson = new Gson();
+        boolean adding =false;
         if (fromPreference("CartList", null) != null) {
             stringList = fromPreference("CartList", null);
             TypeToken<List<CartVO>> token = new TypeToken<List<CartVO>>() {};
             cartList = gson.fromJson(stringList, token.getType());
         }
-        boolean adding =false;
+
         for(CartVO cart:cartList){
             if(cart.getProductId()==cartVO.getProductId() && cart.getOrderUnitId()==cartVO.getOrderUnitId()){
                 cart.setQuantity(cart.getQuantity()+cartVO.getQuantity());
