@@ -12,9 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.CartAdapter;
@@ -22,6 +20,7 @@ import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.datas.vos.CartShowVO;
 import com.creative_webstudio.iba.datas.vos.OrderHistoryVO;
 import com.creative_webstudio.iba.datas.vos.OrderItemVO;
+import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.OrderHistoryViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
@@ -32,6 +31,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Response;
 
 public class OrderItemsActivity extends BaseActivity {
     @BindView(R.id.recycler_order_item)
@@ -70,7 +70,6 @@ public class OrderItemsActivity extends BaseActivity {
         mAdapter = new CartAdapter(this);
         rvOrderItem.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvOrderItem.setAdapter(mAdapter);
-
         if (getIntent().hasExtra("OrderVO")) {
             String json = getIntent().getStringExtra("OrderVO");
             Gson gson = new Gson();
@@ -78,41 +77,26 @@ public class OrderItemsActivity extends BaseActivity {
         }
 
         if (!orderHistoryVO.getStatus().equals("Pending")) {
-            canUpdate = false;
             btnCancel.setText(orderHistoryVO.getStatus());
-            if (!orderHistoryVO.getStatus().equals("Canceled")) {
+            if (!orderHistoryVO.getStatus().equals("Customer Canceled")) {
                 btnCancel.setTextColor(ContextCompat.getColor(this, R.color.limeGreen));
             } else {
-                btnCancel.setTextColor(ContextCompat.getColor(this, R.color.indianRed));
+                btnCancel.setTextColor(ContextCompat.getColor(this, R.color.redFull));
             }
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
-                    builder.setTitle("Denied!");
-                    builder.setMessage("You can't update this order!");
-                    builder.setPositiveButton("Ok", (dialog, which) -> {
-                        dialog.dismiss();
-                    });
-                    AlertDialog productDialog = builder.create();
-                    productDialog.show();
-                }
-            });
+            disableCancel();
         } else {
             canUpdate = true;
-            btnCancel.setText("Cancel");
-            btnCancel.setTextColor(ContextCompat.getColor(this, R.color.redFull));
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
-                    builder.setTitle("Are Your Sure!");
-                    builder.setMessage("Do You want to cancel this order?");
-                    builder.setPositiveButton("Ok", (dialog, which) -> cancelOrder(orderHistoryVO.getId()));
-                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-                    AlertDialog productDialog = builder.create();
-                    productDialog.show();
-                }
+            btnCancel.setText("Cancel Order");
+            btnCancel.setTextColor(ContextCompat.getColor(this, R.color.whiteFull));
+            btnCancel.setBackground(getDrawable(R.drawable.round_rect_black_line_cancel));
+            btnCancel.setOnClickListener(view -> {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
+                builder.setTitle("Are Your Sure!");
+                builder.setMessage("Do You want to cancel this order?");
+                builder.setPositiveButton("Ok", (dialog, which) -> cancelOrder(orderHistoryVO.getId()));
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                AlertDialog productDialog = builder.create();
+                productDialog.show();
             });
         }
         itemList = orderHistoryVO.getOrderItems();
@@ -125,70 +109,111 @@ public class OrderItemsActivity extends BaseActivity {
     }
 
     private void cancelOrder(long itemId) {
-        loadingDialog = CustomDialog.loadingDialog2(this, "Canceling!", "Canceling Your Order!.Please wait!");
-        loadingDialog.show();
-        OrderHistoryViewModel viewModel = ViewModelProviders.of(this).get(OrderHistoryViewModel.class);
-        viewModel.cancelOrder(itemId).observe(this, apiResponse -> {
-            if (loadingDialog.isShowing()) {
-                loadingDialog.dismiss();
-            }
-            if (apiResponse.getData() != null) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
-                builder.setTitle("Success");
-                builder.setMessage("Your order update is success!");
-                builder.setPositiveButton("Ok", (dialog, which) -> {
-                    dialog.dismiss();
-                });
-                AlertDialog productDialog = builder.create();
-                productDialog.show();
-                btnCancel.setText("Canceled");
-                btnCancel.setTextColor(ContextCompat.getColor(this, R.color.redFull));
-            } else {
-                if (apiResponse.getError() instanceof ApiException) {
-                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
-                    if (errorCode == 401) {
-                        super.refreshAccessToken();
-                    } else if (errorCode == 204) {
-                        // TODO: Server response successful but there is no data (Empty response).
-                    } else if (errorCode == 200) {
-                        // TODO: Reach End of List
-                        Snackbar.make(rvOrderItem, "End of Product List", Snackbar.LENGTH_LONG).show();
-                    }
-                } else {
-                    Snackbar.make(rvOrderItem, "Can't update your order.Try Again Soon!", Snackbar.LENGTH_LONG).show();
-                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                cancelOrder(itemId);
+            });
+        } else {
+            loadingDialog = CustomDialog.loadingDialog2(this, "Canceling!", "Canceling Your Order!.Please wait!");
+            loadingDialog.show();
+            OrderHistoryViewModel viewModel = ViewModelProviders.of(this).get(OrderHistoryViewModel.class);
+            viewModel.cancelOrder(itemId).observe(this, apiResponse -> {
+                if (loadingDialog.isShowing()) {
+                    loadingDialog.dismiss();
                 }
-            }
+                if (apiResponse.getData() != null) {
+                    canUpdate = false;
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
+                    builder.setTitle("Success");
+                    builder.setMessage("Your order update is success!");
+                    builder.setPositiveButton("Ok", (dialog, which) -> {
+                        dialog.dismiss();
+                        disableCancel();
+                    });
+                    AlertDialog productDialog = builder.create();
+                    productDialog.show();
+                    btnCancel.setText("Customer Canceled");
+                    btnCancel.setTextColor(ContextCompat.getColor(this, R.color.redFull));
+                    btnCancel.setBackground(getDrawable(R.drawable.round_rect_black_line));
+                } else {
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            super.refreshAccessToken();
+                        } else if (errorCode == 204) {
+                            // TODO: Server response successful but there is no data (Empty response).
+                        } else if (errorCode == 200) {
+                            // TODO: Reach End of List
+                            Snackbar.make(rvOrderItem, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        }
+                    } else {
+                        retryDialog.show();
+                        retryDialog.tvRetry.setText("No Internet Connection");
+                        retryDialog.btnRetry.setOnClickListener(v -> {
+                            retryDialog.dismiss();
+                            cancelOrder(itemId);
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    private void disableCancel() {
+        btnCancel.setOnClickListener(view -> {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
+            builder.setTitle("Denied!");
+            builder.setMessage("You can't update this order!");
+            builder.setPositiveButton("Ok", (dialog, which) -> dialog.dismiss());
+            AlertDialog productDialog = builder.create();
+            productDialog.show();
         });
     }
 
     private void getOrderItems(long[] itemIds) {
-        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Order Items.Please wait!");
-        loadingDialog.show();
-        OrderHistoryViewModel viewModel = ViewModelProviders.of(this).get(OrderHistoryViewModel.class);
-        viewModel.getOrderItems(itemIds).observe(this, apiResponse -> {
-            if (loadingDialog.isShowing()) {
-                loadingDialog.dismiss();
-            }
-            if (apiResponse.getData() != null) {
-                itemList = apiResponse.getData();
-                setUpAdapter(itemList);
-            } else {
-                if (apiResponse.getError() instanceof ApiException) {
-                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
-                    if (errorCode == 401) {
-                        super.refreshAccessToken();
-                    } else if (errorCode == 204) {
-                        // TODO: Server response successful but there is no data (Empty response).
-                    } else if (errorCode == 200) {
-                        // TODO: Reach End of List
-                        Snackbar.make(rvOrderItem, "End of Product List", Snackbar.LENGTH_LONG).show();
-                    }
-                } else {
-                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                getOrderItems(itemIds);
+            });
+        } else {
+            loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Order Items.Please wait!");
+            loadingDialog.show();
+            OrderHistoryViewModel viewModel = ViewModelProviders.of(this).get(OrderHistoryViewModel.class);
+            viewModel.getOrderItems(itemIds).observe(this, apiResponse -> {
+                if (loadingDialog.isShowing()) {
+                    loadingDialog.dismiss();
                 }
-            }
-        });
+                if (apiResponse.getData() != null) {
+                    itemList = apiResponse.getData();
+                    setUpAdapter(itemList);
+                } else {
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            super.refreshAccessToken();
+                        } else if (errorCode == 204) {
+                            // TODO: Server response successful but there is no data (Empty response).
+                        } else if (errorCode == 200) {
+                            // TODO: Reach End of List
+                            Snackbar.make(rvOrderItem, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        }
+                    } else {
+                        retryDialog.show();
+                        retryDialog.tvRetry.setText("No Internet Connection");
+                        retryDialog.btnRetry.setOnClickListener(v -> {
+                            retryDialog.dismiss();
+                            getOrderItems(itemIds);
+                        });
+                    }
+                }
+            });
+        }
     }
 
     private void setUpAdapter(List<OrderItemVO> itemList) {
@@ -214,5 +239,10 @@ public class OrderItemsActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
+        getOrderItems(itemIds);
     }
 }

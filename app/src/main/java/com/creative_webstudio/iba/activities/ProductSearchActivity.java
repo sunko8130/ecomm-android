@@ -8,16 +8,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -25,11 +22,9 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.SearchAdapter;
 import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
-import com.creative_webstudio.iba.datas.models.IbaModel;
-import com.creative_webstudio.iba.datas.vos.CartVO;
-import com.creative_webstudio.iba.datas.vos.CriteriaVO;
-import com.creative_webstudio.iba.datas.vos.ProductCriteriaVO;
+import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
+import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.mvp.presenters.ProductSearchPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductSearchView;
@@ -42,6 +37,7 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Response;
 
 public class ProductSearchActivity extends BaseActivity implements ProductSearchView, SearchView.OnQueryTextListener {
 
@@ -64,6 +60,8 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
     EmptyViewPod vpEmpty;
 
     SearchAdapter searchAdapter;
+
+    ProductCriteria criteriaVO;
     private ProductSearchPresenter mPresenter;
     private List<ProductVO> mProductVOS;
     private ProductSearchViewModel mProductSearchViewModel;
@@ -134,7 +132,7 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
     @Override
     public boolean onQueryTextSubmit(String query) {
         String userInput = query.toLowerCase();
-        ProductCriteriaVO criteriaVO = new ProductCriteriaVO();
+        criteriaVO = new ProductCriteria();
         criteriaVO.setWord(userInput);
         criteriaVO.setPageNumber(null);
         criteriaVO.setWithOrderUnits(true);
@@ -165,7 +163,7 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
 
 //        String userInput = newText.toLowerCase();
 //        // mPresenter.onTapSearch(userInput);
-//        ProductCriteriaVO criteriaVO = new ProductCriteriaVO();
+//        ProductCriteria criteriaVO = new ProductCriteria();
 //        criteriaVO.setWord(userInput);
 //        criteriaVO.setPageNumber(0);
 //        getProductSearch(criteriaVO);
@@ -203,36 +201,56 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
 //       startActivity(ProductActivity.newIntent(this));
     }
 
-    public void getProductSearch(ProductCriteriaVO criteriaVO) {
-        searchAdapter.clearData();
-        loadingSearch.setVisibility(View.VISIBLE);
-        mProductSearchViewModel.getProductSearchList(criteriaVO).observe(this, apiResponse -> {
+    public void getProductSearch(ProductCriteria criteriaVO) {
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                getProductSearch(criteriaVO);
+            });
+        } else {
+            searchAdapter.clearData();
+            loadingSearch.setVisibility(View.VISIBLE);
+            mProductSearchViewModel.getProductSearchList(criteriaVO).observe(this, apiResponse -> {
 //            vpEmpty.setVisibility(View.VISIBLE);
-            loadingSearch.setVisibility(View.GONE);
-            if (apiResponse.getData() != null) {
-                mProductList = (ArrayList<ProductVO>) apiResponse.getData();
-                searchAdapter.setNewData(apiResponse.getData());
-            } else {
-                if (apiResponse.getError() instanceof ApiException) {
-                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
-                    if (errorCode == 401) {
-                        super.refreshAccessToken();
-                    } else if (errorCode == 204) {
-                        rvSearch.setEmptyView(vpEmpty);
-                    } else if (errorCode == 200) {
-                        // TODO: Reach End of List
-                        Snackbar.make(rvSearch, "End of Product List", Snackbar.LENGTH_LONG).show();
-                    }
+                loadingSearch.setVisibility(View.GONE);
+                if (apiResponse.getData() != null) {
+                    mProductList = (ArrayList<ProductVO>) apiResponse.getData();
+                    searchAdapter.setNewData(apiResponse.getData());
                 } else {
-                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            super.refreshAccessToken();
+                        } else if (errorCode == 204) {
+                            rvSearch.setEmptyView(vpEmpty);
+                        } else if (errorCode == 200) {
+                            // TODO: Reach End of List
+                            Snackbar.make(rvSearch, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        }
+                    } else {
+                        retryDialog.show();
+                        retryDialog.tvRetry.setText("No Internet Connection");
+                        retryDialog.btnRetry.setOnClickListener(v -> {
+                            retryDialog.dismiss();
+                            getProductSearch(criteriaVO);
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public void onItemClick(ProductVO data) {
         Gson gson = new Gson();
         String json = gson.toJson(data);
+        finish();
         startActivity(ProductDetailsActivity.newIntent(this, "ProductSearch", json));
+    }
+
+    @Override
+    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
+        getProductSearch(criteriaVO);
     }
 }

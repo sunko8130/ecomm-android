@@ -48,6 +48,7 @@ public class CustomDialog {
         builder.setTitle(title);
         builder.setView(inflate_dialog);
         AlertDialog productDialog = builder.create();
+        productDialog.setCanceledOnTouchOutside(false);
         return productDialog;
     }
 

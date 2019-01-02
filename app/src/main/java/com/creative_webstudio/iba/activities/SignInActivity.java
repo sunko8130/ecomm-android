@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,7 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.components.CustomRetryDialog;
 import com.creative_webstudio.iba.mvp.presenters.SignInPresenter;
 import com.creative_webstudio.iba.mvp.views.SignInView;
+import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
 
@@ -40,8 +42,11 @@ public class SignInActivity extends BaseActivity implements SignInView {
     private SignInPresenter mPresenter;
     private boolean connected = false;
 
-    //loadingDialog
+    //RetryDialog
     CustomRetryDialog dialog;
+
+    //show loading
+    AlertDialog loadingDialog;
 
     private IBAPreferenceManager ibaShared;
 
@@ -55,20 +60,14 @@ public class SignInActivity extends BaseActivity implements SignInView {
         setContentView(R.layout.activity_sign_in);
         ButterKnife.bind(this, this);
 
+        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading.Please wait!");
         mPresenter = ViewModelProviders.of(this).get(SignInPresenter.class);
         mPresenter.initPresenter(this);
         ibaShared = new IBAPreferenceManager(this);
 
         dialog = new CustomRetryDialog(SignInActivity.this);
         dialog.setCanceledOnTouchOutside(false);
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signIn();
-            }
-        });
-
-        getResponse();
+        btnSignIn.setOnClickListener(view -> signIn());
     }
 
     public void signIn() {
@@ -84,12 +83,9 @@ public class SignInActivity extends BaseActivity implements SignInView {
         if (!connected) {
             dialog.show();
             dialog.tvRetry.setText("No Internet Connection");
-            dialog.btnRetry.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    signIn();
-                }
+            dialog.btnRetry.setOnClickListener(v -> {
+                dialog.dismiss();
+                signIn();
             });
             return;
         }
@@ -101,43 +97,39 @@ public class SignInActivity extends BaseActivity implements SignInView {
         } else {
             btnSignIn.setClickable(false);
             mPresenter.getToken(etUserName.getText().toString(), etPassword.getText().toString());
+            getResponse();
         }
+
     }
 
     public void getResponse(){
-        mPresenter.getResponseCode().observe(this, new Observer<Integer>() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onChanged(@Nullable Integer integer) {
-                switch (integer) {
-                    case 200:
-                        startActivity(ProductActivity.newIntent(SignInActivity.this));
-                        break;
-                    case 400:
-                        dialog.show();
-                        dialog.tvRetry.setText("Invalid User Name or Password");
-                        dialog.btnRetry.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+        loadingDialog.show();
+        mPresenter.getResponseCode().observe(this, integer -> {
+            if(loadingDialog.isShowing()){
+                loadingDialog.dismiss();
+            }
+            switch (integer) {
+                case 200:
+                    startActivity(ProductActivity.newIntent(SignInActivity.this));
+                    break;
+                case 400:
+                    dialog.show();
+                    dialog.tvRetry.setText("Invalid User Name or Password");
+                    dialog.btnRetry.setOnClickListener(v -> {
 //                                tryConnection();
-                                dialog.dismiss();
-                                btnSignIn.setClickable(true);
-                            }
-                        });
-                        break;
-                    default:
-                        dialog.show();
-                        dialog.tvRetry.setText("Network Error");
-                        dialog.btnRetry.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                signIn();
-                                dialog.dismiss();
-                            }
-                        });
-                        Snackbar.make(btnSignIn, "Network Error", Snackbar.LENGTH_LONG).show();
-                        break;
-                }
+                        dialog.dismiss();
+                        btnSignIn.setClickable(true);
+                    });
+                    break;
+                default:
+                    dialog.show();
+                    dialog.tvRetry.setText("Network Error");
+                    dialog.btnRetry.setOnClickListener(v -> {
+                        signIn();
+                        dialog.dismiss();
+                    });
+                    Snackbar.make(btnSignIn, "Network Error", Snackbar.LENGTH_LONG).show();
+                    break;
             }
         });
     }

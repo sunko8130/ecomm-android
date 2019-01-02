@@ -1,8 +1,10 @@
-package com.creative_webstudio.iba.datas.vos;
+package com.creative_webstudio.iba.datas.criterias;
+
+import com.creative_webstudio.iba.datas.vos.CartVO;
 
 import java.util.List;
 
-public class OrderCriteriaVO {
+public class OrderCriteria {
 
     private List<CartVO> cartVOS;
 

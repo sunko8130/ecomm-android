@@ -176,8 +176,8 @@
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_minus" />
 
-                        <org.mmtextview.components.MMTextView
-                            android:id="@+id/tv_quantity"
+                        <EditText
+                            android:id="@+id/ed_quantity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"

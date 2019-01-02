@@ -5,9 +5,9 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 
 import com.creative_webstudio.iba.datas.ApiResponse;
-import com.creative_webstudio.iba.datas.vos.CategoryCriteriaVO;
+import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
-import com.creative_webstudio.iba.datas.vos.ProductCriteriaVO;
+import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.IbaAPI;
@@ -33,7 +33,7 @@ public class ProductViewModel extends AndroidViewModel {
      * @param categoryId The category id or -1 to ignore to get all products.
      */
     public MutableLiveData<ApiResponse<ProductResponse>> getProduct(int page, long categoryId) {
-        ProductCriteriaVO criteriaVO = new ProductCriteriaVO();
+        ProductCriteria criteriaVO = new ProductCriteria();
         if(categoryId == -1) {
             criteriaVO.setPageNumber(String.valueOf(page));
             criteriaVO.setWithOrderUnits(true);
@@ -73,7 +73,7 @@ public class ProductViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<ApiResponse<List<CategoryVO>>> getCategory() {
-        CategoryCriteriaVO criteriaVO = new CategoryCriteriaVO();
+        CategoryCriteria criteriaVO = new CategoryCriteria();
         criteriaVO.setType("MAIN");
         MutableLiveData<ApiResponse<List<CategoryVO>>> result = new MutableLiveData<>();
         ApiResponse<List<CategoryVO>> apiResponse = new ApiResponse();

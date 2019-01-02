@@ -6,9 +6,9 @@ import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
 import com.creative_webstudio.iba.datas.ApiResponse;
-import com.creative_webstudio.iba.datas.vos.OrderHistoryCriteriaVO;
+import com.creative_webstudio.iba.datas.criterias.OrderHistoryCriteria;
 import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
-import com.creative_webstudio.iba.datas.vos.OrderItemCriteria;
+import com.creative_webstudio.iba.datas.criterias.OrderItemCriteria;
 import com.creative_webstudio.iba.datas.vos.OrderItemVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.IbaAPI;
@@ -27,7 +27,9 @@ public class OrderHistoryViewModel extends AndroidViewModel {
     }
     public MutableLiveData<ApiResponse<OrderHistoryResponse>> getOrderHistory() {
         // TODO: Handle page including criteria
-        OrderHistoryCriteriaVO criteriaVO = new OrderHistoryCriteriaVO();
+        OrderHistoryCriteria criteriaVO = new OrderHistoryCriteria();
+        criteriaVO.setOrderBy("id");
+        criteriaVO.setOrder("DESC");
         criteriaVO.setWithOrderItems(true);
         MutableLiveData<ApiResponse<OrderHistoryResponse>> result = new MutableLiveData<>();
         ApiResponse<OrderHistoryResponse> apiResponse = new ApiResponse();
@@ -94,7 +96,7 @@ public class OrderHistoryViewModel extends AndroidViewModel {
         IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
         String accessToken = prefs.getAccessToken();
         String userAuth = "Bearer " + accessToken;
-        api.updateOrder(userAuth,orderId,"CANCELED")
+        api.updateOrder(userAuth,orderId,"CUSTOMER_CANCELED")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {

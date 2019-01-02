@@ -44,15 +44,12 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position, @NonNull List<Object> payloads) {
         super.onBindViewHolder(holder, position, payloads);
         if(mContext instanceof CartActivity) {
-            holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    CartShowVO cart = getItem(position);
-                    if (cart != null) {
-                        ((CartActivity) mContext).onRemoveCart(cart);
-                    }
-                    //((CartActivity) mContext).onClickItem(1,null,position);
+            holder.btnDelete.setOnClickListener(view -> {
+                CartShowVO cart = getItem(position);
+                if (cart != null) {
+                    ((CartActivity) mContext).onRemoveCart(cart);
                 }
+                //((CartActivity) mContext).onClickItem(1,null,position);
             });
         }else {
             holder.btnDelete.setVisibility(View.GONE);
@@ -84,7 +81,7 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
         @Override
         public void setData(CartShowVO data) {
             tvProductName.setText(data.getProductName());
-            tvPrice.setText(data.getPricePerUnit() + " MMK");
+            tvPrice.setText(data.getPricePerUnit() + " MMK" );
             tvQuantity.setText(data.getItemQuantity() + " " + data.getUnitShow());
             GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(), data.getThumbnailId());
             Glide.with(itemView.getContext())

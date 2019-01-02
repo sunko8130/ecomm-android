@@ -1,13 +1,13 @@
-package com.creative_webstudio.iba.datas.vos;
+package com.creative_webstudio.iba.datas.criterias;
 
 import java.lang.reflect.Array;
 
-public class CriteriaVO {
+public class Criteria {
 
     private String word;
     private int pageNumber;
 
-    public CriteriaVO() {
+    public Criteria() {
     }
 
     public String getWord() {

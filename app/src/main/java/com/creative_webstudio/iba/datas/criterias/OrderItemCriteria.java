@@ -1,4 +1,4 @@
-package com.creative_webstudio.iba.datas.vos;
+package com.creative_webstudio.iba.datas.criterias;
 
 public class OrderItemCriteria {
 

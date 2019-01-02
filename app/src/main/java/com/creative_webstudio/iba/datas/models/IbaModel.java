@@ -6,7 +6,7 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.creative_webstudio.iba.datas.vos.ProductCriteriaVO;
+import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.enents.TokenEvent;
@@ -16,7 +16,6 @@ import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -159,7 +158,7 @@ public class IbaModel extends BaseModel {
                 });
     }
 
-    public void getProductSearchList(final ProductCriteriaVO criteriaVO, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
+    public void getProductSearchList(final ProductCriteria criteriaVO, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
         String base = ibaPreference.fromPreference("AccessToken", "");
         String userAuth = "Bearer " + base;
         theApiProductSearch.getProductSearch(userAuth, criteriaVO)
@@ -211,7 +210,7 @@ public class IbaModel extends BaseModel {
     }
 
 
-//    public void getProduct(CriteriaVO criteriaVO, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
+//    public void getProduct(Criteria criteriaVO, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
 //        String base = ibaPreference.fromPreference("AccessToken", "");
 //        String auth = "Bearer " + base;
 //        theApiProductSearch.getProductPaging(auth, criteriaVO)

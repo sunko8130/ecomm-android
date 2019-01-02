@@ -27,6 +27,7 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.ProductAdapter;
 import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
+import com.creative_webstudio.iba.components.CustomRetryDialog;
 import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
@@ -91,7 +92,6 @@ public class ProductActivity extends BaseDrawerActivity {
     @BindView(R.id.vp_empty_product)
     EmptyViewPod vpEmpty;
 
-
     @Nullable
     @BindView(R.id.btn_refresh_empty)
     TextView tvEmpty;
@@ -105,13 +105,13 @@ public class ProductActivity extends BaseDrawerActivity {
     private ProductAdapter mProductAdapter;
     private CirclePageIndicator titlePageIndicator;
 
-    private int mCurrentPage;
+    private int mCurrentPage = 1;
     private boolean mIsLoading;
     private boolean mIsNoMoreData;
 
     private String[] items = {"All Product"};
     private String chooseItem;
-    private int checkedItem = -1;
+    private int checkedItem = 0;
 
     //cart items
     private int cartItems = 0;
@@ -125,7 +125,10 @@ public class ProductActivity extends BaseDrawerActivity {
 
     private ProductViewModel mProductViewModel;
 
+    //Scroll top
+    boolean scrollTop=true;
 
+    GridLayoutManager layoutManager;
     public static Intent newIntent(Context context) {
         return new Intent(context, ProductActivity.class);
     }
@@ -139,8 +142,9 @@ public class ProductActivity extends BaseDrawerActivity {
         rvProduct.setEmptyView(vpEmpty);
         mProductAdapter = new ProductAdapter(this);
         mCategoryList = new ArrayList<>();
+
         // TODO: specify the span count in res directory for phone and tablet size.
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        layoutManager = new GridLayoutManager(this, 2);
         rvProduct.setLayoutManager(layoutManager);
         rvProduct.setAdapter(mProductAdapter);
         mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
@@ -153,7 +157,7 @@ public class ProductActivity extends BaseDrawerActivity {
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             categoryId = -1;
-            checkedItem = -1;
+            checkedItem = 0;
             btnProduct.setText(items[0]);
             refreshData();
         });
@@ -174,15 +178,80 @@ public class ProductActivity extends BaseDrawerActivity {
                     aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
                     getProduct(mCurrentPage, categoryId);
                 }
+                if(layoutManager.findFirstCompletelyVisibleItemPosition()==0){
+                    scrollTop=true;
+                }else {
+                    scrollTop=false;
+                }
             }
         });
 
+        setupViewPager();
+//        getProduct(++mCurrentPage, categoryId);
+    }
+
+    private void refreshData() {
+        mProductAdapter.clearData();
+        mIsLoading = true;
+        mCurrentPage = 1;
+        if (categoryId == -1) {
+            getProduct(mCurrentPage, categoryId);
+        } else {
+            getProduct(mCurrentPage, mCategoryList.get(categoryId).getId());
+        }
+    }
+
+    private void getCategory() {
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                getCategory();
+            });
+        } else {
+            mProductViewModel.getCategory().observe(this, apiResponse -> {
+                if (apiResponse.getData() != null) {
+                    mCategoryList = (ArrayList<CategoryVO>) apiResponse.getData();
+                    setupCategory();
+                    getProduct(mCurrentPage, categoryId);
+                } else {
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            super.refreshAccessToken();
+                        } else if (errorCode == 204) {
+                            // TODO: Server response successful but there is no data (Empty response).
+                        } else if (errorCode == 200) {
+                            // TODO: Reach End of List
+                            Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        }
+                    } else {
+                        retryDialog.show();
+                        retryDialog.tvRetry.setText("No Internet Connection");
+                        retryDialog.btnRetry.setOnClickListener(v -> {
+                            retryDialog.dismiss();
+                            getCategory();
+                        });
+                    }
+                }
+            });
+        }
+    }
+
+    private void setupCategory() {
+        items = new String[mCategoryList.size() + 1];
+        items[0] = "All Product";
+        for (int i = 0; i < mCategoryList.size(); i++) {
+            items[i + 1] = mCategoryList.get(i).getName();
+        }
         btnProduct.setOnClickListener(v -> {
             final AlertDialog.Builder builder = new AlertDialog.Builder(ProductActivity.this);
             builder.setTitle("Filter by");
             builder.setSingleChoiceItems(items, checkedItem, (dialog, item) -> {
                 chooseItem = items[item];
                 categoryId = item - 1;
+                checkedItem=item;
             });
             builder.setPositiveButton("Ok", (dialog, which) -> {
                 btnProduct.setText(chooseItem);
@@ -194,83 +263,52 @@ public class ProductActivity extends BaseDrawerActivity {
             productDialog.show();
 
         });
-
-        setupViewPager();
-        getProduct(++mCurrentPage, categoryId);
-    }
-
-    private void refreshData() {
-        mProductAdapter.clearData();
-        mIsLoading = true;
-        mCurrentPage = 1;
-        if (categoryId == -1) {
-            getProduct(mCurrentPage, categoryId);
-        } else {
-            getProduct(mCurrentPage,mCategoryList.get(categoryId).getId());
-        }
-    }
-
-    private void getCategory() {
-        mProductViewModel.getCategory().observe(this, apiResponse -> {
-            if (apiResponse.getData() != null) {
-                mCategoryList = (ArrayList<CategoryVO>) apiResponse.getData();
-                setupCategory();
-            } else {
-                if (apiResponse.getError() instanceof ApiException) {
-                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
-                    if (errorCode == 401) {
-                        super.refreshAccessToken();
-                    } else if (errorCode == 204) {
-                        // TODO: Server response successful but there is no data (Empty response).
-                    } else if (errorCode == 200) {
-                        // TODO: Reach End of List
-                        Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
-                    }
-                } else {
-                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
-                }
-            }
-        });
-    }
-
-    private void setupCategory() {
-        items = new String[mCategoryList.size() + 1];
-        items[0] = "All Product";
-        for (int i = 0; i < mCategoryList.size(); i++) {
-            items[i + 1] = mCategoryList.get(i).getName();
-        }
     }
 
     private void getProduct(int page, long productCategoryId) {
-        mProductViewModel.getProduct(page, productCategoryId).observe(this, apiResponse -> {
-            if (swipeRefreshLayout.isRefreshing()) {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-            aniLoadMore.setVisibility(View.GONE);
-            if (apiResponse.getData() != null) {
-                if (mCurrentPage == 1) {
-                    expand();
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                getProduct(page, productCategoryId);
+            });
+        } else {
+            mProductViewModel.getProduct(page, productCategoryId).observe(this, apiResponse -> {
+                if (swipeRefreshLayout.isRefreshing()) {
+                    swipeRefreshLayout.setRefreshing(false);
                 }
-                categoryId = (int) productCategoryId;
-                mCurrentPage++;
-                mIsLoading = false;
-                mProductAdapter.appendNewData(apiResponse.getData().getProductVOList());
-            } else {
-                if (apiResponse.getError() instanceof ApiException) {
-                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
-                    if (errorCode == 401) {
-                        super.refreshAccessToken();
-                    } else if (errorCode == 204) {
-                        // TODO: Server response successful but there is no data (Empty response).
-                    } else if (errorCode == 200) {
-                        // TODO: Reach End of List
-                        Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
+                aniLoadMore.setVisibility(View.GONE);
+                if (apiResponse.getData() != null) {
+                    if (mCurrentPage == 1) {
+                        expand();
                     }
+                    categoryId = (int) productCategoryId;
+                    mCurrentPage++;
+                    mIsLoading = false;
+                    mProductAdapter.appendNewData(apiResponse.getData().getProductVOList());
                 } else {
-                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            super.refreshAccessToken();
+                        } else if (errorCode == 204) {
+                            // TODO: Server response successful but there is no data (Empty response).
+                        } else if (errorCode == 200) {
+                            // TODO: Reach End of List
+                            Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        }
+                    } else {
+                        retryDialog.show();
+                        retryDialog.tvRetry.setText("No Internet Connection");
+                        retryDialog.btnRetry.setOnClickListener(v -> {
+                            retryDialog.dismiss();
+                            getProduct(page, productCategoryId);
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -288,9 +326,21 @@ public class ProductActivity extends BaseDrawerActivity {
                 startActivity(new Intent(this, SignInActivity.class));
             } else {
                 // TODO: Show the retry button
+                retryDialog.show();
+                retryDialog.tvRetry.setText("Network Error");
+                retryDialog.btnRetry.setOnClickListener(v -> {
+                    retryDialog.dismiss();
+                    super.refreshAccessToken();
+                });
             }
         } else {
             // TODO: Show the retry button for network related error.
+            retryDialog.show();
+            retryDialog.tvRetry.setText("Network related Error");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                super.refreshAccessToken();
+            });
         }
     }
 
@@ -328,7 +378,6 @@ public class ProductActivity extends BaseDrawerActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_search) {
-            ibaShared.removePreference("CartList");
             startActivity(ProductSearchActivity.newIntent(this));
             return true;
         } else if (item.getItemId() == R.id.menu_cart) {
@@ -378,6 +427,16 @@ public class ProductActivity extends BaseDrawerActivity {
             cartItems = 0;
         }
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!scrollTop){
+            layoutManager.smoothScrollToPosition(rvProduct, null,0);
+            expand();
+        }else {
+            super.onBackPressed();
+        }
     }
 
     public void onItemClick(ProductVO data) {

@@ -1,16 +1,18 @@
 package com.creative_webstudio.iba.networks;
 
 import com.creative_webstudio.iba.datas.vos.CartVO;
-import com.creative_webstudio.iba.datas.vos.CategoryCriteriaVO;
+import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
-import com.creative_webstudio.iba.datas.vos.OrderHistoryCriteriaVO;
+import com.creative_webstudio.iba.datas.criterias.OrderHistoryCriteria;
+import com.creative_webstudio.iba.datas.vos.OrderResponseVO;
 import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
-import com.creative_webstudio.iba.datas.vos.OrderItemCriteria;
+import com.creative_webstudio.iba.datas.criterias.OrderItemCriteria;
 import com.creative_webstudio.iba.datas.vos.OrderItemVO;
-import com.creative_webstudio.iba.datas.vos.ProductCriteriaVO;
+import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
+import com.creative_webstudio.iba.persistence.IbaDatabase;
 
 import java.util.List;
 
@@ -48,36 +50,36 @@ public interface IbaAPI {
     @POST("product/search/list")
     Observable<Response<List<ProductVO>>> getProductSearch(
             @Header("Authorization") String authHeader,
-            @Body ProductCriteriaVO criteriaVO);
+            @Body ProductCriteria criteriaVO);
 
 //    @POST("product/search/paging")
 //    Observable<Response<ProductResponse>> getProductPaging(
 //            @Header("Authorization") String authHeader,
-//            @Body CriteriaVO criteriaVO);
+//            @Body Criteria criteriaVO);
 
     @POST("product/search/paging")
     Observable<Response<ProductResponse>> getProduct(@Header("Authorization") String authHeader,
-                                                     @Body ProductCriteriaVO criteriaVO);
+                                                     @Body ProductCriteria criteriaVO);
 
     @POST("product/search/paging")
     Observable<Response<ProductResponse>> getProductById(@Header("Authorization") String authHeader,
-                                                     @Body ProductCriteriaVO criteriaVO);
+                                                     @Body ProductCriteria criteriaVO);
 
 //    @POST("order_unit/search/list")
 //    Observable<Response<List<OrderUnitVO>>> getOrderUnit(@Header("Authorization") String authHeader,
-//                                                         @Body CriteriaVO criteriaVO);
+//                                                         @Body Criteria criteriaVO);
 
     @POST("product_category/search/list")
     Observable<Response<List<CategoryVO>>> getCategory(@Header("Authorization") String authHeader,
-                                                       @Body CategoryCriteriaVO criteriaVO);
+                                                       @Body CategoryCriteria criteriaVO);
 
     @POST("order/add")
-    Observable<Response<Integer>> sendOrder(@Header("Authorization") String authHeader,
-                                                       @Body List<CartVO> criteriaVO);
+    Observable<Response<OrderResponseVO>> sendOrder(@Header("Authorization") String authHeader,
+                                                                                  @Body List<CartVO> criteriaVO);
 
     @POST("order/search/paging")
     Observable<Response<OrderHistoryResponse>> getOrderHistory(@Header("Authorization") String authHeader,
-                                                               @Body OrderHistoryCriteriaVO criteriaVO);
+                                                               @Body OrderHistoryCriteria criteriaVO);
 
     @POST("order_item/search/list")
     Observable<Response<List<OrderItemVO>>> getOrderItems(@Header("Authorization") String authHeader,

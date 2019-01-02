@@ -7,10 +7,10 @@
         <!--android:title="@string/cart"-->
         <!--app:showAsAction="always" />-->
 
-    <item
-        android:id="@+id/menuProduct"
-        android:icon="@drawable/ic_shopping_cart_black_24dp"
-        android:title="Product" />
+    <!--<item-->
+        <!--android:id="@+id/menuProduct"-->
+        <!--android:icon="@drawable/ic_shopping_cart_black_24dp"-->
+        <!--android:title="Product" />-->
 
     <!--<item-->
         <!--android:id="@+id/menuCart"-->

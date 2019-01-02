@@ -1,6 +1,6 @@
-package com.creative_webstudio.iba.datas.vos;
+package com.creative_webstudio.iba.datas.criterias;
 
-public class ProductCriteriaVO {
+public class ProductCriteria {
 
     private long[] includeIds;
     private boolean withOrderUnits;

@@ -11,7 +11,7 @@ public class ProductDetailViewModel extends AndroidViewModel {
     }
 
 //    public MutableLiveData<ApiResponse<OrderUnitResponse>> getOrderUnit(long productId) {
-//        CriteriaVO criteriaVO = new CriteriaVO();
+//        Criteria criteriaVO = new Criteria();
 //        criteriaVO.setProductId(productId);
 //        MutableLiveData<ApiResponse<OrderUnitResponse>> result = new MutableLiveData<>();
 //        ApiResponse<OrderUnitResponse> apiResponse = new ApiResponse();

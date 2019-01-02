@@ -26,7 +26,8 @@
             android:textColor="@color/redFull"
             android:textAllCaps="false"
             android:background="@drawable/round_rect_black_line"
-            android:layout_margin="5dp"/>
+            android:layout_margin="5dp"
+            android:padding="5dp" />
     </RelativeLayout>
 
     <com.creative_webstudio.iba.components.SmartRecyclerView

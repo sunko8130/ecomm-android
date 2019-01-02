@@ -11,8 +11,10 @@ import android.view.MenuItem;
 
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.OrderHistoryAdapter;
+import com.creative_webstudio.iba.components.CustomRetryDialog;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.datas.vos.OrderHistoryVO;
+import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.OrderHistoryViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
@@ -25,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Response;
 
 public class OrderHistoryActivity extends BaseActivity {
     @BindView(R.id.recycler_order_history)
@@ -54,7 +57,7 @@ public class OrderHistoryActivity extends BaseActivity {
         mAdapter = new OrderHistoryAdapter(this);
         rvOrderHistory.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvOrderHistory.setAdapter(mAdapter);
-        getOrderHistory();
+//        getOrderHistory();
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             mAdapter.clearData();
@@ -81,40 +84,65 @@ public class OrderHistoryActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mAdapter.clearData();
+        getOrderHistory();
     }
 
     private void getOrderHistory() {
-        loadingDialog.show();
-        OrderHistoryViewModel viewModel = ViewModelProviders.of(this).get(OrderHistoryViewModel.class);
-        viewModel.getOrderHistory().observe(this, apiResponse -> {
-            if(loadingDialog.isShowing()){
-                loadingDialog.dismiss();
-            }
-            swipeRefreshLayout.setRefreshing(false);
-            if (apiResponse.getData() != null) {
-                orderList = apiResponse.getData().getOrderHistoryList();
-                mAdapter.appendNewData(orderList);
-            } else {
-                if (apiResponse.getError() instanceof ApiException) {
-                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
-                    if (errorCode == 401) {
-                        super.refreshAccessToken();
-                    } else if (errorCode == 204) {
-                        // TODO: Server response successful but there is no data (Empty response).
-                    } else if (errorCode == 200) {
-                        // TODO: Reach End of List
-                        Snackbar.make(rvOrderHistory, "End of Product List", Snackbar.LENGTH_LONG).show();
-                    }
-                } else {
-                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                getOrderHistory();
+            });
+        }else {
+            loadingDialog.show();
+            OrderHistoryViewModel viewModel = ViewModelProviders.of(this).get(OrderHistoryViewModel.class);
+            viewModel.getOrderHistory().observe(this, apiResponse -> {
+                if (loadingDialog.isShowing()) {
+                    loadingDialog.dismiss();
                 }
-            }
-        });
+                swipeRefreshLayout.setRefreshing(false);
+                if (apiResponse.getData() != null) {
+                    orderList = apiResponse.getData().getOrderHistoryList();
+                    List<OrderHistoryVO> temp = new ArrayList<>();
+                    for(int i=orderList.size()-1;i>0;i--){
+                        temp.add(orderList.get(i));
+                    }
+                    mAdapter.appendNewData(temp);
+                } else {
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            super.refreshAccessToken();
+                        } else if (errorCode == 204) {
+                            // TODO: Server response successful but there is no data (Empty response).
+                        } else if (errorCode == 200) {
+                            // TODO: Reach End of List
+                            Snackbar.make(rvOrderHistory, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        }
+                    } else {
+                        retryDialog.show();
+                        retryDialog.tvRetry.setText("No Internet Connection");
+                        retryDialog.btnRetry.setOnClickListener(v -> {
+                            retryDialog.dismiss();
+                            getOrderHistory();
+                        });
+                    }
+                }
+            });
+        }
     }
 
     public void onItemClick(OrderHistoryVO orderHistoryVO) {
         Gson gson = new Gson();
         String json = gson.toJson(orderHistoryVO);
         startActivity(OrderItemsActivity.newIntent(this, json));
+    }
+
+    @Override
+    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
+        getOrderHistory();
     }
 }

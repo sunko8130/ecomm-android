@@ -8,6 +8,8 @@ public class CartShowVO {
     private String productName;
     private String unitShow;
     private long pricePerUnit;
+    private int max;
+    private int min;
 
     public long getProductId() {
         return productId;
@@ -63,5 +65,21 @@ public class CartShowVO {
 
     public void setPricePerUnit(long pricePerUnit) {
         this.pricePerUnit = pricePerUnit;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public void setMin(int min) {
+        this.min = min;
     }
 }

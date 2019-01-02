@@ -4,6 +4,7 @@ public class CartVO {
     private long productId;
     private long orderUnitId;
     private int quantity;
+    private int unitInStock;
 
     public CartVO() {
     }
@@ -30,5 +31,13 @@ public class CartVO {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getUnitInStock() {
+        return unitInStock;
+    }
+
+    public void setUnitInStock(int unitInStock) {
+        this.unitInStock = unitInStock;
     }
 }

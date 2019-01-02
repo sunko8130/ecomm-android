@@ -34,6 +34,12 @@ public class OrderUnitVO {
     @SerializedName("pricePerUnit")
     private long pricePerUnit;
 
+    @SerializedName("unitInStock")
+    private int unitInStock;
+
+    @SerializedName("notifyQuantity")
+    private int notifyQuantity;
+
     @SerializedName("status")
     private String status;
 
@@ -135,5 +141,21 @@ public class OrderUnitVO {
 
     public void setMinimumOrderQuantity(int minimumOrderQuantity) {
         this.minimumOrderQuantity = minimumOrderQuantity;
+    }
+
+    public int getUnitInStock() {
+        return unitInStock;
+    }
+
+    public void setUnitInStock(int unitInStock) {
+        this.unitInStock = unitInStock;
+    }
+
+    public int getNotifyQuantity() {
+        return notifyQuantity;
+    }
+
+    public void setNotifyQuantity(int notifyQuantity) {
+        this.notifyQuantity = notifyQuantity;
     }
 }

@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.components.CountDrawable;
+import com.creative_webstudio.iba.components.CustomRetryDialog;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
@@ -42,7 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class ProductDetailsActivity extends BaseActivity{
+public class ProductDetailsActivity extends BaseActivity {
     @BindView(R.id.tv_toolbar_title)
     MMTextView tvToolBarTitle;
 
@@ -68,8 +69,8 @@ public class ProductDetailsActivity extends BaseActivity{
     @BindView(R.id.iv_minus)
     ImageView ivMinus;
 
-    @BindView(R.id.tv_quantity)
-    MMTextView tvQuantity;
+    @BindView(R.id.ed_quantity)
+    MMTextView edQuantity;
 
     @BindView(R.id.tv_price)
     MMTextView tvPrice;
@@ -93,12 +94,15 @@ public class ProductDetailsActivity extends BaseActivity{
 
     private int minQuantity = 1;
 
+    private int maxQuantity = 0;
+
     private int selectedItem = 0;
 
     private List<OrderUnitVO> orderUnitVOList;
 
     //cart items
     private int cartItems = 0;
+
 
     public static Intent newIntent(Context context, String backActivity) {
         Intent intent = new Intent(context, ProductDetailsActivity.class);
@@ -121,6 +125,7 @@ public class ProductDetailsActivity extends BaseActivity{
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         ibaShared = new IBAPreferenceManager(this);
         if (getIntent().hasExtra("BackActivity")) {
             backActivity = getIntent().getStringExtra("BackActivity");
@@ -130,7 +135,7 @@ public class ProductDetailsActivity extends BaseActivity{
 //        mPresenter = ViewModelProviders.of(this).get(ProductDetailsPresenter.class);
 //        mPresenter.initPresenter(this);
 
-        tvQuantity.setText(String.valueOf(quantity));
+        edQuantity.setText(String.valueOf(quantity));
         if (getIntent().hasExtra("productVo")) {
             String json = getIntent().getStringExtra("productVo");
             Gson gson = new Gson();
@@ -142,8 +147,8 @@ public class ProductDetailsActivity extends BaseActivity{
             }
             orderUnitVOList = productVO.getOrderUnits();
             tvPrice.setText(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit()) + " MMK");
-            if(!productVO.getThumbnailIdsList().isEmpty()){
-                GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(),productVO.getThumbnailIdsList().get(0));
+            if (!productVO.getThumbnailIdsList().isEmpty()) {
+                GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(), productVO.getThumbnailIdsList().get(0));
                 Glide.with(this).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(ivDetailTopImage);
             }
             setUpSpinner();
@@ -169,6 +174,7 @@ public class ProductDetailsActivity extends BaseActivity{
         cartVO.setProductId(productVO.getId());
         cartVO.setOrderUnitId(orderUnitVOList.get(selectedItem).getId());
         cartVO.setQuantity(quantity);
+        cartVO.setUnitInStock(orderUnitVOList.get(selectedItem).getUnitInStock());
         ibaShared.addItemToCart(cartVO);
         onResume();
     }
@@ -190,9 +196,12 @@ public class ProductDetailsActivity extends BaseActivity{
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 minQuantity = orderUnitVOList.get(i).getMinimumOrderQuantity();
+//                maxQuantity = orderUnitVOList.get(i).getUnitInStock();
+                maxQuantity = 100;
                 quantity = minQuantity;
                 selectedItem = i;
-                tvQuantity.setText(String.valueOf(quantity));
+                edQuantity.setText(String.valueOf(quantity));
+                tvPrice.setText(String.valueOf(orderUnitVOList.get(i).getPricePerUnit()));
             }
 
             @Override
@@ -202,14 +211,18 @@ public class ProductDetailsActivity extends BaseActivity{
         });
 
         ivPlus.setOnClickListener(view -> {
-            quantity++;
-            tvQuantity.setText(String.valueOf(quantity));
+            if (quantity >= maxQuantity) {
+                Snackbar.make(tvPrice, "Maximum order is :" + maxQuantity, Snackbar.LENGTH_SHORT).show();
+            } else {
+                quantity++;
+                edQuantity.setText(String.valueOf(quantity));
+            }
         });
 
         ivMinus.setOnClickListener(view -> {
             if (quantity > minQuantity) {
                 quantity--;
-                tvQuantity.setText(String.valueOf(quantity));
+                edQuantity.setText(String.valueOf(quantity));
             } else {
                 Snackbar.make(tvPrice, "Minimum order is :" + minQuantity, Snackbar.LENGTH_SHORT).show();
             }

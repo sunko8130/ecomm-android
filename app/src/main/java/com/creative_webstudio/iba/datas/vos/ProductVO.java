@@ -27,12 +27,8 @@ public class ProductVO {
     @SerializedName("productName")
     private String productName;
 
-    @SerializedName("unitInStock")
-    private int unitInStock;
-
     @SerializedName("description")
     private String description;
-
 
     @SerializedName("status")
     private String status;
@@ -106,14 +102,6 @@ public class ProductVO {
 
     public void setProductName(String productName) {
         this.productName = productName;
-    }
-
-    public int getUnitInStock() {
-        return unitInStock;
-    }
-
-    public void setUnitInStock(int unitInStock) {
-        this.unitInStock = unitInStock;
     }
 
     public String getDescription() {

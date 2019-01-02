@@ -1,6 +1,5 @@
 package com.creative_webstudio.iba.activities;
 
-import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -20,12 +19,15 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.CartAdapter;
 import com.creative_webstudio.iba.datas.vos.CartShowVO;
 import com.creative_webstudio.iba.datas.vos.CartVO;
+import com.creative_webstudio.iba.datas.vos.OrderResponseVO;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
+import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.CartViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
+import com.google.gson.Gson;
 
 import org.mmtextview.components.MMProgressDialog;
 import org.mmtextview.components.MMTextView;
@@ -36,6 +38,7 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Response;
 
 public class CartActivity extends BaseActivity implements View.OnClickListener {
     @Nullable
@@ -68,6 +71,9 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     private long total = 0;
     private int totalCartItem = 0;
 
+    //loading dialog
+    AlertDialog loadingDialog;
+
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, CartActivity.class);
         return intent;
@@ -86,9 +92,9 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         mCartAdapter = new CartAdapter(this);
         rvCart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvCart.setAdapter(mCartAdapter);
+        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Your Order.Please wait!");
         setUpData();
         btnOrder.setOnClickListener(this);
-
     }
 
     private void setUpData() {
@@ -101,9 +107,13 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
                 productIds[i] = cartVOList.get(i).getProductId();
             }
             // TODO: I have removed below line.
-//            if (cartVOList.size() > 1) {
+//            if (cartEditList.size() > 1) {
             if (!cartVOList.isEmpty()) {
                 getCartProducts(0, productIds);
+            } else {
+                tvTotal.setText(0 + " MMK");
+                tvSubtotal.setText(0 + " MMK");
+                tvCartCount.setText(0 + " Items in your cart.");
             }
 
         } else {
@@ -113,27 +123,44 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void getCartProducts(int page, long[] productIds) {
-        cartViewModel.getProductByID(page, productIds).observe(this, apiResponse -> {
-            if (apiResponse.getData() != null) {
-                productVOList = apiResponse.getData().getProductVOList();
-                setUpRecycler();
-            } else {
-                if (apiResponse.getError() instanceof ApiException) {
-                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
-                    if (errorCode == 401) {
-                        super.refreshAccessToken();
-                    } else if (errorCode == 204) {
-                        // TODO: Server response successful but there is no data (Empty response).
-                    } else if (errorCode == 200) {
-                        // TODO: Reach End of List
-                        Snackbar.make(rvCart, "End of Product List", Snackbar.LENGTH_LONG).show();
-                    }
-                } else {
-                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                getCartProducts(page, productIds);
+            });
+        } else {
+            loadingDialog.show();
+            cartViewModel.getProductByID(page, productIds).observe(this, apiResponse -> {
+                if (loadingDialog.isShowing()) {
+                    loadingDialog.dismiss();
                 }
-            }
-
-        });
+                if (apiResponse.getData() != null) {
+                    productVOList = apiResponse.getData().getProductVOList();
+                    setUpRecycler();
+                } else {
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            super.refreshAccessToken();
+                        } else if (errorCode == 204) {
+                            // TODO: Server response successful but there is no data (Empty response).
+                        } else if (errorCode == 200) {
+                            // TODO: Reach End of List
+                            Snackbar.make(rvCart, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        }
+                    } else {
+                        retryDialog.show();
+                        retryDialog.tvRetry.setText("Network error!");
+                        retryDialog.btnRetry.setOnClickListener(v -> {
+                            retryDialog.dismiss();
+                            getCartProducts(page, productIds);
+                        });
+                    }
+                }
+            });
+        }
     }
 
     private void setUpRecycler() {
@@ -147,15 +174,17 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
                     tempProduct = productVO;
                 }
             }
-            for (OrderUnitVO order : tempProduct.getOrderUnits()) {
-                if (order.getId() == cartVOList.get(i).getOrderUnitId()) {
-                    tempOrder = order;
+            if (tempProduct.getOrderUnits().size() > 0) {
+                for (OrderUnitVO order : tempProduct.getOrderUnits()) {
+                    if (order.getId() == cartVOList.get(i).getOrderUnitId()) {
+                        tempOrder = order;
+                    }
                 }
             }
             CartShowVO cartShowVO = new CartShowVO();
             cartShowVO.setProductName(tempProduct.getProductName());
             cartShowVO.setItemQuantity(cartVOList.get(i).getQuantity());
-            if(!tempProduct.getThumbnailIdsList().isEmpty()) {
+            if (!tempProduct.getThumbnailIdsList().isEmpty()) {
                 cartShowVO.setThumbnailId(tempProduct.getThumbnailIdsList().get(0));
             }
             cartShowVO.setUnitShow("- ( 1" + tempOrder.getUnitName() + " per " + tempOrder.getItemsPerUnit() + " " + tempOrder.getItemName() + ")");
@@ -211,6 +240,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         cartVO.setQuantity(cart.getItemQuantity());
         if (ibaShared.removeCart(cartVO)) {
             mCartAdapter.clearData();
+            Toast.makeText(this, "Removed!", Toast.LENGTH_SHORT).show();
             setUpData(); // Fetch data from server.
         }
     }
@@ -235,13 +265,13 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.btnOrder:
                 final AlertDialog.Builder builder = new AlertDialog.Builder(CartActivity.this);
-                if(cartVOList.size()<1){
+                if (cartVOList.size() < 1) {
                     builder.setTitle("Denied!");
                     builder.setMessage("You have no item to order!");
                     builder.setPositiveButton("Ok", (dialog, which) -> {
                         dialog.dismiss();
                     });
-                }else {
+                } else {
                     builder.setTitle("Are you sure?");
                     builder.setMessage("Do you want to order now?");
                     builder.setPositiveButton("Ok", (dialog, which) -> {
@@ -250,26 +280,45 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
                     builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
                 }
                 AlertDialog productDialog = builder.create();
+                productDialog.setCanceledOnTouchOutside(false);
                 productDialog.show();
                 break;
         }
     }
 
     private void sendOrder() {
-        MMProgressDialog dialog=CustomDialog.loadingDialog(this,"Sending!","Your Order is sending.Please wait!");
-        dialog.show();
+        MMProgressDialog loadingDialog = CustomDialog.loadingDialog(this, "Sending!", "Your Order is sending.Please wait!");
+        loadingDialog.show();
         cartViewModel.sendOrder(cartVOList).observe(this, apiResponse -> {
             if (apiResponse.getData() != null) {
-                Toast.makeText(this, "Your Order is Success", Toast.LENGTH_LONG).show();
-                cartVOList = new ArrayList<>();
-                ibaShared.AddListToCart(cartVOList);
-                if(dialog.isShowing()){
-                    dialog.dismiss();
+                if (loadingDialog.isShowing()) {
+                    loadingDialog.dismiss();
                 }
-                startActivity(new Intent(this, OrderHistoryActivity.class));
-                finish();
-//                cartVOList = new ArrayList<>();
-//                ibaShared.AddListToCart(cartVOList);
+                if (apiResponse.getData() instanceof Integer) {
+                    Toast.makeText(this, "Your Order is Success", Toast.LENGTH_LONG).show();
+                    cartVOList = new ArrayList<>();
+                    ibaShared.AddListToCart(cartVOList);
+                    startActivity(new Intent(this, OrderHistoryActivity.class));
+                    finish();
+                } else {
+                    List<CartVO> errorCart = (List<CartVO>) apiResponse.getData();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(errorCart);
+                    String productJson = gson.toJson(productVOList);
+                    //error order item;
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(CartActivity.this);
+                    builder.setTitle("Oops!");
+                    builder.setMessage("Some order items in this order is out of stock.Please Edit your order.");
+                    builder.setPositiveButton("Ok", (dialog, which) -> {
+                        startActivity(CartEditActivity.newIntent(this,json,productJson));
+                    });
+                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                    AlertDialog productDialog = builder.create();
+                    productDialog.setCanceledOnTouchOutside(false);
+                    productDialog.show();
+                }
+//                cartEditList = new ArrayList<>();
+//                ibaShared.AddListToCart(cartEditList);
 //                setUpData();
 //                mCartAdapter.clearData();
             } else {
@@ -282,12 +331,29 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
                     } else if (errorCode == 200) {
                         // TODO: Reach End of List
                         Snackbar.make(rvCart, "End of Product List", Snackbar.LENGTH_LONG).show();
+                    }else {
+                        retryDialog.show();
+                        retryDialog.tvRetry.setText("Network error!");
+                        retryDialog.btnRetry.setOnClickListener(v -> {
+                            loadingDialog.dismiss();
+                            sendOrder();
+                        });
                     }
                 } else {
-                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
+                    retryDialog.show();
+                    retryDialog.tvRetry.setText("Network error!");
+                    retryDialog.btnRetry.setOnClickListener(v -> {
+                        loadingDialog.dismiss();
+                        sendOrder();
+                    });
                 }
             }
 
         });
+    }
+
+    @Override
+    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
+        getCartProducts(0, productIds);
     }
 }
