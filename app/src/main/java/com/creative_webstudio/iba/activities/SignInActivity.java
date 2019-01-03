@@ -110,7 +110,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
             }
             switch (integer) {
                 case 200:
-                    startActivity(ProductActivity.newIntent(SignInActivity.this));
+                    startActivity(SplashActivity.newIntent(SignInActivity.this));
                     break;
                 case 400:
                     dialog.show();

@@ -7,22 +7,10 @@ import java.util.List;
 public class ProductVO {
 
     @SerializedName("id")
-    private long id;
-
-    @SerializedName("recordRegId")
-    private int recordRegId;
-
-    @SerializedName("recordUpdId")
-    private int recordUpdId;
-
-    @SerializedName("recordRegDate")
-    private String recordRegDate;
-
-    @SerializedName("recordUpdDate")
-    private String recordUpdDate;
+    private Long id;
 
     @SerializedName("productCategoryId")
-    private int productCategoryId;
+    private Integer productCategoryId;
 
     @SerializedName("productName")
     private String productName;
@@ -48,51 +36,19 @@ public class ProductVO {
     @SerializedName("productCategory")
     private ProductCategoryVo productCategory;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getRecordRegId() {
-        return recordRegId;
-    }
-
-    public void setRecordRegId(int recordRegId) {
-        this.recordRegId = recordRegId;
-    }
-
-    public int getRecordUpdId() {
-        return recordUpdId;
-    }
-
-    public void setRecordUpdId(int recordUpdId) {
-        this.recordUpdId = recordUpdId;
-    }
-
-    public String getRecordRegDate() {
-        return recordRegDate;
-    }
-
-    public void setRecordRegDate(String recordRegDate) {
-        this.recordRegDate = recordRegDate;
-    }
-
-    public String getRecordUpdDate() {
-        return recordUpdDate;
-    }
-
-    public void setRecordUpdDate(String recordUpdDate) {
-        this.recordUpdDate = recordUpdDate;
-    }
-
-    public int getProductCategoryId() {
+    public Integer getProductCategoryId() {
         return productCategoryId;
     }
 
-    public void setProductCategoryId(int productCategoryId) {
+    public void setProductCategoryId(Integer productCategoryId) {
         this.productCategoryId = productCategoryId;
     }
 
@@ -110,6 +66,14 @@ public class ProductVO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public ProductDetailsVo getProductDetailsVo() {
@@ -150,14 +114,6 @@ public class ProductVO {
 
     public void setProductCategory(ProductCategoryVo productCategory) {
         this.productCategory = productCategory;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }
 

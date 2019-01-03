@@ -27,7 +27,6 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.ProductAdapter;
 import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
-import com.creative_webstudio.iba.components.CustomRetryDialog;
 import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
@@ -38,8 +37,8 @@ import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.fragments.FragmentOne;
-import com.creative_webstudio.iba.fragments.FragmentTwo;
 import com.creative_webstudio.iba.networks.viewmodels.ProductViewModel;
+import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -129,6 +128,9 @@ public class ProductActivity extends BaseDrawerActivity {
     boolean scrollTop=true;
 
     GridLayoutManager layoutManager;
+
+    //loading show
+    AlertDialog loadingDialog;
     public static Intent newIntent(Context context) {
         return new Intent(context, ProductActivity.class);
     }
@@ -142,7 +144,7 @@ public class ProductActivity extends BaseDrawerActivity {
         rvProduct.setEmptyView(vpEmpty);
         mProductAdapter = new ProductAdapter(this);
         mCategoryList = new ArrayList<>();
-
+        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Products.Please wait!");
         // TODO: specify the span count in res directory for phone and tablet size.
         layoutManager = new GridLayoutManager(this, 2);
         rvProduct.setLayoutManager(layoutManager);
@@ -162,12 +164,7 @@ public class ProductActivity extends BaseDrawerActivity {
             refreshData();
         });
 
-        tvEmpty.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getProduct(mCurrentPage, categoryId);
-            }
-        });
+        tvEmpty.setOnClickListener(v -> getProduct(mCurrentPage, categoryId));
 
         rvProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -210,12 +207,16 @@ public class ProductActivity extends BaseDrawerActivity {
                 getCategory();
             });
         } else {
+            loadingDialog.show();
             mProductViewModel.getCategory().observe(this, apiResponse -> {
                 if (apiResponse.getData() != null) {
                     mCategoryList = (ArrayList<CategoryVO>) apiResponse.getData();
                     setupCategory();
                     getProduct(mCurrentPage, categoryId);
                 } else {
+                    if(loadingDialog.isShowing()){
+                        loadingDialog.dismiss();
+                    }
                     if (apiResponse.getError() instanceof ApiException) {
                         int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
                         if (errorCode == 401) {
@@ -275,6 +276,9 @@ public class ProductActivity extends BaseDrawerActivity {
             });
         } else {
             mProductViewModel.getProduct(page, productCategoryId).observe(this, apiResponse -> {
+                if(loadingDialog.isShowing()){
+                    loadingDialog.dismiss();
+                }
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -296,6 +300,7 @@ public class ProductActivity extends BaseDrawerActivity {
                             // TODO: Server response successful but there is no data (Empty response).
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
+                            collapse();
                             Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
                         }
                     } else {
@@ -446,6 +451,14 @@ public class ProductActivity extends BaseDrawerActivity {
     }
 
     public void expand() {
+        final float scale = getResources().getDisplayMetrics().density;
+        int height = (int) (300 * scale);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+        params.height = height; // HEIGHT
+        appBar.setLayoutParams(params);
+        appBar.setExpanded(true);
+    }
+    public void collapse() {
         final float scale = getResources().getDisplayMetrics().density;
         int height = (int) (300 * scale);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();

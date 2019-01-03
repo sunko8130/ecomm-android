@@ -1,15 +1,22 @@
 package com.creative_webstudio.iba.datas.models;
 
 import android.accounts.NetworkErrorException;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
+import com.creative_webstudio.iba.datas.ApiResponse;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
+import com.creative_webstudio.iba.datas.vos.CustomerVO;
+import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.enents.TokenEvent;
+import com.creative_webstudio.iba.exception.ApiException;
+import com.creative_webstudio.iba.networks.IbaAPI;
+import com.creative_webstudio.iba.networks.ServiceGenerator;
 import com.creative_webstudio.iba.utils.AppConstants;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
@@ -24,10 +31,11 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
-
 public class IbaModel extends BaseModel {
+
     public static IbaModel objInstance;
     IBAPreferenceManager ibaPreference;
+    private CustomerVO customerVO;
 
     protected IbaModel(Context context) {
         super(context);
@@ -44,6 +52,37 @@ public class IbaModel extends BaseModel {
             throw new RuntimeException("IbaModel is being invoked before initializing.");
         }
         return objInstance;
+    }
+
+    public MutableLiveData<ApiResponse<CustomerVO>> getCustomer(){
+        MutableLiveData<ApiResponse<CustomerVO>> result = new MutableLiveData<>();
+        ApiResponse<CustomerVO> apiResponse = new ApiResponse();
+        IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
+        String accessToken = ibaPreference.getAccessToken();
+        String userAuth = "Bearer " + accessToken;
+        api.getCustomerInfo(userAuth)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    CustomerVO body = response.body();
+                    if (response.isSuccessful()
+                            && body != null) {
+                        apiResponse.setData(body);
+                        customerVO = body;
+                    } else {
+                        apiResponse.setError(new ApiException(response.code()));
+                    }
+                    result.setValue(apiResponse);
+                }, throwable -> {
+                    apiResponse.setError(new ApiException(throwable));
+                    result.setValue(apiResponse);
+                });
+
+        return result;
+    }
+
+    public CustomerVO getCustomerVO(){
+        return customerVO;
     }
 
     public void getTokenByUP(String userName, String password, final MutableLiveData<Integer> mResponseCode) {

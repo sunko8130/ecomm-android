@@ -49,6 +49,9 @@
         <activity android:name=".activities.OrderItemsActivity"></activity>
 
         <activity android:name=".activities.CartEditActivity"></activity>
+
+        <activity android:name=".activities.ProfileActivity"
+            android:label="Customer Profile"/>
     </application>
 
 </manifest>

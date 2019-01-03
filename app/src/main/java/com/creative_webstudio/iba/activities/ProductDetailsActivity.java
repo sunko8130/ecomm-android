@@ -2,12 +2,14 @@ package com.creative_webstudio.iba.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
@@ -70,7 +73,7 @@ public class ProductDetailsActivity extends BaseActivity {
     ImageView ivMinus;
 
     @BindView(R.id.ed_quantity)
-    MMTextView edQuantity;
+    EditText edQuantity;
 
     @BindView(R.id.tv_price)
     MMTextView tvPrice;
@@ -132,9 +135,6 @@ public class ProductDetailsActivity extends BaseActivity {
         }
         orderUnitVOList = new ArrayList<>();
 
-//        mPresenter = ViewModelProviders.of(this).get(ProductDetailsPresenter.class);
-//        mPresenter.initPresenter(this);
-
         edQuantity.setText(String.valueOf(quantity));
         if (getIntent().hasExtra("productVo")) {
             String json = getIntent().getStringExtra("productVo");
@@ -152,19 +152,16 @@ public class ProductDetailsActivity extends BaseActivity {
                 Glide.with(this).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(ivDetailTopImage);
             }
             setUpSpinner();
-            btnAddToCart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailsActivity.this);
-                    builder.setTitle("Sure?");
-                    builder.setMessage("Want to add to Cart?");
-                    builder.setPositiveButton("Ok", (dialog, which) -> {
-                        addToCart();
-                    });
-                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-                    AlertDialog productDialog = builder.create();
-                    productDialog.show();
-                }
+            btnAddToCart.setOnClickListener(view -> {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailsActivity.this);
+                builder.setTitle("Sure?");
+                builder.setMessage("Want to add to Cart?");
+                builder.setPositiveButton("Ok", (dialog, which) -> {
+                    addToCart();
+                });
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                AlertDialog productDialog = builder.create();
+                productDialog.show();
             });
         }
     }
@@ -196,8 +193,8 @@ public class ProductDetailsActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 minQuantity = orderUnitVOList.get(i).getMinimumOrderQuantity();
-//                maxQuantity = orderUnitVOList.get(i).getUnitInStock();
-                maxQuantity = 100;
+                maxQuantity = orderUnitVOList.get(i).getUnitInStock();
+//                maxQuantity = 100;
                 quantity = minQuantity;
                 selectedItem = i;
                 edQuantity.setText(String.valueOf(quantity));
@@ -217,6 +214,11 @@ public class ProductDetailsActivity extends BaseActivity {
                 quantity++;
                 edQuantity.setText(String.valueOf(quantity));
             }
+            if(quantity==maxQuantity){
+                ivPlus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.redFull)));
+            }else {
+                ivMinus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
+            }
         });
 
         ivMinus.setOnClickListener(view -> {
@@ -226,6 +228,12 @@ public class ProductDetailsActivity extends BaseActivity {
             } else {
                 Snackbar.make(tvPrice, "Minimum order is :" + minQuantity, Snackbar.LENGTH_SHORT).show();
             }
+            if(quantity==minQuantity){
+                ivMinus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.redFull)));
+            }else {
+                ivPlus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
+            }
+
 
 
         });

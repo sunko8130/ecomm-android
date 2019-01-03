@@ -7,12 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.Button;
 
 import com.creative_webstudio.iba.R;
-import com.creative_webstudio.iba.adapters.CartAdapter;
 import com.creative_webstudio.iba.adapters.CartEditAdapter;
-import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.datas.vos.CartShowVO;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
@@ -34,18 +33,25 @@ public class CartEditActivity extends BaseActivity {
     @BindView(R.id.rv_cart)
     RecyclerView rvCart;
 
+    @BindView(R.id.btnOk)
+    Button btnOk;
+
+    @BindView(R.id.btnCancel)
+    Button btnCancel;
+
     List<CartVO> orderCartList;
     List<CartVO> cartEditList;
     List<ProductVO> productVOList;
     List<CartShowVO> cartShowVOList;
+    List<CartVO> editedList;
     CartEditAdapter mAdapter;
 
     private IBAPreferenceManager ibaShared;
 
-    public static Intent newIntent(Context context, String orderItems,String products) {
+    public static Intent newIntent(Context context, String orderItems, String products) {
         Intent intent = new Intent(context, CartEditActivity.class);
-        intent.putExtra("OrderItems",orderItems);
-        intent.putExtra("Product",products);
+        intent.putExtra("OrderItems", orderItems);
+        intent.putExtra("Product", products);
         return intent;
     }
 
@@ -53,26 +59,44 @@ public class CartEditActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart_edit);
-        ButterKnife.bind(this,this);
+        ButterKnife.bind(this, this);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         cartEditList = new ArrayList<>();
         productVOList = new ArrayList<>();
         orderCartList = new ArrayList<>();
+        editedList = new ArrayList<>();
         mAdapter = new CartEditAdapter(this);
         rvCart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvCart.setAdapter(mAdapter);
         ibaShared = new IBAPreferenceManager(this);
-        Gson gson = new Gson();
-        if(getIntent().hasExtra("OrderItems")){
-            TypeToken<List<CartVO>> token = new TypeToken<List<CartVO>>() {};
-            cartEditList = gson.fromJson(getIntent().getStringExtra("OrderItems"),token.getType());
+        if (ibaShared.getItemsFromCart() != null) {
+            editedList = ibaShared.getItemsFromCart();
         }
-        if(getIntent().hasExtra("Product")){
-            TypeToken<List<ProductVO>> token = new TypeToken<List<ProductVO>>() {};
-            productVOList = gson.fromJson(getIntent().getStringExtra("Product"),token.getType());
+        Gson gson = new Gson();
+        if (getIntent().hasExtra("OrderItems")) {
+            TypeToken<List<CartVO>> token = new TypeToken<List<CartVO>>() {
+            };
+            cartEditList = gson.fromJson(getIntent().getStringExtra("OrderItems"), token.getType());
+        }
+        if (getIntent().hasExtra("Product")) {
+            TypeToken<List<ProductVO>> token = new TypeToken<List<ProductVO>>() {
+            };
+            productVOList = gson.fromJson(getIntent().getStringExtra("Product"), token.getType());
         }
         setUpData();
+        btnOk.setOnClickListener(v -> {
+            EditOrderOk();
+        });
+        btnCancel.setOnClickListener(v -> {
+            super.onBackPressed();
+        });
+    }
 
+    private void setUpData() {
+        if (ibaShared.getItemsFromCart() != null) {
+            orderCartList = ibaShared.getItemsFromCart();
+        }
+        setUpRecycler();
     }
 
     private void setUpRecycler() {
@@ -97,26 +121,34 @@ public class CartEditActivity extends BaseActivity {
             if (!tempProduct.getThumbnailIdsList().isEmpty()) {
                 cartShowVO.setThumbnailId(tempProduct.getThumbnailIdsList().get(0));
             }
-//            for(CartVO cart:orderCartList){
-//                if(cart.getProductId()==tempProduct.getId() && cart.getOrderUnitId()==tempOrder.getId()){
-//                    cartShowVO.setItemQuantity(cart.getQuantity());
-//                }
-//            }
-            cartShowVO.setItemQuantity(10);
+            for(CartVO cart:orderCartList){
+                if(cart.getProductId()==tempProduct.getId() && cart.getOrderUnitId()==tempOrder.getId()){
+                    cartShowVO.setItemQuantity(cart.getQuantity());
+                }
+            }
             cartShowVO.setMin(tempOrder.getMinimumOrderQuantity());
-//            cartShowVO.setMax(tempOrder.getUnitInStock());
-            cartShowVO.setMax(20);
+            cartShowVO.setMax(tempOrder.getUnitInStock());
             cartShowVO.setUnitId(tempOrder.getId());
             cartShowVO.setProductId(tempProduct.getId());
             cartShowVOList.add(cartShowVO);
-            mAdapter.setNewData(cartShowVOList);
         }
+        mAdapter.setNewData(cartShowVOList);
     }
 
-    public void updateOrder(int pos,int quantity,CartShowVO cartShowVO){
-        if(quantity>0){
+    public void updateOrder(int pos, int quantity, CartShowVO cartShowVO) {
+        if (quantity > 0) {
             cartShowVOList.get(pos).setItemQuantity(quantity);
-        }else {
+            for (CartVO cart : editedList) {
+                if (cart.getProductId() == cartShowVOList.get(pos).getProductId() && cart.getOrderUnitId() == cartShowVOList.get(pos).getUnitId()) {
+                    cart.setQuantity(quantity);
+                }
+            }
+        } else {
+            for (CartVO cart : editedList) {
+                if (cart.getProductId() == cartShowVOList.get(pos).getProductId() && cart.getOrderUnitId() == cartShowVOList.get(pos).getUnitId()) {
+                    cart.setQuantity(-1);
+                }
+            }
             onRemoveCart(cartShowVO);
         }
     }
@@ -127,12 +159,12 @@ public class CartEditActivity extends BaseActivity {
         cartVO.setOrderUnitId(cart.getUnitId());
         cartVO.setQuantity(cart.getItemQuantity());
         List<CartVO> tempList = new ArrayList<>();
-        for(CartVO temp:cartEditList){
-            if(temp.getProductId()!=cartVO.getProductId() || temp.getOrderUnitId()!=cartVO.getOrderUnitId()){
+        for (CartVO temp : cartEditList) {
+            if (temp.getProductId() != cartVO.getProductId() || temp.getOrderUnitId() != cartVO.getOrderUnitId()) {
                 tempList.add(temp);
             }
         }
-        cartEditList=tempList;
+        cartEditList = tempList;
 //        if (ibaShared.removeCart(cartVO)) {
 //            mAdapter.clearData();
 //            Toast.makeText(this, "Removed!", Toast.LENGTH_SHORT).show();
@@ -141,11 +173,17 @@ public class CartEditActivity extends BaseActivity {
         setUpData();
     }
 
-    private void setUpData() {
-        if (ibaShared.getItemsFromCart() != null) {
-            orderCartList = ibaShared.getItemsFromCart();
+
+
+    private void EditOrderOk() {
+        List<CartVO> temp=new ArrayList<>();
+        for (CartVO cartVO:editedList){
+            if(cartVO.getQuantity()!=-1){
+                temp.add(cartVO);
+            }
         }
-        setUpRecycler();
+        ibaShared.AddListToCart(temp);
+        super.onBackPressed();
     }
 
     @Override

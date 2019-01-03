@@ -107,8 +107,8 @@ public class OrderHistoryActivity extends BaseActivity {
                 if (apiResponse.getData() != null) {
                     orderList = apiResponse.getData().getOrderHistoryList();
                     List<OrderHistoryVO> temp = new ArrayList<>();
-                    for(int i=orderList.size()-1;i>0;i--){
-                        temp.add(orderList.get(i));
+                    for(int i=orderList.size();i>0;i--){
+                        temp.add(orderList.get(i-1));
                     }
                     mAdapter.appendNewData(temp);
                 } else {

@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +23,12 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.datas.models.IbaModel;
+import com.creative_webstudio.iba.datas.vos.CustomerVO;
+import com.creative_webstudio.iba.exception.ApiException;
+import com.creative_webstudio.iba.utils.CustomDialog;
+
+import org.mmtextview.components.MMTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,8 +38,6 @@ public class BaseDrawerActivity extends BaseActivity {
 
     private boolean doubleBackToExitPressedOnce = false;
     private ActionBarDrawerToggle mDrawerToggle;
-    private String mActivityTitle = null;
-    private AlertDialog dialog;
 
     @BindView(R.id.navigationView)
     NavigationView navigationView;
@@ -48,14 +53,16 @@ public class BaseDrawerActivity extends BaseActivity {
 
     private Context context;
 
+    private CustomerVO customerVO;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_drawer);
         ButterKnife.bind(this, this);
+//        getCustomerInfo();
         addDrawerItems();
         setupDrawer();
-
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayShowTitleEnabled(false);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,6 +71,17 @@ public class BaseDrawerActivity extends BaseActivity {
         toolbar.setNavigationIcon(R.drawable.ic_menu);
 //        navigationView.setNavigationItemSelectedListener(this);
         context = this;
+//        navigationView.getHeaderView(R.id.tvCustomerName);
+        customerVO=IbaModel.getInstance().getCustomerVO();
+        View headerView = navigationView.getHeaderView(0);
+        MMTextView name = headerView.findViewById(R.id.tvCustomerName);
+        MMTextView email = headerView.findViewById(R.id.tvCustomerEmail);
+        name.setText(customerVO.getName());
+        email.setText(customerVO.getEmail());
+        headerView.setOnClickListener(v -> {
+            drawerLayout.closeDrawers();
+            startActivity(ProfileActivity.newIntent(context));
+        });
     }
 
     @Override
@@ -107,31 +125,28 @@ public class BaseDrawerActivity extends BaseActivity {
             navigationView.getMenu().findItem(R.id.menuProduct).setChecked(true);
         }
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case (R.id.menuProduct):
-                        if (item.getItemId() == R.id.menuProduct && !(context instanceof ProductActivity)) {
-                            startActivity(ProductActivity.newIntent(context));
+        navigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case (R.id.menuProduct):
+                    if (item.getItemId() == R.id.menuProduct && !(context instanceof ProductActivity)) {
+                        startActivity(ProductActivity.newIntent(context));
 //                            finish();
 //                        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
-                        }
-                        break;
-                    case (R.id.menuCart):
-                        if (item.getItemId() == R.id.menuCart && !(context instanceof CartActivity)) {
-                            startActivity(CartActivity.newIntent(context));
+                    }
+                    break;
+                case (R.id.menuCart):
+                    if (item.getItemId() == R.id.menuCart && !(context instanceof CartActivity)) {
+                        startActivity(CartActivity.newIntent(context));
 //                            finish();
 //                        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
-                        }
-                        break;
-                    case (R.id.orderHistory):
-                        startActivity(new Intent(context, OrderHistoryActivity.class));
-                        break;
-                }
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+                    }
+                    break;
+                case (R.id.orderHistory):
+                    startActivity(new Intent(context, OrderHistoryActivity.class));
+                    break;
             }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
         });
     }
 
@@ -170,7 +185,8 @@ public class BaseDrawerActivity extends BaseActivity {
        /* if (this instanceof CartActivity) {
             startActivity(ProductActivity.newIntent(this));
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        } else */if (this instanceof ProductActivity) {
+        } else */
+        if (this instanceof ProductActivity) {
             if (doubleBackToExitPressedOnce) {
                 super.onBackPressed();
                 moveTaskToBack(true);
@@ -191,10 +207,5 @@ public class BaseDrawerActivity extends BaseActivity {
         }
     }
 
-    private void dismissDialog() {
-        if (dialog.isShowing()) {
-            dialog.dismiss();
-        }
-    }
 
 }

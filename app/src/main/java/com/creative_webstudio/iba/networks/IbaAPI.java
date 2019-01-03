@@ -4,7 +4,7 @@ import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.datas.criterias.OrderHistoryCriteria;
-import com.creative_webstudio.iba.datas.vos.OrderResponseVO;
+import com.creative_webstudio.iba.datas.vos.CustomerVO;
 import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
 import com.creative_webstudio.iba.datas.criterias.OrderItemCriteria;
 import com.creative_webstudio.iba.datas.vos.OrderItemVO;
@@ -12,7 +12,6 @@ import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
-import com.creative_webstudio.iba.persistence.IbaDatabase;
 
 import java.util.List;
 
@@ -21,6 +20,7 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -63,7 +63,7 @@ public interface IbaAPI {
 
     @POST("product/search/paging")
     Observable<Response<ProductResponse>> getProductById(@Header("Authorization") String authHeader,
-                                                     @Body ProductCriteria criteriaVO);
+                                                         @Body ProductCriteria criteriaVO);
 
 //    @POST("order_unit/search/list")
 //    Observable<Response<List<OrderUnitVO>>> getOrderUnit(@Header("Authorization") String authHeader,
@@ -74,8 +74,8 @@ public interface IbaAPI {
                                                        @Body CategoryCriteria criteriaVO);
 
     @POST("order/add")
-    Observable<Response<OrderResponseVO>> sendOrder(@Header("Authorization") String authHeader,
-                                                                                  @Body List<CartVO> criteriaVO);
+    Observable<Response<Integer>> sendOrder(@Header("Authorization") String authHeader,
+                                            @Body List<CartVO> criteriaVO);
 
     @POST("order/search/paging")
     Observable<Response<OrderHistoryResponse>> getOrderHistory(@Header("Authorization") String authHeader,
@@ -88,7 +88,10 @@ public interface IbaAPI {
     @FormUrlEncoded
     @PUT("order/update/status")
     Observable<Response<Integer>> updateOrder(@Header("Authorization") String authHeader,
-                                                        @Field("orderId") long orderId,
-                                                        @Field("status") String status);
+                                              @Field("orderId") long orderId,
+                                              @Field("status") String status);
+
+    @GET("customer/me")
+    Observable<Response<CustomerVO>> getCustomerInfo(@Header("Authorization") String authHeader);
 
 }

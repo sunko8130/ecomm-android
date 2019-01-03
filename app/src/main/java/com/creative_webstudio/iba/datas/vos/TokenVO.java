@@ -14,7 +14,7 @@ public class TokenVO {
     private String refreshToken;
 
     @SerializedName("expires_in")
-    private int expiresIn;
+    private Integer expiresIn;
 
     private String scope;
 
@@ -42,11 +42,11 @@ public class TokenVO {
         this.refreshToken = refreshToken;
     }
 
-    public int getExpiresIn() {
+    public Integer getExpiresIn() {
         return expiresIn;
     }
 
-    public void setExpiresIn(int expiresIn) {
+    public void setExpiresIn(Integer expiresIn) {
         this.expiresIn = expiresIn;
     }
 

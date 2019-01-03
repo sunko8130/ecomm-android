@@ -2,6 +2,7 @@ package com.creative_webstudio.iba.activities;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,9 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.datas.models.IbaModel;
+import com.creative_webstudio.iba.datas.vos.CustomerVO;
+import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.mvp.presenters.SplashPresenter;
 import com.creative_webstudio.iba.mvp.views.SplashView;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
@@ -25,7 +29,7 @@ import butterknife.ButterKnife;
  * Created by DELL on 11/19/2018.
  */
 
-public class SplashActivity extends AppCompatActivity implements SplashView {
+public class SplashActivity extends BaseActivity implements SplashView {
     @Nullable
     @BindView(R.id.ivSplash)
     ImageView ivSplash;
@@ -33,6 +37,11 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
     private IBAPreferenceManager ibaShared;
     private SplashPresenter mPresenter;
     private String refreshToken = "";
+
+    public static Intent newIntent(Context context) {
+        return new Intent(context, SplashActivity.class);
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,17 +53,53 @@ public class SplashActivity extends AppCompatActivity implements SplashView {
         mPresenter.initPresenter(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         refreshToken = ibaShared.fromPreference("RefreshToken", null);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (refreshToken == null) {
-                    startActivity(SignInActivity.newIntent(SplashActivity.this));
-                } else {
-                    startActivity(ProductActivity.newIntent(SplashActivity.this));
-                }
-                finish();
-            }
-        }, 2000);
+        if (refreshToken == null) {
+            startActivity(SignInActivity.newIntent(SplashActivity.this));
+        } else {
+            getCustomerInfo();
+//            startActivity(ProductActivity.newIntent(SplashActivity.this));
+        }
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                finish();
+//            }
+//        }, 2000);
     }
+    private void getCustomerInfo() {
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                getCustomerInfo();
+            });
+        } else {
+            IbaModel.getInstance().getCustomer().observe(this, apiResponse->{
+                if (apiResponse.getData() != null) {
+                    startActivity(ProductActivity.newIntent(SplashActivity.this));
+                } else {
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            super.refreshAccessToken();
+                        } else if (errorCode == 204) {
+                            // TODO: Server response successful but there is no data (Empty response).
+                        } else if (errorCode == 200) {
+                            // TODO: Reach End of List
+                        }
+                    } else {
+                        retryDialog.show();
+                        retryDialog.tvRetry.setText("No Internet Connection");
+                        retryDialog.btnRetry.setOnClickListener(v -> {
+                            retryDialog.dismiss();
+                            getCustomerInfo();
+                        });
+                    }
+                }
+            });
+        }
 
+    }
 }

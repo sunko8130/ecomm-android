@@ -5,25 +5,13 @@ import com.google.gson.annotations.SerializedName;
 public class CategoryVO {
 
     @SerializedName("id")
-    private long id;
-
-    @SerializedName("recordRegId")
-    private long recordRegId;
-
-    @SerializedName("recordUpdId")
-    private long recordUpId;
-
-    @SerializedName("recordRegDate")
-    private String recordRegDate;
-
-    @SerializedName("recordUpdDate")
-    private String recordUpdDate;
+    private Long id;
 
     @SerializedName("parentCategoryId")
-    private long parentCategoryId;
+    private Long parentCategoryId;
 
     @SerializedName("thumbnailId")
-    private int thumbnailId;
+    private Integer thumbnailId;
 
     @SerializedName("name")
     private String name;
@@ -32,61 +20,29 @@ public class CategoryVO {
     private String type;
 
     @SerializedName("childCategoryCount")
-    private int childCategoryCount;
+    private Integer childCategoryCount;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getRecordRegId() {
-        return recordRegId;
-    }
-
-    public void setRecordRegId(long recordRegId) {
-        this.recordRegId = recordRegId;
-    }
-
-    public long getRecordUpId() {
-        return recordUpId;
-    }
-
-    public void setRecordUpId(long recordUpId) {
-        this.recordUpId = recordUpId;
-    }
-
-    public String getRecordRegDate() {
-        return recordRegDate;
-    }
-
-    public void setRecordRegDate(String recordRegDate) {
-        this.recordRegDate = recordRegDate;
-    }
-
-    public String getRecordUpdDate() {
-        return recordUpdDate;
-    }
-
-    public void setRecordUpdDate(String recordUpdDate) {
-        this.recordUpdDate = recordUpdDate;
-    }
-
-    public long getParentCategoryId() {
+    public Long getParentCategoryId() {
         return parentCategoryId;
     }
 
-    public void setParentCategoryId(long parentCategoryId) {
+    public void setParentCategoryId(Long parentCategoryId) {
         this.parentCategoryId = parentCategoryId;
     }
 
-    public int getThumbnailId() {
+    public Integer getThumbnailId() {
         return thumbnailId;
     }
 
-    public void setThumbnailId(int thumbnailId) {
+    public void setThumbnailId(Integer thumbnailId) {
         this.thumbnailId = thumbnailId;
     }
 
@@ -106,11 +62,11 @@ public class CategoryVO {
         this.type = type;
     }
 
-    public int getChildCategoryCount() {
+    public Integer getChildCategoryCount() {
         return childCategoryCount;
     }
 
-    public void setChildCategoryCount(int childCategoryCount) {
+    public void setChildCategoryCount(Integer childCategoryCount) {
         this.childCategoryCount = childCategoryCount;
     }
 }

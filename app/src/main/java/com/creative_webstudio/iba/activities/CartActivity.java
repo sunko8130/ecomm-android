@@ -19,7 +19,6 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.CartAdapter;
 import com.creative_webstudio.iba.datas.vos.CartShowVO;
 import com.creative_webstudio.iba.datas.vos.CartVO;
-import com.creative_webstudio.iba.datas.vos.OrderResponseVO;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
@@ -93,6 +92,11 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         rvCart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvCart.setAdapter(mCartAdapter);
         loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Your Order.Please wait!");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setUpData();
         btnOrder.setOnClickListener(this);
     }

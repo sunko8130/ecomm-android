@@ -9,18 +9,6 @@ public class OrderHistoryVO {
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("recordRegId")
-    @Expose
-    private Integer recordRegId;
-    @SerializedName("recordUpdId")
-    @Expose
-    private Integer recordUpdId;
-    @SerializedName("recordRegDate")
-    @Expose
-    private String recordRegDate;
-    @SerializedName("recordUpdDate")
-    @Expose
-    private String recordUpdDate;
     @SerializedName("customerId")
     @Expose
     private Integer customerId;
@@ -46,38 +34,6 @@ public class OrderHistoryVO {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getRecordRegId() {
-        return recordRegId;
-    }
-
-    public void setRecordRegId(Integer recordRegId) {
-        this.recordRegId = recordRegId;
-    }
-
-    public Integer getRecordUpdId() {
-        return recordUpdId;
-    }
-
-    public void setRecordUpdId(Integer recordUpdId) {
-        this.recordUpdId = recordUpdId;
-    }
-
-    public String getRecordRegDate() {
-        return recordRegDate;
-    }
-
-    public void setRecordRegDate(String recordRegDate) {
-        this.recordRegDate = recordRegDate;
-    }
-
-    public String getRecordUpdDate() {
-        return recordUpdDate;
-    }
-
-    public void setRecordUpdDate(String recordUpdDate) {
-        this.recordUpdDate = recordUpdDate;
     }
 
     public Integer getCustomerId() {

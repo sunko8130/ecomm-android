@@ -5,22 +5,10 @@ import com.google.gson.annotations.SerializedName;
 public class OrderUnitVO {
 
     @SerializedName("id")
-    private long id;
-
-    @SerializedName("recordRegId")
-    private long recordRegId;
-
-    @SerializedName("recordUpdId")
-    private long recordUpdId;
-
-    @SerializedName("recordRegDate")
-    private String recordRegDate;
-
-    @SerializedName("recordUpdDate")
-    private String recordUpdDate;
+    private Long id;
 
     @SerializedName("productId")
-    private long productId;
+    private Long productId;
 
     @SerializedName("unitName")
     private String unitName;
@@ -29,16 +17,16 @@ public class OrderUnitVO {
     private String itemName;
 
     @SerializedName("itemsPerUnit")
-    private int itemsPerUnit;
+    private Integer itemsPerUnit;
 
     @SerializedName("pricePerUnit")
-    private long pricePerUnit;
+    private Long pricePerUnit;
 
     @SerializedName("unitInStock")
-    private int unitInStock;
+    private Integer unitInStock;
 
     @SerializedName("notifyQuantity")
-    private int notifyQuantity;
+    private Integer notifyQuantity;
 
     @SerializedName("status")
     private String status;
@@ -46,52 +34,19 @@ public class OrderUnitVO {
     @SerializedName("minimumOrderQuantity")
     private int minimumOrderQuantity;
 
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getRecordRegId() {
-        return recordRegId;
-    }
-
-    public void setRecordRegId(long recordRegId) {
-        this.recordRegId = recordRegId;
-    }
-
-    public long getRecordUpdId() {
-        return recordUpdId;
-    }
-
-    public void setRecordUpdId(long recordUpdId) {
-        this.recordUpdId = recordUpdId;
-    }
-
-    public String getRecordRegDate() {
-        return recordRegDate;
-    }
-
-    public void setRecordRegDate(String recordRegDate) {
-        this.recordRegDate = recordRegDate;
-    }
-
-    public String getRecordUpdDate() {
-        return recordUpdDate;
-    }
-
-    public void setRecordUpdDate(String recordUpdDate) {
-        this.recordUpdDate = recordUpdDate;
-    }
-
-    public long getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
@@ -111,20 +66,36 @@ public class OrderUnitVO {
         this.itemName = itemName;
     }
 
-    public int getItemsPerUnit() {
+    public Integer getItemsPerUnit() {
         return itemsPerUnit;
     }
 
-    public void setItemsPerUnit(int itemsPerUnit) {
+    public void setItemsPerUnit(Integer itemsPerUnit) {
         this.itemsPerUnit = itemsPerUnit;
     }
 
-    public long getPricePerUnit() {
+    public Long getPricePerUnit() {
         return pricePerUnit;
     }
 
-    public void setPricePerUnit(long pricePerUnit) {
+    public void setPricePerUnit(Long pricePerUnit) {
         this.pricePerUnit = pricePerUnit;
+    }
+
+    public Integer getUnitInStock() {
+        return unitInStock;
+    }
+
+    public void setUnitInStock(Integer unitInStock) {
+        this.unitInStock = unitInStock;
+    }
+
+    public Integer getNotifyQuantity() {
+        return notifyQuantity;
+    }
+
+    public void setNotifyQuantity(Integer notifyQuantity) {
+        this.notifyQuantity = notifyQuantity;
     }
 
     public String getStatus() {
@@ -141,21 +112,5 @@ public class OrderUnitVO {
 
     public void setMinimumOrderQuantity(int minimumOrderQuantity) {
         this.minimumOrderQuantity = minimumOrderQuantity;
-    }
-
-    public int getUnitInStock() {
-        return unitInStock;
-    }
-
-    public void setUnitInStock(int unitInStock) {
-        this.unitInStock = unitInStock;
-    }
-
-    public int getNotifyQuantity() {
-        return notifyQuantity;
-    }
-
-    public void setNotifyQuantity(int notifyQuantity) {
-        this.notifyQuantity = notifyQuantity;
     }
 }
