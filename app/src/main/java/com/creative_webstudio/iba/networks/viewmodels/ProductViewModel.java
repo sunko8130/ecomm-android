@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.creative_webstudio.iba.datas.ApiResponse;
 import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
+import com.creative_webstudio.iba.datas.criterias.ThumbnailCriteria;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
@@ -34,17 +35,20 @@ public class ProductViewModel extends AndroidViewModel {
      */
     public MutableLiveData<ApiResponse<ProductResponse>> getProduct(int page, long categoryId) {
         ProductCriteria criteriaVO = new ProductCriteria();
+        ThumbnailCriteria thumbnailCriteria = new ThumbnailCriteria();
+        thumbnailCriteria.setThumbnailType(1);
         if(categoryId == -1) {
             criteriaVO.setPageNumber(String.valueOf(page));
-            criteriaVO.setWithOrderUnits(true);
+            criteriaVO.setWithOrderUnit(true);
             criteriaVO.setProductCategoryId(null);
-            criteriaVO.setThumbnailType(1);
-            criteriaVO.setWithThumbnails(true);
+            criteriaVO.setThumbnail(thumbnailCriteria);
+            criteriaVO.setWithThumbnail(true);
+            criteriaVO.setWithDetail(true);
         }else {
             criteriaVO.setPageNumber(String.valueOf(page));
-            criteriaVO.setWithOrderUnits(true);
-            criteriaVO.setThumbnailType(1);
-            criteriaVO.setWithThumbnails(true);
+            criteriaVO.setWithOrderUnit(true);
+            criteriaVO.setThumbnail(thumbnailCriteria);
+            criteriaVO.setWithThumbnail(true);
             criteriaVO.setProductCategoryId(String.valueOf(categoryId));
         }
         MutableLiveData<ApiResponse<ProductResponse>> result = new MutableLiveData<>();

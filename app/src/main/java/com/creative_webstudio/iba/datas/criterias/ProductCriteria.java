@@ -3,12 +3,13 @@ package com.creative_webstudio.iba.datas.criterias;
 public class ProductCriteria {
 
     private long[] includeIds;
-    private boolean withOrderUnits;
+    private boolean withOrderUnit;
     private String pageNumber;
     private String productCategoryId;
-    private boolean withThumbnails;
-    private int thumbnailType;
+    private boolean withThumbnail;
     private String word;
+    private ThumbnailCriteria thumbnail;
+    private boolean withDetail;
 
     public long[] getIncludeIds() {
         return includeIds;
@@ -18,12 +19,12 @@ public class ProductCriteria {
         this.includeIds = includeIds;
     }
 
-    public boolean isWithOrderUnits() {
-        return withOrderUnits;
+    public boolean isWithOrderUnit() {
+        return withOrderUnit;
     }
 
-    public void setWithOrderUnits(boolean withOrderUnits) {
-        this.withOrderUnits = withOrderUnits;
+    public void setWithOrderUnit(boolean withOrderUnit) {
+        this.withOrderUnit = withOrderUnit;
     }
 
     public String getPageNumber() {
@@ -42,20 +43,12 @@ public class ProductCriteria {
         this.productCategoryId = productCategoryId;
     }
 
-    public boolean isWithThumbnails() {
-        return withThumbnails;
+    public boolean isWithThumbnail() {
+        return withThumbnail;
     }
 
-    public void setWithThumbnails(boolean withThumbnails) {
-        this.withThumbnails = withThumbnails;
-    }
-
-    public int getThumbnailType() {
-        return thumbnailType;
-    }
-
-    public void setThumbnailType(int thumbnailType) {
-        this.thumbnailType = thumbnailType;
+    public void setWithThumbnail(boolean withThumbnail) {
+        this.withThumbnail = withThumbnail;
     }
 
     public String getWord() {
@@ -64,5 +57,21 @@ public class ProductCriteria {
 
     public void setWord(String word) {
         this.word = word;
+    }
+
+    public ThumbnailCriteria getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(ThumbnailCriteria thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public boolean isWithDetail() {
+        return withDetail;
+    }
+
+    public void setWithDetail(boolean withDetail) {
+        this.withDetail = withDetail;
     }
 }

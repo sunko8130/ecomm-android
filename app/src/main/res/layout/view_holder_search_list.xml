@@ -15,9 +15,11 @@
         android:background="@color/whiteFull">
         <ImageView
             android:id="@+id/iv_product"
-            android:layout_width="75dp"
+            android:layout_width="85dp"
             android:layout_height="100dp"
-            android:layout_marginTop="@dimen/margin_medium_2"
+            android:layout_marginTop="@dimen/margin_medium"
+            android:layout_marginBottom="@dimen/margin_medium"
+            android:layout_marginLeft="@dimen/margin_medium"
             android:scaleType="centerCrop"
             android:src="@drawable/coco_coffee" />
 

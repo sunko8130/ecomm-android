@@ -31,34 +31,34 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:background="@color/blackTransparent"/>
+                    android:background="@color/blackTransparent" />
                 <!--<ImageView-->
-                    <!--android:id="@+id/iv_back_rl"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginStart="@dimen/margin_medium_2"-->
-                    <!--android:layout_marginTop="@dimen/margin_medium_2"-->
-                    <!--android:src="@drawable/ic_arrow_back_white_24dp" />-->
+                <!--android:id="@+id/iv_back_rl"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="@dimen/margin_medium_2"-->
+                <!--android:layout_marginTop="@dimen/margin_medium_2"-->
+                <!--android:src="@drawable/ic_arrow_back_white_24dp" />-->
 
                 <!--<org.mmtextview.components.MMTextView-->
-                    <!--android:id="@+id/tv_product_name"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginStart="@dimen/margin_medium_2"-->
-                    <!--android:layout_marginTop="@dimen/margin_medium_2"-->
-                    <!--android:layout_toEndOf="@+id/iv_back_rl"-->
-                    <!--android:text="@string/product_detail"-->
-                    <!--android:textColor="@color/backgroundColor"-->
-                    <!--android:textSize="@dimen/text_regular_2x"-->
-                    <!--android:textStyle="bold" />-->
+                <!--android:id="@+id/tv_product_name"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="@dimen/margin_medium_2"-->
+                <!--android:layout_marginTop="@dimen/margin_medium_2"-->
+                <!--android:layout_toEndOf="@+id/iv_back_rl"-->
+                <!--android:text="@string/product_detail"-->
+                <!--android:textColor="@color/backgroundColor"-->
+                <!--android:textSize="@dimen/text_regular_2x"-->
+                <!--android:textStyle="bold" />-->
 
                 <!--<ImageView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentEnd="true"-->
-                    <!--android:layout_marginTop="@dimen/margin_medium_2"-->
-                    <!--android:layout_marginEnd="@dimen/margin_medium_2"-->
-                    <!--android:src="@drawable/ic_favorite_border_black_24dp" />-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_marginTop="@dimen/margin_medium_2"-->
+                <!--android:layout_marginEnd="@dimen/margin_medium_2"-->
+                <!--android:src="@drawable/ic_favorite_border_black_24dp" />-->
             </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
@@ -139,10 +139,18 @@
                 android:text="@string/item_content"
                 android:textSize="12sp" />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rc_details"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tv_item_content"
+                android:background="@drawable/round_rect_black_line"
+                android:layout_margin="5dp"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_below="@id/tv_item_content"
+                android:layout_below="@id/rc_details"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -175,7 +183,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_minus"
-                            android:tint="@color/redFull"/>
+                            android:tint="@color/redFull" />
 
                         <EditText
                             android:id="@+id/ed_quantity"
@@ -219,11 +227,12 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:background="@drawable/round_rect_black_line">
+
                         <Spinner
                             android:id="@+id/sp_order"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:padding="5dp"/>
+                            android:padding="5dp" />
                     </RelativeLayout>
 
 

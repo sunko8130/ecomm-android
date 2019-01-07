@@ -23,6 +23,7 @@ import com.creative_webstudio.iba.adapters.SearchAdapter;
 import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
+import com.creative_webstudio.iba.datas.criterias.ThumbnailCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
@@ -124,7 +125,7 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
 
     @Override
     public void onTapView() {
-        Intent i = new Intent(this, ProductDetailsActivity.class);
+//        Intent i = new Intent(this, ProductDetailsActivity.class);
         startActivity(ProductDetailsActivity.newIntent(this, "Search"));
 //        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
     }
@@ -135,9 +136,12 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         criteriaVO = new ProductCriteria();
         criteriaVO.setWord(userInput);
         criteriaVO.setPageNumber(null);
-        criteriaVO.setWithOrderUnits(true);
-        criteriaVO.setWithThumbnails(true);
-        criteriaVO.setThumbnailType(1);
+        criteriaVO.setWithOrderUnit(true);
+        criteriaVO.setWithThumbnail(true);
+        criteriaVO.setWithDetail(true);
+        ThumbnailCriteria thumbnailCriteria=new ThumbnailCriteria();
+        thumbnailCriteria.setThumbnailType(1);
+        criteriaVO.setThumbnail(thumbnailCriteria);
         getProductSearch(criteriaVO);
 
 //        mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {

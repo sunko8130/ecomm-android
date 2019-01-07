@@ -298,9 +298,9 @@ public class ProductActivity extends BaseDrawerActivity {
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
                             // TODO: Server response successful but there is no data (Empty response).
+                            collapse();
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
-                            collapse();
                             Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
                         }
                     } else {

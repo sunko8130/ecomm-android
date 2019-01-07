@@ -3,7 +3,9 @@ package com.creative_webstudio.iba.utils;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AlertDialogLayout;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
 
 import com.creative_webstudio.iba.R;
 
@@ -13,11 +15,11 @@ import org.mmtextview.components.MMTextView;
 
 public class CustomDialog {
 
-    public static void messageDialog(Context context,String title,String message,Runnable function,Boolean useTwoBtn){
+    public static void messageDialog(Context context, String title, String message, Runnable function, Boolean useTwoBtn) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
         builder.setMessage(message);
-        if(useTwoBtn == true) {
+        if (useTwoBtn == true) {
             builder.setPositiveButton("Yes", (dialog, which) -> {
                 function.run();
                 dialog.dismiss();
@@ -33,16 +35,16 @@ public class CustomDialog {
         productDialog.show();
     }
 
-    public static MMProgressDialog loadingDialog(Context context,String title,String message){
+    public static MMProgressDialog loadingDialog(Context context, String title, String message) {
         MMProgressDialog progressDialog = new MMProgressDialog(context);
         progressDialog.setTitle(title);
         progressDialog.setMessage(message);
         return progressDialog;
     }
 
-    public static AlertDialog loadingDialog2(Context context,String title,String message) {
+    public static AlertDialog loadingDialog2(Context context, String title, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View inflate_dialog = AlertDialogLayout.inflate(context,R.layout.dialog_loading,null);
+        View inflate_dialog = AlertDialogLayout.inflate(context, R.layout.dialog_loading, null);
         MMTextView tvMessage = inflate_dialog.findViewById(R.id.loadingMessage);
         tvMessage.setText(message);
         builder.setTitle(title);
@@ -51,5 +53,6 @@ public class CustomDialog {
         productDialog.setCanceledOnTouchOutside(false);
         return productDialog;
     }
+
 
 }

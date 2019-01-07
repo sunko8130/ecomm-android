@@ -9,7 +9,7 @@ import java.util.Map;
 public class ProductDetailsVo {
 
     @SerializedName("value")
-    private Map<String, String> valueList;
+    private List<ValueVo> valueList;
 
     @SerializedName("empty")
     private Boolean empty;
@@ -23,5 +23,43 @@ public class ProductDetailsVo {
     @SerializedName("notPresent")
     private Boolean notPresent;
 
+    public List<ValueVo> getValueList() {
+        return valueList;
+    }
 
+    public void setValueList(List<ValueVo> valueList) {
+        this.valueList = valueList;
+    }
+
+    public Boolean getEmpty() {
+        return empty;
+    }
+
+    public void setEmpty(Boolean empty) {
+        this.empty = empty;
+    }
+
+    public Boolean getPresent() {
+        return present;
+    }
+
+    public void setPresent(Boolean present) {
+        this.present = present;
+    }
+
+    public Boolean getNotEmpty() {
+        return notEmpty;
+    }
+
+    public void setNotEmpty(Boolean notEmpty) {
+        this.notEmpty = notEmpty;
+    }
+
+    public Boolean getNotPresent() {
+        return notPresent;
+    }
+
+    public void setNotPresent(Boolean notPresent) {
+        this.notPresent = notPresent;
+    }
 }

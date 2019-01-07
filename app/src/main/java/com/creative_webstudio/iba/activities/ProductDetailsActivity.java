@@ -11,6 +11,8 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +27,7 @@ import android.widget.Spinner;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.adapters.DetailAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
 import com.creative_webstudio.iba.components.CustomRetryDialog;
 import com.creative_webstudio.iba.datas.vos.CartVO;
@@ -81,11 +84,14 @@ public class ProductDetailsActivity extends BaseActivity {
     @BindView(R.id.btn_addToCart)
     Button btnAddToCart;
 
+    @BindView(R.id.rc_details)
+    RecyclerView rcDetails;
+
     //Toolbar
     @BindView(R.id.toolbar_details)
     Toolbar toolbar;
 
-    private ProductDetailsPresenter mPresenter;
+    private DetailAdapter mDetailAdapter;
 
     private ProductVO productVO;
 
@@ -129,6 +135,10 @@ public class ProductDetailsActivity extends BaseActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        mDetailAdapter = new DetailAdapter(this);
+        rcDetails.setLayoutManager(new LinearLayoutManager(this));
+        rcDetails.setAdapter(mDetailAdapter);
+
         ibaShared = new IBAPreferenceManager(this);
         if (getIntent().hasExtra("BackActivity")) {
             backActivity = getIntent().getStringExtra("BackActivity");
@@ -150,6 +160,9 @@ public class ProductDetailsActivity extends BaseActivity {
             if (!productVO.getThumbnailIdsList().isEmpty()) {
                 GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(), productVO.getThumbnailIdsList().get(0));
                 Glide.with(this).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(ivDetailTopImage);
+            }
+            if (productVO.getProductDetailsVo().getValueList() != null) {
+                mDetailAdapter.setNewData(productVO.getProductDetailsVo().getValueList());
             }
             setUpSpinner();
             btnAddToCart.setOnClickListener(view -> {
@@ -214,9 +227,9 @@ public class ProductDetailsActivity extends BaseActivity {
                 quantity++;
                 edQuantity.setText(String.valueOf(quantity));
             }
-            if(quantity==maxQuantity){
+            if (quantity == maxQuantity) {
                 ivPlus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.redFull)));
-            }else {
+            } else {
                 ivMinus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
             }
         });
@@ -228,12 +241,11 @@ public class ProductDetailsActivity extends BaseActivity {
             } else {
                 Snackbar.make(tvPrice, "Minimum order is :" + minQuantity, Snackbar.LENGTH_SHORT).show();
             }
-            if(quantity==minQuantity){
+            if (quantity == minQuantity) {
                 ivMinus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.redFull)));
-            }else {
+            } else {
                 ivPlus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
             }
-
 
 
         });

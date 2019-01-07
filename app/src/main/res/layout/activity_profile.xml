@@ -43,33 +43,6 @@
                 android:textSize="@dimen/text_regular" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
-
-            <org.mmtextview.components.MMTextView
-                android:id="@+id/tvEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/round_rect_primary_line"
-                android:paddingLeft="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
-                android:text="Customer 9999"
-                android:textSize="@dimen/text_regular_2x" />
-
-            <org.mmtextview.components.MMTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@color/whiteFull"
-                android:text="Email"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_regular" />
-        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -123,6 +96,34 @@
                 android:layout_marginLeft="10dp"
                 android:background="@color/whiteFull"
                 android:text="Address"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_regular" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <org.mmtextview.components.MMTextView
+                android:id="@+id/tvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/round_rect_primary_line"
+                android:paddingLeft="5dp"
+                android:paddingTop="10dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:text="Customer 9999"
+                android:textSize="@dimen/text_regular_2x" />
+
+            <org.mmtextview.components.MMTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@color/whiteFull"
+                android:text="Email"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_regular" />
         </RelativeLayout>
@@ -210,5 +211,6 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_regular" />
         </RelativeLayout>
+
     </LinearLayout>
 </ScrollView>

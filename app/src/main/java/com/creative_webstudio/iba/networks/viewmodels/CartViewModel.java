@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.creative_webstudio.iba.datas.ApiResponse;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
+import com.creative_webstudio.iba.datas.criterias.ThumbnailCriteria;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.exception.ApiException;
@@ -20,7 +21,6 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 
 public class CartViewModel extends AndroidViewModel {
 
@@ -33,9 +33,12 @@ public class CartViewModel extends AndroidViewModel {
         ProductCriteria criteriaVO = new ProductCriteria();
         criteriaVO.setIncludeIds(productId);
         criteriaVO.setPageNumber(String.valueOf(page));
-        criteriaVO.setWithThumbnails(true);
-        criteriaVO.setThumbnailType(1);
-        criteriaVO.setWithOrderUnits(true);
+        criteriaVO.setWithThumbnail(true);
+        criteriaVO.setWithOrderUnit(true);
+        criteriaVO.setWithDetail(true);
+        ThumbnailCriteria thumbnailCriteria = new ThumbnailCriteria();
+        thumbnailCriteria.setThumbnailType(1);
+        criteriaVO.setThumbnail(thumbnailCriteria);
         ApiResponse<ProductResponse> apiResponse = new ApiResponse();
         IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
         IBAPreferenceManager prefs = new IBAPreferenceManager(getApplication());
