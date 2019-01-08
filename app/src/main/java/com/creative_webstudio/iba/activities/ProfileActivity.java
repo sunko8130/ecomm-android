@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.datas.models.IbaModel;
 import com.creative_webstudio.iba.datas.vos.CustomerVO;
+import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.utils.CustomDialog;
 
 import org.mmtextview.components.MMTextView;
@@ -48,7 +50,8 @@ public class ProfileActivity extends BaseActivity {
     MMTextView tvShopName;
 
     private CustomerVO customerVO;
-
+    //loading dialog
+    AlertDialog loadingDialog;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, ProfileActivity.class);
@@ -70,6 +73,34 @@ public class ProfileActivity extends BaseActivity {
 
     private void setUpData() {
         customerVO = IbaModel.getInstance().getCustomerVO();
+        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Customer Information.Please wait!");
+        loadingDialog.show();
+        IbaModel.getInstance().getCustomer().observe(this, apiResponse->{
+            if(loadingDialog.isShowing()){
+                loadingDialog.dismiss();
+            }
+            if (apiResponse.getData() != null) {
+                customerVO = apiResponse.getData();
+            } else {
+                if (apiResponse.getError() instanceof ApiException) {
+                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                    if (errorCode == 401) {
+                        super.refreshAccessToken();
+                    } else if (errorCode == 204) {
+                        // TODO: Server response successful but there is no data (Empty response).
+                    } else if (errorCode == 200) {
+                        // TODO: Reach End of List
+                    }
+                } else {
+                    retryDialog.show();
+                    retryDialog.tvRetry.setText("No Internet Connection");
+                    retryDialog.btnRetry.setOnClickListener(v -> {
+                        retryDialog.dismiss();
+                        setUpData();
+                    });
+                }
+            }
+        });
         tvName.setText(customerVO.getName());
         tvEmail.setText(customerVO.getEmail());
         tvPhone.setText(customerVO.getPhone());
@@ -77,6 +108,7 @@ public class ProfileActivity extends BaseActivity {
         tvDivision.setText(customerVO.getDivision());
         tvShopName.setText(customerVO.getShopName());
         tvAddress.setText(customerVO.getAddress());
+
     }
 
     @Override

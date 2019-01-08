@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1075833686910",
+    "firebase_url": "https://iba-ecomm.firebaseio.com",
+    "project_id": "iba-ecomm",
+    "storage_bucket": "iba-ecomm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075833686910:android:36206bc85c34a216",
+        "android_client_info": {
+          "package_name": "com.creative_webstudio.iba"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075833686910-t14g8fj8mo3oi3o46orulsn5629euvc9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWgL2SWsIrUn9V4cUWnS1EXZ_k_YkQpg0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -57,7 +57,6 @@ public class SplashActivity extends BaseActivity implements SplashView {
             startActivity(SignInActivity.newIntent(SplashActivity.this));
         } else {
             getCustomerInfo();
-//            startActivity(ProductActivity.newIntent(SplashActivity.this));
         }
 //        new Handler().postDelayed(new Runnable() {
 //            @Override

@@ -12,7 +12,9 @@ import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.CustomerVO;
 import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
+import com.creative_webstudio.iba.datas.vos.RegionVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
+import com.creative_webstudio.iba.datas.vos.TownshipVO;
 import com.creative_webstudio.iba.enents.TokenEvent;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.IbaAPI;
@@ -80,6 +82,7 @@ public class IbaModel extends BaseModel {
 
         return result;
     }
+
 
     public CustomerVO getCustomerVO(){
         return customerVO;

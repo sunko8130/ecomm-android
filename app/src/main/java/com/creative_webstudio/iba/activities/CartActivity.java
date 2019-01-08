@@ -294,10 +294,10 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         MMProgressDialog loadingDialog = CustomDialog.loadingDialog(this, "Sending!", "Your Order is sending.Please wait!");
         loadingDialog.show();
         cartViewModel.sendOrder(cartVOList).observe(this, apiResponse -> {
+            if (loadingDialog.isShowing()) {
+                loadingDialog.dismiss();
+            }
             if (apiResponse.getData() != null) {
-                if (loadingDialog.isShowing()) {
-                    loadingDialog.dismiss();
-                }
                 if (apiResponse.getData() instanceof Integer) {
                     Toast.makeText(this, "Your Order is Success", Toast.LENGTH_LONG).show();
                     cartVOList = new ArrayList<>();
@@ -314,7 +314,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
                     builder.setTitle("Oops!");
                     builder.setMessage("Some order items in this order is out of stock.Please Edit your order.");
                     builder.setPositiveButton("Ok", (dialog, which) -> {
-                        startActivity(CartEditActivity.newIntent(this,json,productJson));
+                        startActivity(CartEditActivity.newIntent(this, json, productJson));
                     });
                     builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
                     AlertDialog productDialog = builder.create();
@@ -335,7 +335,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
                     } else if (errorCode == 200) {
                         // TODO: Reach End of List
                         Snackbar.make(rvCart, "End of Product List", Snackbar.LENGTH_LONG).show();
-                    }else {
+                    } else {
                         retryDialog.show();
                         retryDialog.tvRetry.setText("Network error!");
                         retryDialog.btnRetry.setOnClickListener(v -> {

@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.crashlytics.android.Crashlytics;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.components.CustomRetryDialog;
 import com.creative_webstudio.iba.mvp.presenters.SignInPresenter;
@@ -67,7 +68,10 @@ public class SignInActivity extends BaseActivity implements SignInView {
 
         dialog = new CustomRetryDialog(SignInActivity.this);
         dialog.setCanceledOnTouchOutside(false);
-        btnSignIn.setOnClickListener(view -> signIn());
+        btnSignIn.setOnClickListener(view -> {
+//            Crashlytics.getInstance().crash();
+            signIn();
+        });
     }
 
     public void signIn() {

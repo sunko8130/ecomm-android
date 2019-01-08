@@ -1,5 +1,6 @@
 package com.creative_webstudio.iba.networks;
 
+import com.creative_webstudio.iba.datas.criterias.CustomerCriteria;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
@@ -11,7 +12,9 @@ import com.creative_webstudio.iba.datas.vos.OrderItemVO;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
+import com.creative_webstudio.iba.datas.vos.RegionVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
+import com.creative_webstudio.iba.datas.vos.TownshipVO;
 
 import java.util.List;
 
@@ -24,6 +27,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Query;
 
 public interface IbaAPI {
 
@@ -93,5 +97,17 @@ public interface IbaAPI {
 
     @GET("customer/me")
     Observable<Response<CustomerVO>> getCustomerInfo(@Header("Authorization") String authHeader);
+
+    @PUT("customer/me")
+    Observable<Response<Integer>> updateCustomerInfo(@Header("Authorization") String authHeader,
+                                                     @Body CustomerCriteria criteriaVO);
+
+    @GET("mm_map/state_region")
+    Observable<Response<List<RegionVO>>> getRegion(@Header("Authorization") String authHeader);
+
+
+    @GET("mm_map/township")
+    Observable<Response<List<TownshipVO>>> getTownShip(@Header("Authorization") String authHeader,
+                                                       @Query("stateRegionCode") String regionCode);
 
 }
