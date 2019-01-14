@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 
 import com.creative_webstudio.iba.datas.ApiResponse;
 import com.creative_webstudio.iba.datas.criterias.OrderHistoryCriteria;
+import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
+import com.creative_webstudio.iba.datas.criterias.ThumbnailCriteria;
 import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
 import com.creative_webstudio.iba.datas.criterias.OrderItemCriteria;
 import com.creative_webstudio.iba.datas.vos.OrderItemVO;
@@ -30,7 +32,7 @@ public class OrderHistoryViewModel extends AndroidViewModel {
         OrderHistoryCriteria criteriaVO = new OrderHistoryCriteria();
         criteriaVO.setOrderBy("id");
         criteriaVO.setOrder("DESC");
-        criteriaVO.setWithOrderItems(true);
+        criteriaVO.setWithOrderItem(true);
         MutableLiveData<ApiResponse<OrderHistoryResponse>> result = new MutableLiveData<>();
         ApiResponse<OrderHistoryResponse> apiResponse = new ApiResponse();
         IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
@@ -61,11 +63,15 @@ public class OrderHistoryViewModel extends AndroidViewModel {
         MutableLiveData<ApiResponse<List<OrderItemVO>>> result = new MutableLiveData<>();
         ApiResponse<List<OrderItemVO>> apiResponse = new ApiResponse();
         OrderItemCriteria criteria = new OrderItemCriteria();
+        ProductCriteria productCriteria = new ProductCriteria();
+        ThumbnailCriteria thumbnailCriteria = new ThumbnailCriteria();
+        thumbnailCriteria.setThumbnailType(1);
+        productCriteria.setThumbnail(thumbnailCriteria);
+        productCriteria.setWithThumbnail(true);
         criteria.setIncludeIds(itemIds);
-        criteria.setThumbnailType(1);
         criteria.setWithOrderUnit(true);
         criteria.setWithProduct(true);
-        criteria.setWithThumbnails(true);
+        criteria.setProduct(productCriteria);
 
         IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
         String accessToken = prefs.getAccessToken();

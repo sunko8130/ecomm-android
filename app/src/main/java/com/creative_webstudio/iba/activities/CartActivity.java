@@ -297,6 +297,9 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void sendOrder() {
+        // click_order
+        // order_id -> 123456
+
         Bundle bundle = new Bundle();
         for(int i=0;i<cartVOList.size();i++){
             bundle.putString("order_item_"+i,cartShowVOList.get(i).getProductName()+"-"+cartShowVOList.get(i).getUnitShow()+"-"+cartVOList.get(i).getQuantity());

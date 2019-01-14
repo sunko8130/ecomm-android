@@ -77,7 +77,7 @@ public class OrderItemsActivity extends BaseActivity {
             orderHistoryVO = gson.fromJson(json, OrderHistoryVO.class);
         }
 
-        if (!orderHistoryVO.getStatus().equals("Pending")) {
+        if (!orderHistoryVO.getStatus().equals("Pending") || orderHistoryVO.getStatus().equals("Shipped")) {
             btnCancel.setText(orderHistoryVO.getStatus());
             if (!orderHistoryVO.getStatus().equals("Customer Canceled")) {
                 btnCancel.setTextColor(ContextCompat.getColor(this, R.color.limeGreen));
@@ -88,8 +88,8 @@ public class OrderItemsActivity extends BaseActivity {
         } else {
             canUpdate = true;
             btnCancel.setText("Cancel Order");
-            btnCancel.setTextColor(ContextCompat.getColor(this, R.color.whiteFull));
-            btnCancel.setBackground(getDrawable(R.drawable.round_rect_black_line_cancel));
+            btnCancel.setTextColor(ContextCompat.getColor(this, R.color.redFull));
+            btnCancel.setBackground(getDrawable(R.drawable.round_rect_black_line));
             btnCancel.setOnClickListener(view -> {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
                 builder.setTitle("Are Your Sure!");
@@ -227,7 +227,7 @@ public class OrderItemsActivity extends BaseActivity {
             CartShowVO cartShowVO = new CartShowVO();
             cartShowVO.setProductName(order.getProduct().getProductName());
             cartShowVO.setItemQuantity(order.getQuantity());
-            if (order.getProduct().getThumbnailIdsList().size() > 0) {
+            if (order.getProduct().getThumbnailIdsList()!=null && order.getProduct().getThumbnailIdsList().size()>0) {
                 cartShowVO.setThumbnailId(order.getProduct().getThumbnailIdsList().get(0));
             }
             cartShowVO.setUnitShow("- ( 1" + order.getOrderUnit().getUnitName() + " per " + order.getOrderUnit().getItemsPerUnit() + " " + order.getOrderUnit().getItemName() + ")");

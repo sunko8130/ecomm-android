@@ -4,7 +4,7 @@ public class OrderHistoryCriteria {
 
     private String orderBy;
     private String order;
-    private boolean withOrderItems;
+    private boolean withOrderItem;
 
     public String getOrder() {
         return order;
@@ -22,11 +22,11 @@ public class OrderHistoryCriteria {
         this.orderBy = orderBy;
     }
 
-    public boolean isWithOrderItems() {
-        return withOrderItems;
+    public boolean isWithOrderItem() {
+        return withOrderItem;
     }
 
-    public void setWithOrderItems(boolean withOrderItems) {
-        this.withOrderItems = withOrderItems;
+    public void setWithOrderItem(boolean withOrderItem) {
+        this.withOrderItem = withOrderItem;
     }
 }

@@ -87,6 +87,11 @@
         <item name="android:foreground">@drawable/bg_ripple_white</item>
     </style>
 
+    <style name="RoundButton" parent="Base.Widget.AppCompat.Button">
+        <item name="android:background">@drawable/round_rect_black_line</item>
+        <item name="android:foreground">@drawable/bg_ripple_dark</item>
+    </style>
+
     <style name="AppTheme.NoActionBar.StatusBarColor" parent="AppTheme.NoActionBar">
         <!--<item name="windowActionBar">false</item>-->
         <!--<item name="windowNoTitle">true</item>-->
