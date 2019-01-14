@@ -47,12 +47,7 @@ public class EmptyViewPod extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.bind(this, this);
-        tvEmpty.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
-            }
-        });
+        tvEmpty.setOnClickListener(v -> Toast.makeText(getContext(), "zzzzz", Toast.LENGTH_SHORT).show());
     }
 
     public void setEmptyData(int emptyImageId, String emptyMsg) {

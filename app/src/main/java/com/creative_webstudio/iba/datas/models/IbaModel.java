@@ -7,6 +7,7 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.creative_webstudio.iba.datas.ApiResponse;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.CustomerVO;
@@ -76,6 +77,7 @@ public class IbaModel extends BaseModel {
                     }
                     result.setValue(apiResponse);
                 }, throwable -> {
+                    Crashlytics.logException(throwable);
                     apiResponse.setError(new ApiException(throwable));
                     result.setValue(apiResponse);
                 });

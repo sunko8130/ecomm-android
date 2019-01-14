@@ -13,11 +13,13 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.datas.models.IbaModel;
 import com.creative_webstudio.iba.datas.vos.CustomerVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.utils.CustomDialog;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.mmtextview.components.MMTextView;
 
@@ -53,6 +55,7 @@ public class ProfileActivity extends BaseActivity {
     //loading dialog
     AlertDialog loadingDialog;
 
+
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, ProfileActivity.class);
         return intent;
@@ -67,8 +70,8 @@ public class ProfileActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         setUpData();
+        super.onResume();
     }
 
     private void setUpData() {
@@ -81,8 +84,10 @@ public class ProfileActivity extends BaseActivity {
             }
             if (apiResponse.getData() != null) {
                 customerVO = apiResponse.getData();
+                setCustomerValue(customerVO);
             } else {
                 if (apiResponse.getError() instanceof ApiException) {
+                    Crashlytics.logException(apiResponse.getError());
                     int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
                     if (errorCode == 401) {
                         super.refreshAccessToken();
@@ -101,6 +106,9 @@ public class ProfileActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void setCustomerValue(CustomerVO customerVO) {
         tvName.setText(customerVO.getName());
         tvEmail.setText(customerVO.getEmail());
         tvPhone.setText(customerVO.getPhone());
@@ -108,8 +116,8 @@ public class ProfileActivity extends BaseActivity {
         tvDivision.setText(customerVO.getDivision());
         tvShopName.setText(customerVO.getShopName());
         tvAddress.setText(customerVO.getAddress());
-
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

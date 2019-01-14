@@ -27,6 +27,8 @@ import com.creative_webstudio.iba.datas.models.IbaModel;
 import com.creative_webstudio.iba.datas.vos.CustomerVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.utils.CustomDialog;
+import com.creative_webstudio.iba.utils.IBAPreferenceManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.mmtextview.components.MMTextView;
 
@@ -55,11 +57,14 @@ public class BaseDrawerActivity extends BaseActivity {
 
     private CustomerVO customerVO;
 
+
+    IBAPreferenceManager ibaShared;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_drawer);
         ButterKnife.bind(this, this);
+        ibaShared = new IBAPreferenceManager(this);
 //        getCustomerInfo();
         addDrawerItems();
         setupDrawer();
@@ -72,6 +77,11 @@ public class BaseDrawerActivity extends BaseActivity {
 //        navigationView.setNavigationItemSelectedListener(this);
         context = this;
 //        navigationView.getHeaderView(R.id.tvCustomerName);
+    }
+
+
+
+    private void setupCustomerInfo() {
         customerVO=IbaModel.getInstance().getCustomerVO();
         View headerView = navigationView.getHeaderView(0);
         MMTextView name = headerView.findViewById(R.id.tvCustomerName);
@@ -117,6 +127,7 @@ public class BaseDrawerActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setupCustomerInfo();
         navigationView.getMenu().findItem(R.id.menuProduct).setChecked(true);
     }
 
@@ -126,9 +137,12 @@ public class BaseDrawerActivity extends BaseActivity {
         }
 
         navigationView.setNavigationItemSelectedListener(item -> {
+            Bundle bundle = new Bundle();
             switch (item.getItemId()) {
                 case (R.id.menuProduct):
                     if (item.getItemId() == R.id.menuProduct && !(context instanceof ProductActivity)) {
+                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_products");
+                        mFirebaseAnalytics.logEvent("click_product", bundle);
                         startActivity(ProductActivity.newIntent(context));
 //                            finish();
 //                        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
@@ -136,18 +150,48 @@ public class BaseDrawerActivity extends BaseActivity {
                     break;
                 case (R.id.menuCart):
                     if (item.getItemId() == R.id.menuCart && !(context instanceof CartActivity)) {
+                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_cart");
+                        mFirebaseAnalytics.logEvent("click_cart", bundle);
                         startActivity(CartActivity.newIntent(context));
 //                            finish();
 //                        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
                     }
                     break;
                 case (R.id.orderHistory):
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_order_history");
+                    mFirebaseAnalytics.logEvent("click_order_history", bundle);
                     startActivity(new Intent(context, OrderHistoryActivity.class));
                     break;
+
+                case (R.id.menuLogout):
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Logout!");
+                    builder.setMessage("Are you sure?");
+                    builder.setPositiveButton("Ok", (dialog, which) -> {
+                        logOut();
+                    });
+                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                    AlertDialog productDialog = builder.create();
+                    productDialog.setCanceledOnTouchOutside(false);
+                    productDialog.show();
+
+                    break;
+
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
+    }
+
+    private void logOut() {
+        Bundle bundle = new Bundle();
+        CustomerVO customerVO = IbaModel.getInstance().getCustomerVO();
+        bundle.putLong("customer_id", customerVO.getId());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "logout");
+        mFirebaseAnalytics.logEvent("click_log_out", bundle);
+        ibaShared.removePreference("AccessToken");
+        ibaShared.removePreference("RefreshToken");
+        startActivity(SignInActivity.newIntent(this));
     }
 
     @Override

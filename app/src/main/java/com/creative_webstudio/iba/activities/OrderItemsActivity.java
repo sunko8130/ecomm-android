@@ -24,6 +24,7 @@ import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.OrderHistoryViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -109,6 +110,10 @@ public class OrderItemsActivity extends BaseActivity {
     }
 
     private void cancelOrder(long itemId) {
+        Bundle bundle = new Bundle();
+        bundle.putLong("order_id", orderHistoryVO.getId());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "cancel_order");
+        mFirebaseAnalytics.logEvent("click_cancel_order", bundle);
         if (!checkNetwork()) {
             retryDialog.show();
             retryDialog.tvRetry.setText("No Internet Connection");

@@ -40,6 +40,7 @@ import com.creative_webstudio.iba.fragments.FragmentOne;
 import com.creative_webstudio.iba.networks.viewmodels.ProductViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
+import io.fabric.sdk.android.Fabric;
 import retrofit2.Response;
 
 public class ProductActivity extends BaseDrawerActivity {
@@ -115,7 +117,6 @@ public class ProductActivity extends BaseDrawerActivity {
     //cart items
     private int cartItems = 0;
 
-    private IBAPreferenceManager ibaShared;
 
     //category id
     private int categoryId = -1;
@@ -125,12 +126,14 @@ public class ProductActivity extends BaseDrawerActivity {
     private ProductViewModel mProductViewModel;
 
     //Scroll top
-    boolean scrollTop=true;
+    boolean scrollTop = true;
 
     GridLayoutManager layoutManager;
 
     //loading show
     AlertDialog loadingDialog;
+
+
     public static Intent newIntent(Context context) {
         return new Intent(context, ProductActivity.class);
     }
@@ -140,7 +143,6 @@ public class ProductActivity extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
         setMyView(R.layout.activity_product);
         ButterKnife.bind(this, this);
-        ibaShared = new IBAPreferenceManager(this);
         rvProduct.setEmptyView(vpEmpty);
         mProductAdapter = new ProductAdapter(this);
         mCategoryList = new ArrayList<>();
@@ -164,7 +166,11 @@ public class ProductActivity extends BaseDrawerActivity {
             refreshData();
         });
 
-        tvEmpty.setOnClickListener(v -> getProduct(mCurrentPage, categoryId));
+        tvEmpty.setOnClickListener(v -> {
+            categoryId = -1;
+            refreshData();
+        });
+
 
         rvProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -175,10 +181,10 @@ public class ProductActivity extends BaseDrawerActivity {
                     aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
                     getProduct(mCurrentPage, categoryId);
                 }
-                if(layoutManager.findFirstCompletelyVisibleItemPosition()==0){
-                    scrollTop=true;
-                }else {
-                    scrollTop=false;
+                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                    scrollTop = true;
+                } else {
+                    scrollTop = false;
                 }
             }
         });
@@ -188,6 +194,9 @@ public class ProductActivity extends BaseDrawerActivity {
     }
 
     private void refreshData() {
+        if (!loadingDialog.isShowing()) {
+            loadingDialog.show();
+        }
         mProductAdapter.clearData();
         mIsLoading = true;
         mCurrentPage = 1;
@@ -214,7 +223,7 @@ public class ProductActivity extends BaseDrawerActivity {
                     setupCategory();
                     getProduct(mCurrentPage, categoryId);
                 } else {
-                    if(loadingDialog.isShowing()){
+                    if (loadingDialog.isShowing()) {
                         loadingDialog.dismiss();
                     }
                     if (apiResponse.getError() instanceof ApiException) {
@@ -226,6 +235,13 @@ public class ProductActivity extends BaseDrawerActivity {
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
                             Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            retryDialog.show();
+                            retryDialog.tvRetry.setText("No Internet Connection");
+                            retryDialog.btnRetry.setOnClickListener(v -> {
+                                retryDialog.dismiss();
+                                getCategory();
+                            });
                         }
                     } else {
                         retryDialog.show();
@@ -252,12 +268,16 @@ public class ProductActivity extends BaseDrawerActivity {
             builder.setSingleChoiceItems(items, checkedItem, (dialog, item) -> {
                 chooseItem = items[item];
                 categoryId = item - 1;
-                checkedItem=item;
+                checkedItem = item;
             });
             builder.setPositiveButton("Ok", (dialog, which) -> {
                 btnProduct.setText(chooseItem);
                 mCurrentPage = 1;
                 refreshData();
+                Bundle bundle = new Bundle();
+                bundle.putString("category_name", chooseItem);
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "search_with_category");
+                mFirebaseAnalytics.logEvent("click_filter_ok", bundle);
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
             AlertDialog productDialog = builder.create();
@@ -276,7 +296,7 @@ public class ProductActivity extends BaseDrawerActivity {
             });
         } else {
             mProductViewModel.getProduct(page, productCategoryId).observe(this, apiResponse -> {
-                if(loadingDialog.isShowing()){
+                if (loadingDialog.isShowing()) {
                     loadingDialog.dismiss();
                 }
                 if (swipeRefreshLayout.isRefreshing()) {
@@ -301,7 +321,19 @@ public class ProductActivity extends BaseDrawerActivity {
                             collapse();
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
-                            Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
+                            if (mCurrentPage > 1 ) {
+                                Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
+                            }else {
+                                collapse();
+                            }
+
+                        } else {
+                            retryDialog.show();
+                            retryDialog.tvRetry.setText("No Internet Connection");
+                            retryDialog.btnRetry.setOnClickListener(v -> {
+                                retryDialog.dismiss();
+                                getProduct(page, productCategoryId);
+                            });
                         }
                     } else {
                         retryDialog.show();
@@ -382,10 +414,15 @@ public class ProductActivity extends BaseDrawerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Bundle bundle = new Bundle();
         if (item.getItemId() == R.id.menu_search) {
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "search_item");
+            mFirebaseAnalytics.logEvent("click_search", bundle);
             startActivity(ProductSearchActivity.newIntent(this));
             return true;
         } else if (item.getItemId() == R.id.menu_cart) {
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_cart");
+            mFirebaseAnalytics.logEvent("click_cart", bundle);
             startActivity(CartActivity.newIntent(this));
             return true;
         }
@@ -436,34 +473,40 @@ public class ProductActivity extends BaseDrawerActivity {
 
     @Override
     public void onBackPressed() {
-        if(!scrollTop){
-            layoutManager.smoothScrollToPosition(rvProduct, null,0);
+        if (!scrollTop) {
+            layoutManager.smoothScrollToPosition(rvProduct, null, 0);
             expand();
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
 
     public void onItemClick(ProductVO data) {
+        Bundle bundle = new Bundle();
+        bundle.putLong("product_id", data.getId());
+        bundle.putString("product_name", data.getProductName());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_product_details");
+        mFirebaseAnalytics.logEvent("click_product_item", bundle);
         Gson gson = new Gson();
         String json = gson.toJson(data);
         startActivity(ProductDetailsActivity.newIntent(this, "Product", json));
     }
 
     public void expand() {
-        final float scale = getResources().getDisplayMetrics().density;
-        int height = (int) (300 * scale);
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
-        params.height = height; // HEIGHT
-        appBar.setLayoutParams(params);
+//        final float scale = getResources().getDisplayMetrics().density;
+//        int height = (int) (300 * scale);
+//        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+//        params.height = height; // HEIGHT
+//        appBar.setLayoutParams(params);
         appBar.setExpanded(true);
     }
+
     public void collapse() {
-        final float scale = getResources().getDisplayMetrics().density;
-        int height = (int) (300 * scale);
-        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
-        params.height = height; // HEIGHT
-        appBar.setLayoutParams(params);
-        appBar.setExpanded(true);
+//        final float scale = getResources().getDisplayMetrics().density;
+//        int height = (int) (0 * scale);
+//        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+//        params.height = height; // HEIGHT
+//        appBar.setLayoutParams(params);
+        appBar.setExpanded(false);
     }
 }

@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -69,6 +70,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
         dialog = new CustomRetryDialog(SignInActivity.this);
         dialog.setCanceledOnTouchOutside(false);
         btnSignIn.setOnClickListener(view -> {
+//            Crashlytics.log(Log.ERROR,SignInActivity.class.getSimpleName(),"ForceCrash");
 //            Crashlytics.getInstance().crash();
             signIn();
         });

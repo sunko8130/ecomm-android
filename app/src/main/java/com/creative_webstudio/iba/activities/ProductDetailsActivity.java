@@ -37,6 +37,7 @@ import com.creative_webstudio.iba.datas.vos.SpinnerVO;
 import com.creative_webstudio.iba.mvp.presenters.ProductDetailsPresenter;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 
 import org.mmtextview.components.MMTextView;
@@ -112,7 +113,6 @@ public class ProductDetailsActivity extends BaseActivity {
     //cart items
     private int cartItems = 0;
 
-
     public static Intent newIntent(Context context, String backActivity) {
         Intent intent = new Intent(context, ProductDetailsActivity.class);
         intent.putExtra("BackActivity", backActivity);
@@ -180,6 +180,13 @@ public class ProductDetailsActivity extends BaseActivity {
     }
 
     private void addToCart() {
+        Bundle bundle = new Bundle();
+        bundle.putLong("product_id", productVO.getId());
+        bundle.putString("product_name",productVO.getProductName());
+        bundle.putString("unit_item","1"+orderUnitVOList.get(selectedItem).getUnitName()+" per "+orderUnitVOList.get(selectedItem).getItemsPerUnit()+" "+orderUnitVOList.get(selectedItem).getItemName());
+        bundle.putInt("quantity",quantity);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "add_to_cart");
+        mFirebaseAnalytics.logEvent("click_add_to_cart", bundle);
         cartVO = new CartVO();
         cartVO.setProductId(productVO.getId());
         cartVO.setOrderUnitId(orderUnitVOList.get(selectedItem).getId());
@@ -258,6 +265,9 @@ public class ProductDetailsActivity extends BaseActivity {
                 onBackPressed();
                 break;
             case R.id.menu_cart:
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_cart");
+                mFirebaseAnalytics.logEvent("click_cart", bundle);
                 startActivity(CartActivity.newIntent(this));
                 break;
         }

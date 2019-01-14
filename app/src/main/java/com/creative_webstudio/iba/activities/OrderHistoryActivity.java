@@ -18,6 +18,7 @@ import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.OrderHistoryViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 
 
@@ -57,8 +58,6 @@ public class OrderHistoryActivity extends BaseActivity {
         mAdapter = new OrderHistoryAdapter(this);
         rvOrderHistory.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvOrderHistory.setAdapter(mAdapter);
-//        getOrderHistory();
-
         swipeRefreshLayout.setOnRefreshListener(() -> {
             mAdapter.clearData();
             getOrderHistory();
@@ -106,11 +105,12 @@ public class OrderHistoryActivity extends BaseActivity {
                 swipeRefreshLayout.setRefreshing(false);
                 if (apiResponse.getData() != null) {
                     orderList = apiResponse.getData().getOrderHistoryList();
-                    List<OrderHistoryVO> temp = new ArrayList<>();
-                    for(int i=orderList.size();i>0;i--){
-                        temp.add(orderList.get(i-1));
-                    }
-                    mAdapter.appendNewData(temp);
+                    //change asc desc
+//                    List<OrderHistoryVO> temp = new ArrayList<>();
+//                    for(int i=orderList.size();i>0;i--){
+//                        temp.add(orderList.get(i-1));
+//                    }
+                    mAdapter.appendNewData(orderList);
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {
                         int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
@@ -136,6 +136,10 @@ public class OrderHistoryActivity extends BaseActivity {
     }
 
     public void onItemClick(OrderHistoryVO orderHistoryVO) {
+        Bundle bundle = new Bundle();
+        bundle.putLong("order_id", orderHistoryVO.getId());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_order_details");
+        mFirebaseAnalytics.logEvent("click_order_item", bundle);
         Gson gson = new Gson();
         String json = gson.toJson(orderHistoryVO);
         startActivity(OrderItemsActivity.newIntent(this, json));

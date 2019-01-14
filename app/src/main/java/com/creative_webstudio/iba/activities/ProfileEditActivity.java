@@ -25,6 +25,7 @@ import com.creative_webstudio.iba.datas.vos.TownshipVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.ProfielEditViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -243,6 +244,10 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
     }
 
     private void sendEditUser() {
+        Bundle bundle = new Bundle();
+        bundle.putString("customer_id", customerVO.getId().toString());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "edit_customer_info");
+        mFirebaseAnalytics.logEvent("click_edit_ok", bundle);
         CustomerCriteria criteria = new CustomerCriteria();
         criteria.setName(String.valueOf(etName.getText()));
         criteria.setAddress(String.valueOf(etAddress.getText()));

@@ -30,6 +30,7 @@ import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.mvp.presenters.ProductSearchPresenter;
 import com.creative_webstudio.iba.mvp.views.ProductSearchView;
 import com.creative_webstudio.iba.networks.viewmodels.ProductSearchViewModel;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -142,6 +143,10 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         ThumbnailCriteria thumbnailCriteria=new ThumbnailCriteria();
         thumbnailCriteria.setThumbnailType(1);
         criteriaVO.setThumbnail(thumbnailCriteria);
+        Bundle bundle = new Bundle();
+        bundle.putString("search_dey", userInput);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "search_product");
+        mFirebaseAnalytics.logEvent("click_search_icon", bundle);
         getProductSearch(criteriaVO);
 
 //        mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
@@ -247,6 +252,11 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
     }
 
     public void onItemClick(ProductVO data) {
+        Bundle bundle = new Bundle();
+        bundle.putLong("product_id", data.getId());
+        bundle.putString("product_name", data.getProductName());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_product_details");
+        mFirebaseAnalytics.logEvent("click_product_item", bundle);
         Gson gson = new Gson();
         String json = gson.toJson(data);
         finish();

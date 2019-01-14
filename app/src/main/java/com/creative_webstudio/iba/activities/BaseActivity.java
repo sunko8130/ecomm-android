@@ -16,6 +16,7 @@ import com.creative_webstudio.iba.networks.IbaAPI;
 import com.creative_webstudio.iba.networks.ServiceGenerator;
 import com.creative_webstudio.iba.utils.AppConstants;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.lang.reflect.Method;
 
@@ -28,11 +29,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     //RetryDialog
     CustomRetryDialog retryDialog;
 
+    //FirebaseAnalytics
+    FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         retryDialog = new CustomRetryDialog(this);
         retryDialog.setCanceledOnTouchOutside(false);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     protected void refreshAccessToken() {

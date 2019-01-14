@@ -1,15 +1,10 @@
 package com.creative_webstudio.iba.activities;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -20,6 +15,7 @@ import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.mvp.presenters.SplashPresenter;
 import com.creative_webstudio.iba.mvp.views.SplashView;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +34,7 @@ public class SplashActivity extends BaseActivity implements SplashView {
     private SplashPresenter mPresenter;
     private String refreshToken = "";
 
+
     public static Intent newIntent(Context context) {
         return new Intent(context, SplashActivity.class);
     }
@@ -53,11 +50,7 @@ public class SplashActivity extends BaseActivity implements SplashView {
         mPresenter.initPresenter(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         refreshToken = ibaShared.fromPreference("RefreshToken", null);
-        if (refreshToken == null) {
-            startActivity(SignInActivity.newIntent(SplashActivity.this));
-        } else {
-            getCustomerInfo();
-        }
+
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -66,6 +59,17 @@ public class SplashActivity extends BaseActivity implements SplashView {
 //            }
 //        }, 2000);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (refreshToken == null) {
+            startActivity(SignInActivity.newIntent(SplashActivity.this));
+        } else {
+            getCustomerInfo();
+        }
+    }
+
     private void getCustomerInfo() {
         if (!checkNetwork()) {
             retryDialog.show();
@@ -75,8 +79,10 @@ public class SplashActivity extends BaseActivity implements SplashView {
                 getCustomerInfo();
             });
         } else {
-            IbaModel.getInstance().getCustomer().observe(this, apiResponse->{
+            IbaModel.getInstance().getCustomer().observe(this, apiResponse -> {
                 if (apiResponse.getData() != null) {
+                    CustomerVO customerVO = IbaModel.getInstance().getCustomerVO();
+                    mFirebaseAnalytics.setUserProperty("customer_name", customerVO.getName());
                     startActivity(ProductActivity.newIntent(SplashActivity.this));
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {
@@ -87,14 +93,14 @@ public class SplashActivity extends BaseActivity implements SplashView {
                             // TODO: Server response successful but there is no data (Empty response).
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
+                        } else {
+                            retryDialog.show();
+                            retryDialog.tvRetry.setText("No Internet Connection");
+                            retryDialog.btnRetry.setOnClickListener(v -> {
+                                retryDialog.dismiss();
+                                getCustomerInfo();
+                            });
                         }
-                    } else {
-                        retryDialog.show();
-                        retryDialog.tvRetry.setText("No Internet Connection");
-                        retryDialog.btnRetry.setOnClickListener(v -> {
-                            retryDialog.dismiss();
-                            getCustomerInfo();
-                        });
                     }
                 }
             });

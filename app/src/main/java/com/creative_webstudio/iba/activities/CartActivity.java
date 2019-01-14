@@ -26,6 +26,7 @@ import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.CartViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 
 import org.mmtextview.components.MMProgressDialog;
@@ -238,6 +239,11 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public void onRemoveCart(CartShowVO cart) {
+        Bundle bundle = new Bundle();
+        bundle.putLong("product_id",cart.getProductId());
+        bundle.putString("product_name", cart.getProductName());
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "remove_from_cart");
+        mFirebaseAnalytics.logEvent("click_cart_remove", bundle);
         CartVO cartVO = new CartVO();
         cartVO.setProductId(cart.getProductId());
         cartVO.setOrderUnitId(cart.getUnitId());
@@ -291,6 +297,12 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void sendOrder() {
+        Bundle bundle = new Bundle();
+        for(int i=0;i<cartVOList.size();i++){
+            bundle.putString("order_item_"+i,cartShowVOList.get(i).getProductName()+"-"+cartShowVOList.get(i).getUnitShow()+"-"+cartVOList.get(i).getQuantity());
+        }
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "send_order");
+        mFirebaseAnalytics.logEvent("click_send_order", bundle);
         MMProgressDialog loadingDialog = CustomDialog.loadingDialog(this, "Sending!", "Your Order is sending.Please wait!");
         loadingDialog.show();
         cartViewModel.sendOrder(cartVOList).observe(this, apiResponse -> {
