@@ -29,12 +29,10 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.DetailAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
-import com.creative_webstudio.iba.components.CustomRetryDialog;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.SpinnerVO;
-import com.creative_webstudio.iba.mvp.presenters.ProductDetailsPresenter;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -129,7 +127,7 @@ public class ProductDetailsActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.product_details);
+        setContentView(R.layout.activity_product_details);
         ButterKnife.bind(this, this);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -182,9 +180,9 @@ public class ProductDetailsActivity extends BaseActivity {
     private void addToCart() {
         Bundle bundle = new Bundle();
         bundle.putLong("product_id", productVO.getId());
-        bundle.putString("product_name",productVO.getProductName());
-        bundle.putString("unit_item","1"+orderUnitVOList.get(selectedItem).getUnitName()+" per "+orderUnitVOList.get(selectedItem).getItemsPerUnit()+" "+orderUnitVOList.get(selectedItem).getItemName());
-        bundle.putInt("quantity",quantity);
+        bundle.putString("product_name", productVO.getProductName());
+        bundle.putString("unit_item", "1" + orderUnitVOList.get(selectedItem).getUnitName() + " per " + orderUnitVOList.get(selectedItem).getItemsPerUnit() + " " + orderUnitVOList.get(selectedItem).getItemName());
+        bundle.putInt("quantity", quantity);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "add_to_cart");
         mFirebaseAnalytics.logEvent("click_add_to_cart", bundle);
         cartVO = new CartVO();
@@ -218,7 +216,8 @@ public class ProductDetailsActivity extends BaseActivity {
                 quantity = minQuantity;
                 selectedItem = i;
                 edQuantity.setText(String.valueOf(quantity));
-                tvPrice.setText(String.valueOf(orderUnitVOList.get(i).getPricePerUnit()));
+                String s = String.format("%,d", Long.parseLong(String.valueOf(orderUnitVOList.get(i).getPricePerUnit() * quantity)));
+                tvPrice.setText(s + " MMK");
             }
 
             @Override
@@ -239,6 +238,8 @@ public class ProductDetailsActivity extends BaseActivity {
             } else {
                 ivMinus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
             }
+            String s = String.format("%,d", Long.parseLong(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity)));
+            tvPrice.setText(s + " MMK");
         });
 
         ivMinus.setOnClickListener(view -> {
@@ -253,7 +254,8 @@ public class ProductDetailsActivity extends BaseActivity {
             } else {
                 ivPlus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
             }
-
+            String s = String.format("%,d", Long.parseLong(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity)));
+            tvPrice.setText(s + " MMK");
 
         });
     }

@@ -4,9 +4,25 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:id="@+id/ivImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
         android:src="@drawable/banner" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/blackTransparent"
+        android:padding="@dimen/margin_medium">
+        <org.mmtextview.components.MMTextView
+            android:id="@+id/tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="IBA Project.........."
+            android:textSize="@dimen/text_regular_2x"
+            android:textColor="@color/whiteFull"/>
+    </LinearLayout>
 </RelativeLayout>

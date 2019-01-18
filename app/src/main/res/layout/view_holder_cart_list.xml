@@ -22,21 +22,23 @@
             android:layout_height="match_parent"
             android:layout_weight="1.2"
             android:scaleType="centerCrop"
-            android:src="@drawable/coco_coffee" />
+            android:src="@drawable/coco_coffee"
+            android:layout_margin="@dimen/margin_medium"/>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2.5"
             android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/margin_medium">
 
             <org.mmtextview.components.MMTextView
                 android:id="@+id/tv_product_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
-                android:padding="5dp"
+                android:padding="@dimen/margin_medium"
                 android:text="@string/coco_coffee"
                 android:textColor="@color/textColor"
                 android:textSize="@dimen/text_regular_2x"

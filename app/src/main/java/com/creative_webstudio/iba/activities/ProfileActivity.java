@@ -135,4 +135,11 @@ public class ProfileActivity extends BaseActivity {
         getMenuInflater().inflate(R.menu.profile_menu, menu);
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        if (!loadingDialog.isShowing()) {
+            super.onBackPressed();
+        }
+    }
 }

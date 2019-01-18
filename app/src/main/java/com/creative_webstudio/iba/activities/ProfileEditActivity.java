@@ -283,4 +283,11 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        if (!loadingDialog.isShowing()) {
+            super.onBackPressed();
+        }
+    }
 }

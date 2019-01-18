@@ -25,7 +25,7 @@ public class ProductVO {
     private ProductDetailsVo productDetailsVo;
 
     @SerializedName("thumbnailIds")
-    private List<Integer> thumbnailIdsList;
+    private List<Long> thumbnailIdsList;
 
     @SerializedName("thumbnails")
     private ThumbnailsVo thumbnails;
@@ -84,11 +84,11 @@ public class ProductVO {
         this.productDetailsVo = productDetailsVo;
     }
 
-    public List<Integer> getThumbnailIdsList() {
+    public List<Long> getThumbnailIdsList() {
         return thumbnailIdsList;
     }
 
-    public void setThumbnailIdsList(List<Integer> thumbnailIdsList) {
+    public void setThumbnailIdsList(List<Long> thumbnailIdsList) {
         this.thumbnailIdsList = thumbnailIdsList;
     }
 

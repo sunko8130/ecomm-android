@@ -12,7 +12,7 @@
             android:layout_height="match_parent"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="@dimen/margin_medium">
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -143,8 +143,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp">
+        android:layout_marginStart="@dimen/margin_medium_2"
+        android:layout_marginEnd="@dimen/margin_medium_2">
 
         <Button
             android:id="@+id/btnOk"

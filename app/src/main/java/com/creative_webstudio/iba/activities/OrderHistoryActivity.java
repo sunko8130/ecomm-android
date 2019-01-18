@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,7 +21,6 @@ import com.creative_webstudio.iba.networks.viewmodels.OrderHistoryViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
-
 
 
 import java.util.ArrayList;
@@ -95,7 +95,7 @@ public class OrderHistoryActivity extends BaseActivity {
                 retryDialog.dismiss();
                 getOrderHistory();
             });
-        }else {
+        } else {
             loadingDialog.show();
             OrderHistoryViewModel viewModel = ViewModelProviders.of(this).get(OrderHistoryViewModel.class);
             viewModel.getOrderHistory().observe(this, apiResponse -> {
@@ -149,4 +149,12 @@ public class OrderHistoryActivity extends BaseActivity {
     public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
         getOrderHistory();
     }
+
+    @Override
+    public void onBackPressed() {
+        if (!loadingDialog.isShowing()) {
+            super.onBackPressed();
+        }
+    }
+
 }

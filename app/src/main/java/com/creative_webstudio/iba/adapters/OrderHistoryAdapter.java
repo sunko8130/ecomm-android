@@ -62,6 +62,8 @@ public class OrderHistoryAdapter extends BaseRecyclerAdapter<OrderHistoryAdapter
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.blue2));
             } else if (data.getStatus().equals("Customer Canceled")){
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.redFull));
+            }else if(data.getStatus().equals("Shipped")){
+                tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.indianRed));
             }else {
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.limeGreen));
             }

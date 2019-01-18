@@ -54,9 +54,9 @@
     <string name="check_out">Check Out</string>
     <string name="sign_in">Sign In</string>
     <string name="item_count">0 Item in your carts</string>
-    <string name="mmk_sub_total">MMK 0</string>
-    <string name="mmk_tax">MMK 0</string>
-    <string name="mmk_total">MMK 0</string>
+    <string name="mmk_sub_total">0 MMK</string>
+    <string name="mmk_tax">0 MMK</string>
+    <string name="mmk_total">0 MMK</string>
     <string name="msg_no_data">No Data To Display</string>
     <string name="btn_refresh">Refresh</string>
 

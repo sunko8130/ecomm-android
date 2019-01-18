@@ -3,8 +3,8 @@ package com.creative_webstudio.iba.datas.vos;
 public class CartShowVO {
     private long productId;
     private long unitId;
-    private int itemQuantity;
-    private int thumbnailId;
+    private Integer itemQuantity;
+    private Long thumbnailId;
     private String productName;
     private String unitShow;
     private long pricePerUnit;
@@ -27,19 +27,19 @@ public class CartShowVO {
         this.unitId = unitId;
     }
 
-    public int getItemQuantity() {
+    public Integer getItemQuantity() {
         return itemQuantity;
     }
 
-    public void setItemQuantity(int itemQuantity) {
+    public void setItemQuantity(Integer itemQuantity) {
         this.itemQuantity = itemQuantity;
     }
 
-    public int getThumbnailId() {
+    public Long getThumbnailId() {
         return thumbnailId;
     }
 
-    public void setThumbnailId(int thumbnailId) {
+    public void setThumbnailId(Long thumbnailId) {
         this.thumbnailId = thumbnailId;
     }
 

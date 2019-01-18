@@ -1,6 +1,8 @@
 package com.creative_webstudio.iba.networks;
 
+import com.creative_webstudio.iba.datas.criterias.AdvertisementCriteria;
 import com.creative_webstudio.iba.datas.criterias.CustomerCriteria;
+import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
@@ -72,6 +74,10 @@ public interface IbaAPI {
 //    @POST("order_unit/search/list")
 //    Observable<Response<List<OrderUnitVO>>> getOrderUnit(@Header("Authorization") String authHeader,
 //                                                         @Body Criteria criteriaVO);
+
+    @POST("advertisement/search/list")
+    Observable<Response<List<AdvertisementVO>>> getAdvertisement(@Header("Authorization") String authHeader,
+                                                                 @Body AdvertisementCriteria criteriaVO);
 
     @POST("product_category/search/list")
     Observable<Response<List<CategoryVO>>> getCategory(@Header("Authorization") String authHeader,

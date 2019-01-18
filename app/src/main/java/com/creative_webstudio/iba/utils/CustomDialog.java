@@ -1,5 +1,6 @@
 package com.creative_webstudio.iba.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AlertDialogLayout;
@@ -39,6 +40,8 @@ public class CustomDialog {
         MMProgressDialog progressDialog = new MMProgressDialog(context);
         progressDialog.setTitle(title);
         progressDialog.setMessage(message);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
         return progressDialog;
     }
 
@@ -51,6 +54,7 @@ public class CustomDialog {
         builder.setView(inflate_dialog);
         AlertDialog productDialog = builder.create();
         productDialog.setCanceledOnTouchOutside(false);
+        productDialog.setCancelable(false);
         return productDialog;
     }
 

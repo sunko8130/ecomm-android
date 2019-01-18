@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 
 import com.creative_webstudio.iba.R;
@@ -27,7 +28,12 @@ import com.creative_webstudio.iba.utils.CustomDialog;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 
+import org.mmtextview.components.MMTextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,6 +46,12 @@ public class OrderItemsActivity extends BaseActivity {
 
     @BindView(R.id.btnCancel)
     Button btnCancel;
+
+    @BindView(R.id.tvStatus)
+    MMTextView tvStatus;
+
+    @BindView(R.id.tvInfo)
+    MMTextView tvInfo;
 
     private OrderHistoryVO orderHistoryVO;
     private List<OrderItemVO> itemList;
@@ -76,29 +88,49 @@ public class OrderItemsActivity extends BaseActivity {
             Gson gson = new Gson();
             orderHistoryVO = gson.fromJson(json, OrderHistoryVO.class);
         }
-
-        if (!orderHistoryVO.getStatus().equals("Pending") || orderHistoryVO.getStatus().equals("Shipped")) {
-            btnCancel.setText(orderHistoryVO.getStatus());
-            if (!orderHistoryVO.getStatus().equals("Customer Canceled")) {
-                btnCancel.setTextColor(ContextCompat.getColor(this, R.color.limeGreen));
-            } else {
-                btnCancel.setTextColor(ContextCompat.getColor(this, R.color.redFull));
+        tvStatus.setText(orderHistoryVO.getStatus());
+        switch (orderHistoryVO.getStatus()) {
+            case "Pending":
+                tvStatus.setTextColor(ContextCompat.getColor(this, R.color.blue2));
+                break;
+            case "Shipped":
+                tvStatus.setTextColor(ContextCompat.getColor(this, R.color.indianRed));
+                break;
+            case "Completed":
+                tvStatus.setTextColor(ContextCompat.getColor(this, R.color.limeGreen));
+                break;
+            default:
+                tvStatus.setTextColor(ContextCompat.getColor(this, R.color.redFull));
+                break;
+        }
+        if (orderHistoryVO.getStatus().equals("Pending") || orderHistoryVO.getStatus().equals("Shipped")) {
+            long timeInMilliseconds = 0;
+            String givenDateString = orderHistoryVO.getOrderDate();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            try {
+                Date mDate = sdf.parse(givenDateString);
+//                String s = sdf.format(System.currentTimeMillis() + (1000 * 60 * 60 * 24));
+                timeInMilliseconds = mDate.getTime() + (1000 * 60 * 60 * 24);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            disableCancel();
+            if (timeInMilliseconds < System.currentTimeMillis()) {
+                disableCancel();
+            } else {
+                btnCancel.setOnClickListener(view -> {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
+                    builder.setTitle("Are Your Sure!");
+                    builder.setMessage("Do You want to cancel this order?");
+                    builder.setPositiveButton("Ok", (dialog, which) -> cancelOrder(orderHistoryVO.getId()));
+                    builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                    AlertDialog productDialog = builder.create();
+                    productDialog.show();
+                });
+            }
+            tvInfo.setVisibility(View.VISIBLE);
+
         } else {
-            canUpdate = true;
-            btnCancel.setText("Cancel Order");
-            btnCancel.setTextColor(ContextCompat.getColor(this, R.color.redFull));
-            btnCancel.setBackground(getDrawable(R.drawable.round_rect_black_line));
-            btnCancel.setOnClickListener(view -> {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
-                builder.setTitle("Are Your Sure!");
-                builder.setMessage("Do You want to cancel this order?");
-                builder.setPositiveButton("Ok", (dialog, which) -> cancelOrder(orderHistoryVO.getId()));
-                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-                AlertDialog productDialog = builder.create();
-                productDialog.show();
-            });
+            disableCancel();
         }
         itemList = orderHistoryVO.getOrderItems();
         itemIds = new long[itemList.size()];
@@ -140,9 +172,9 @@ public class OrderItemsActivity extends BaseActivity {
                     });
                     AlertDialog productDialog = builder.create();
                     productDialog.show();
-                    btnCancel.setText("Customer Canceled");
-                    btnCancel.setTextColor(ContextCompat.getColor(this, R.color.redFull));
-                    btnCancel.setBackground(getDrawable(R.drawable.round_rect_black_line));
+                    tvStatus.setText("Customer Canceled");
+                    tvStatus.setTextColor(ContextCompat.getColor(this, R.color.redFull));
+                    tvInfo.setVisibility(View.GONE);
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {
                         int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
@@ -153,6 +185,17 @@ public class OrderItemsActivity extends BaseActivity {
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
                             Snackbar.make(rvOrderItem, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        } else if (errorCode == 451) {
+                            canUpdate = false;
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
+                            builder.setTitle("Access Denied");
+                            builder.setMessage("You can't update this order now!");
+                            builder.setPositiveButton("Ok", (dialog, which) -> {
+                                dialog.dismiss();
+                                disableCancel();
+                            });
+                            AlertDialog productDialog = builder.create();
+                            productDialog.show();
                         }
                     } else {
                         retryDialog.show();
@@ -168,6 +211,7 @@ public class OrderItemsActivity extends BaseActivity {
     }
 
     private void disableCancel() {
+        btnCancel.setVisibility(View.GONE);
         btnCancel.setOnClickListener(view -> {
             final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
             builder.setTitle("Denied!");
@@ -227,7 +271,7 @@ public class OrderItemsActivity extends BaseActivity {
             CartShowVO cartShowVO = new CartShowVO();
             cartShowVO.setProductName(order.getProduct().getProductName());
             cartShowVO.setItemQuantity(order.getQuantity());
-            if (order.getProduct().getThumbnailIdsList()!=null && order.getProduct().getThumbnailIdsList().size()>0) {
+            if (order.getProduct().getThumbnailIdsList() != null && order.getProduct().getThumbnailIdsList().size() > 0) {
                 cartShowVO.setThumbnailId(order.getProduct().getThumbnailIdsList().get(0));
             }
             cartShowVO.setUnitShow("- ( 1" + order.getOrderUnit().getUnitName() + " per " + order.getOrderUnit().getItemsPerUnit() + " " + order.getOrderUnit().getItemName() + ")");
@@ -244,6 +288,13 @@ public class OrderItemsActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!loadingDialog.isShowing()){
+            super.onBackPressed();
+        }
     }
 
     @Override

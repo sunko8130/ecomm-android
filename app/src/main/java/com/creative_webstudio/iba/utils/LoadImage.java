@@ -8,7 +8,7 @@ import com.creative_webstudio.iba.R;
 
 public class LoadImage {
 
-    public static GlideUrl getGlideUrl(String access, int imageId) {
+    public static GlideUrl getGlideUrl(String access, Long imageId) {
         String bToken = "Bearer " + access;
         final GlideUrl glideUrl = new GlideUrl(AppConstants.IMAGE_URL + imageId,
                 new LazyHeaders.Builder()

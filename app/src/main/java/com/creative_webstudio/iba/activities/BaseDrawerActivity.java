@@ -192,6 +192,7 @@ public class BaseDrawerActivity extends BaseActivity {
         ibaShared.removePreference("AccessToken");
         ibaShared.removePreference("RefreshToken");
         startActivity(SignInActivity.newIntent(this));
+        finish();
     }
 
     @Override

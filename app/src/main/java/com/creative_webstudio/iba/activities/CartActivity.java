@@ -202,9 +202,9 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             totalCartItem += cartVOList.get(i).getQuantity();
         }
         mCartAdapter.setNewData(cartShowVOList);
-        tvTotal.setText(total + " MMK");
-        tvSubtotal.setText(total + " MMK");
-        tvCartCount.setText(totalCartItem + " Items in your cart.");
+        tvTotal.setText(String.format("%,d", Long.parseLong(String.valueOf(total))) + " MMK");
+        tvSubtotal.setText(String.format("%,d", Long.parseLong(String.valueOf(total))) + " MMK");
+        tvCartCount.setText(String.format("%,d", Long.parseLong(String.valueOf(totalCartItem))) + " Items in your cart.");
     }
 
 
@@ -225,18 +225,20 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (!loadingDialog.isShowing()) {
+            super.onBackPressed();
+        }
 //        startActivity(ProductActivity.newIntent(this));
     }
 
-    public void onClickItem(int btnNo, ProductVO productVO, int deleteItem) {
-        if (btnNo == 1) {
-            DeleteItem(deleteItem);
-            Snackbar.make(rvCart, "Delete Cart", Snackbar.LENGTH_LONG).show();
-        } else {
-            Snackbar.make(rvCart, "Click To View", Snackbar.LENGTH_LONG).show();
-        }
-    }
+//    public void onClickItem(int btnNo, ProductVO productVO, int deleteItem) {
+//        if (btnNo == 1) {
+//            DeleteItem(deleteItem);
+//            Snackbar.make(rvCart, "Delete Cart", Snackbar.LENGTH_LONG).show();
+//        } else {
+//            Snackbar.make(rvCart, "Click To View", Snackbar.LENGTH_LONG).show();
+//        }
+//    }
 
     public void onRemoveCart(CartShowVO cart) {
         Bundle bundle = new Bundle();
@@ -302,7 +304,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
 
         Bundle bundle = new Bundle();
         for(int i=0;i<cartVOList.size();i++){
-            bundle.putString("order_item_"+i,cartShowVOList.get(i).getProductName()+"-"+cartShowVOList.get(i).getUnitShow()+"-"+cartVOList.get(i).getQuantity());
+            bundle.putString(String.valueOf(cartShowVOList.get(i).getProductId()),cartShowVOList.get(i).getProductName()+"-"+cartShowVOList.get(i).getUnitShow()+"-"+cartVOList.get(i).getQuantity());
         }
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "send_order");
         mFirebaseAnalytics.logEvent("click_send_order", bundle);

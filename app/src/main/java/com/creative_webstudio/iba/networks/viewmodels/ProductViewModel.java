@@ -5,8 +5,10 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 
 import com.creative_webstudio.iba.datas.ApiResponse;
+import com.creative_webstudio.iba.datas.criterias.AdvertisementCriteria;
 import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
 import com.creative_webstudio.iba.datas.criterias.ThumbnailCriteria;
+import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
@@ -90,7 +92,7 @@ public class ProductViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     List<CategoryVO> body = response.body();
-                    if (response.isSuccessful() && body != null && body != null && !body.isEmpty()) {
+                    if (response.isSuccessful() && body != null && !body.isEmpty()) {
                         apiResponse.setData(body);
                     } else {
                         apiResponse.setError(new ApiException(response.code()));
@@ -102,6 +104,34 @@ public class ProductViewModel extends AndroidViewModel {
                 });
         return result;
     }
+
+    public MutableLiveData<ApiResponse<List<AdvertisementVO>>> getAdvertisement(){
+        AdvertisementCriteria criteria=new AdvertisementCriteria();
+        MutableLiveData<ApiResponse<List<AdvertisementVO>>> result = new MutableLiveData<>();
+        ApiResponse<List<AdvertisementVO>> apiResponse = new ApiResponse<>();
+        IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
+        IBAPreferenceManager prefs = new IBAPreferenceManager(getApplication());
+        String accessToken = prefs.getAccessToken();
+        String userAuth = "Bearer " + accessToken;
+        api.getAdvertisement(userAuth, criteria)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    List<AdvertisementVO> body = response.body();
+                    if (response.isSuccessful() && body != null && !body.isEmpty()) {
+                        apiResponse.setData(body);
+                    } else {
+                        apiResponse.setError(new ApiException(response.code()));
+                    }
+                    result.setValue(apiResponse);
+                }, throwable -> {
+                    apiResponse.setError(new ApiException(throwable));
+                    result.setValue(apiResponse);
+                });
+        return result;
+    }
+
+
 
 
 }

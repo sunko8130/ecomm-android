@@ -67,7 +67,6 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
     private ProductSearchPresenter mPresenter;
     private List<ProductVO> mProductVOS;
     private ProductSearchViewModel mProductSearchViewModel;
-    private ArrayList<ProductVO> mProductList;
 
     public static Intent newIntent(Context context) {
         return new Intent(context, ProductSearchActivity.class);
@@ -95,7 +94,6 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         vpEmpty.setVisibility(View.GONE);
 
         mProductSearchViewModel = ViewModelProviders.of(this).get(ProductSearchViewModel.class);
-        mProductList = new ArrayList<>();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -107,18 +105,10 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         searchView.setIconified(false);
         searchView.requestFocusFromTouch();
 
-        tvResult.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.e("onclickTvResult", "onClick: Success ");
-                mPresenter.onTapSearch("e");
-                mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
-                    @Override
-                    public void onChanged(@Nullable List<ProductVO> productVOS) {
-                        searchAdapter.setNewData(productVOS);
-                    }
-                });
-            }
+        tvResult.setOnClickListener(view -> {
+            Log.e("onclickTvResult", "onClick: Success ");
+            mPresenter.onTapSearch("e");
+            mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, productVOS -> searchAdapter.setNewData(productVOS));
         });
 
     }
@@ -148,7 +138,7 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "search_product");
         mFirebaseAnalytics.logEvent("click_search_icon", bundle);
         getProductSearch(criteriaVO);
-
+        searchView.clearFocus();
 //        mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
 //            @Override
 //            public void onChanged(@Nullable List<ProductVO> productVOS) {
@@ -225,8 +215,14 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
 //            vpEmpty.setVisibility(View.VISIBLE);
                 loadingSearch.setVisibility(View.GONE);
                 if (apiResponse.getData() != null) {
-                    mProductList = (ArrayList<ProductVO>) apiResponse.getData();
-                    searchAdapter.setNewData(apiResponse.getData());
+                    List<ProductVO> list=new ArrayList<>();
+                    for(ProductVO productVO:apiResponse.getData()){
+                        if(productVO.getStatus().equals("AVAILABLE")){
+                            list.add(productVO);
+                        }
+                    }
+//                    mProductList = (ArrayList<ProductVO>) apiResponse.getData();
+                    searchAdapter.setNewData(list);
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {
                         int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();

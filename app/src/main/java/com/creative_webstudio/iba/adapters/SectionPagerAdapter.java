@@ -4,28 +4,33 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
+import com.creative_webstudio.iba.fragments.FragmentBanner;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class SectionPagerAdapter extends FragmentPagerAdapter {
 
-    private final List<Fragment> mFragmentList = new ArrayList<>();
+    private List<AdvertisementVO> adList;
 
-    public SectionPagerAdapter(FragmentManager fm) {
+    public SectionPagerAdapter(FragmentManager fm,List<AdvertisementVO> adList) {
         super(fm);
+        this.adList=adList;
     }
 
     @Override
     public Fragment getItem(int i) {
-        return mFragmentList.get(i);
-    }
+        return FragmentBanner.newInstance(adList.get(i));
+        }
 
     @Override
     public int getCount() {
-        return mFragmentList.size();
+        return adList.size();
     }
-    public void addFragment(Fragment fragment){
-        mFragmentList.add(fragment);
-    }
+//    public void addFragment(List<AdvertisementVO> advertisementVOS){
+//        adList=advertisementVOS;
+//    }
+
 }

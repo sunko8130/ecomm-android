@@ -144,4 +144,11 @@ public class SignInActivity extends BaseActivity implements SignInView {
         super.onResume();
     }
 
+    @Override
+    public void onBackPressed() {
+        if(!loadingDialog.isShowing()){
+            moveTaskToBack(true);
+            super.onBackPressed();
+        }
+    }
 }

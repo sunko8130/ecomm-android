@@ -3,12 +3,15 @@ package com.creative_webstudio.iba.activities;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -20,10 +23,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.MyOnPageChangeListener;
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.adapters.PagerAdapter;
 import com.creative_webstudio.iba.adapters.ProductAdapter;
 import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
@@ -31,15 +36,14 @@ import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.components.SmartScrollListener;
 
+import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
-import com.creative_webstudio.iba.fragments.FragmentOne;
 import com.creative_webstudio.iba.networks.viewmodels.ProductViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
-import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -47,12 +51,14 @@ import com.viewpagerindicator.CirclePageIndicator;
 import org.mmtextview.components.MMTextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
-import io.fabric.sdk.android.Fabric;
 import retrofit2.Response;
+import saschpe.android.customtabs.CustomTabsHelper;
+import saschpe.android.customtabs.WebViewFallback;
 
 public class ProductActivity extends BaseDrawerActivity {
 
@@ -95,6 +101,10 @@ public class ProductActivity extends BaseDrawerActivity {
 
     @Nullable
     @BindView(R.id.btn_refresh_empty)
+    TextView btnEmpty;
+
+    @Nullable
+    @BindView(R.id.tv_empty)
     TextView tvEmpty;
 
     //no more Items
@@ -123,6 +133,8 @@ public class ProductActivity extends BaseDrawerActivity {
 
     private ArrayList<CategoryVO> mCategoryList;
 
+    private ArrayList<AdvertisementVO> mAdvertisementList;
+
     private ProductViewModel mProductViewModel;
 
     //Scroll top
@@ -146,13 +158,16 @@ public class ProductActivity extends BaseDrawerActivity {
         rvProduct.setEmptyView(vpEmpty);
         mProductAdapter = new ProductAdapter(this);
         mCategoryList = new ArrayList<>();
+        mAdvertisementList = new ArrayList<>();
         loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Products.Please wait!");
         // TODO: specify the span count in res directory for phone and tablet size.
         layoutManager = new GridLayoutManager(this, 2);
         rvProduct.setLayoutManager(layoutManager);
         rvProduct.setAdapter(mProductAdapter);
         mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
-        getCategory();
+        tvEmpty.setText("Loading Data........");
+//        getCategory();
+        getAdvertisement();
         if (mProductAdapter.getItemCount() == 0) {
             appBar.setExpanded(false);
         } else {
@@ -166,7 +181,7 @@ public class ProductActivity extends BaseDrawerActivity {
             refreshData();
         });
 
-        tvEmpty.setOnClickListener(v -> {
+        btnEmpty.setOnClickListener(v -> {
             categoryId = -1;
             refreshData();
         });
@@ -188,12 +203,14 @@ public class ProductActivity extends BaseDrawerActivity {
                 }
             }
         });
-
-        setupViewPager();
+//        setupViewPager(mAdvertisementList);
 //        getProduct(++mCurrentPage, categoryId);
     }
 
     private void refreshData() {
+        tvEmpty.setText("Loading Data......");
+        btnProduct.setText("All Product");
+        checkedItem = 0;
         if (!loadingDialog.isShowing()) {
             loadingDialog.show();
         }
@@ -207,7 +224,52 @@ public class ProductActivity extends BaseDrawerActivity {
         }
     }
 
+    private void getAdvertisement() {
+        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Advertisement.Please wait!");
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                getAdvertisement();
+            });
+        } else {
+            loadingDialog.show();
+            mProductViewModel.getAdvertisement().observe(this, apiResponse -> {
+                if (loadingDialog.isShowing()) {
+                    loadingDialog.dismiss();
+                }
+                if (apiResponse.getData() != null) {
+                    mAdvertisementList = (ArrayList<AdvertisementVO>) apiResponse.getData();
+                    setupViewPager(mAdvertisementList);
+                    getCategory();
+                } else {
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            super.refreshAccessToken();
+                        } else if (errorCode == 204) {
+                            // TODO: Server response successful but there is no data (Empty response).
+                        } else if (errorCode == 200) {
+                            // TODO: Reach End of List
+                            Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            retryDialog.show();
+                            retryDialog.tvRetry.setText("No Internet Connection");
+                            retryDialog.btnRetry.setOnClickListener(v -> {
+                                retryDialog.dismiss();
+                                getAdvertisement();
+                            });
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+
     private void getCategory() {
+        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Products.Please wait!");
         if (!checkNetwork()) {
             retryDialog.show();
             retryDialog.tvRetry.setText("No Internet Connection");
@@ -310,7 +372,13 @@ public class ProductActivity extends BaseDrawerActivity {
                     categoryId = (int) productCategoryId;
                     mCurrentPage++;
                     mIsLoading = false;
-                    mProductAdapter.appendNewData(apiResponse.getData().getProductVOList());
+                    List<ProductVO> list = new ArrayList<>();
+                    for (ProductVO productVO : apiResponse.getData().getProductVOList()) {
+                        if (productVO.getStatus().equals("AVAILABLE")) {
+                            list.add(productVO);
+                        }
+                    }
+                    mProductAdapter.appendNewData(list);
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {
                         int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
@@ -321,9 +389,10 @@ public class ProductActivity extends BaseDrawerActivity {
                             collapse();
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
-                            if (mCurrentPage > 1 ) {
+                            if (mCurrentPage > 1) {
                                 Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
-                            }else {
+                            } else {
+                                tvEmpty.setText("No Data to Display!");
                                 collapse();
                             }
 
@@ -429,10 +498,8 @@ public class ProductActivity extends BaseDrawerActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupViewPager() {
-        SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FragmentOne());
-//        adapter.addFragment(new FragmentTwo());
+    private void setupViewPager(ArrayList<AdvertisementVO> mAdvertisementList) {
+        SectionPagerAdapter adapter = new SectionPagerAdapter(this.getSupportFragmentManager(), mAdvertisementList);
         if (viewPager != null) {
             viewPager.setAdapter(adapter);
             viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
@@ -477,7 +544,9 @@ public class ProductActivity extends BaseDrawerActivity {
             layoutManager.smoothScrollToPosition(rvProduct, null, 0);
             expand();
         } else {
-            super.onBackPressed();
+            if (!loadingDialog.isShowing()) {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -508,5 +577,25 @@ public class ProductActivity extends BaseDrawerActivity {
 //        params.height = height; // HEIGHT
 //        appBar.setLayoutParams(params);
         appBar.setExpanded(false);
+    }
+
+    public void launchWebView(String url) {
+        if (url != null) {
+            CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
+                    .addDefaultShareMenuItem()
+                    .setToolbarColor(this.getResources()
+                            .getColor(R.color.colorPrimary))
+                    .setShowTitle(true)
+                    .setCloseButtonIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_arrow_back_white_24dp))
+                    .build();
+
+//      This is optional but recommended
+            CustomTabsHelper.addKeepAliveExtra(this, customTabsIntent.intent);
+
+//      This is where the magic happens...
+            CustomTabsHelper.openCustomTab(this, customTabsIntent,
+                    Uri.parse(url),
+                    new WebViewFallback());
+        }
     }
 }
