@@ -240,6 +240,7 @@ public class ProductActivity extends BaseDrawerActivity {
                     loadingDialog.dismiss();
                 }
                 if (apiResponse.getData() != null) {
+                    mAdvertisementList = new ArrayList<>();
                     mAdvertisementList = (ArrayList<AdvertisementVO>) apiResponse.getData();
                     setupViewPager(mAdvertisementList);
                     getCategory();
@@ -249,6 +250,10 @@ public class ProductActivity extends BaseDrawerActivity {
                         if (errorCode == 401) {
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
+                            AdvertisementVO advertisementVO=new AdvertisementVO();
+                            mAdvertisementList.add(advertisementVO);
+                            setupViewPager(mAdvertisementList);
+                            getCategory();
                             // TODO: Server response successful but there is no data (Empty response).
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List

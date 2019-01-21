@@ -65,6 +65,9 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
         @BindView(R.id.iv_product)
         ImageView ivProduct;
 
+        @BindView(R.id.ivPromo)
+        ImageView ivPromo;
+
 
         private ProductVO productVO;
 
@@ -85,6 +88,11 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
             }
 
             productVO =data;
+            if(productVO.getHasPromotion()){
+                ivPromo.setVisibility(View.VISIBLE);
+            }else {
+                ivPromo.setVisibility(View.GONE);
+            }
         }
 
         @Override

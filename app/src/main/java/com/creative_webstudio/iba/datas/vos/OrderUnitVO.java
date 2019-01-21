@@ -1,6 +1,10 @@
 package com.creative_webstudio.iba.datas.vos;
 
+import android.app.ListFragment;
+
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class OrderUnitVO {
 
@@ -32,7 +36,13 @@ public class OrderUnitVO {
     private String status;
 
     @SerializedName("minimumOrderQuantity")
-    private int minimumOrderQuantity;
+    private Integer minimumOrderQuantity;
+
+    @SerializedName("hasPromotion")
+    private Boolean hasPromotion;
+
+    @SerializedName("promoRewards")
+    private List<PromoRewardVO> promoRewardVOList;
 
     public Long getId() {
         return id;
@@ -106,11 +116,27 @@ public class OrderUnitVO {
         this.status = status;
     }
 
-    public int getMinimumOrderQuantity() {
+    public Integer getMinimumOrderQuantity() {
         return minimumOrderQuantity;
     }
 
-    public void setMinimumOrderQuantity(int minimumOrderQuantity) {
+    public void setMinimumOrderQuantity(Integer minimumOrderQuantity) {
         this.minimumOrderQuantity = minimumOrderQuantity;
+    }
+
+    public Boolean getHasPromotion() {
+        return hasPromotion;
+    }
+
+    public void setHasPromotion(Boolean hasPromotion) {
+        this.hasPromotion = hasPromotion;
+    }
+
+    public List<PromoRewardVO> getPromoRewardVOList() {
+        return promoRewardVOList;
+    }
+
+    public void setPromoRewardVOList(List<PromoRewardVO> promoRewardVOList) {
+        this.promoRewardVOList = promoRewardVOList;
     }
 }

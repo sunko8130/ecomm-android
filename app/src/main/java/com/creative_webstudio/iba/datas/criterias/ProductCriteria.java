@@ -10,6 +10,7 @@ public class ProductCriteria {
     private String word;
     private ThumbnailCriteria thumbnail;
     private boolean withDetail;
+    private OrderUnitCriteria orderUnit;
 
     public long[] getIncludeIds() {
         return includeIds;
@@ -73,5 +74,13 @@ public class ProductCriteria {
 
     public void setWithDetail(boolean withDetail) {
         this.withDetail = withDetail;
+    }
+
+    public OrderUnitCriteria getOrderUnit() {
+        return orderUnit;
+    }
+
+    public void setOrderUnit(OrderUnitCriteria orderUnit) {
+        this.orderUnit = orderUnit;
     }
 }

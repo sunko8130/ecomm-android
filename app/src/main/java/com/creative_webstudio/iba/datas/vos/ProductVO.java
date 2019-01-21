@@ -36,6 +36,9 @@ public class ProductVO {
     @SerializedName("productCategory")
     private ProductCategoryVo productCategory;
 
+    @SerializedName("hasPromotion")
+    private Boolean hasPromotion;
+
     public Long getId() {
         return id;
     }
@@ -114,6 +117,14 @@ public class ProductVO {
 
     public void setProductCategory(ProductCategoryVo productCategory) {
         this.productCategory = productCategory;
+    }
+
+    public Boolean getHasPromotion() {
+        return hasPromotion;
+    }
+
+    public void setHasPromotion(Boolean hasPromotion) {
+        this.hasPromotion = hasPromotion;
     }
 }
 

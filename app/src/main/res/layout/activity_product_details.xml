@@ -148,6 +148,7 @@
                 android:layout_margin="5dp"/>
 
             <LinearLayout
+                android:id="@+id/layoutSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_below="@id/rc_details"
@@ -237,6 +238,13 @@
 
                 </LinearLayout>
             </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rcPromo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/layoutSpinner"
+                android:layout_margin="@dimen/margin_medium"/>
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>

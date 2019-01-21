@@ -7,6 +7,8 @@ import android.arch.lifecycle.MutableLiveData;
 import com.creative_webstudio.iba.datas.ApiResponse;
 import com.creative_webstudio.iba.datas.criterias.AdvertisementCriteria;
 import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
+import com.creative_webstudio.iba.datas.criterias.OrderUnitCriteria;
+import com.creative_webstudio.iba.datas.criterias.PromoRewardDetailCriteria;
 import com.creative_webstudio.iba.datas.criterias.ThumbnailCriteria;
 import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
@@ -39,6 +41,9 @@ public class ProductViewModel extends AndroidViewModel {
         ProductCriteria criteriaVO = new ProductCriteria();
         ThumbnailCriteria thumbnailCriteria = new ThumbnailCriteria();
         thumbnailCriteria.setThumbnailType(1);
+        OrderUnitCriteria orderUnitCriteria= new OrderUnitCriteria();
+        orderUnitCriteria.setWithPromoReward(true);
+        criteriaVO.setOrderUnit(orderUnitCriteria);
         if(categoryId == -1) {
             criteriaVO.setPageNumber(String.valueOf(page));
             criteriaVO.setWithOrderUnit(true);

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="@dimen/margin_medium_2"
+    android:padding="@dimen/margin_medium"
+    android:background="@drawable/round_rect_black_line"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="9"
+        android:orientation="vertical">
+        <org.mmtextview.components.MMTextView
+            android:id="@+id/tvQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Buy - 2"
+            android:textSize="@dimen/text_regular_2x"
+            android:padding="4dp"
+            android:textStyle="bold"/>
+
+        <org.mmtextview.components.MMTextView
+            android:id="@+id/tvPromo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save - 30%"
+            android:textSize="@dimen/text_regular_2x"
+            android:padding="4dp"
+            android:textColor="@color/limeGreen"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivCheck"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/ic_promo_get"
+        android:tint="@color/limeGreen"/>
+
+</LinearLayout>

@@ -28,10 +28,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.DetailAdapter;
+import com.creative_webstudio.iba.adapters.PromoAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
+import com.creative_webstudio.iba.datas.vos.PromoRewardDetailVO;
+import com.creative_webstudio.iba.datas.vos.PromoRewardVO;
 import com.creative_webstudio.iba.datas.vos.SpinnerVO;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
@@ -86,11 +89,16 @@ public class ProductDetailsActivity extends BaseActivity {
     @BindView(R.id.rc_details)
     RecyclerView rcDetails;
 
+    @BindView(R.id.rcPromo)
+    RecyclerView rcPromo;
+
     //Toolbar
     @BindView(R.id.toolbar_details)
     Toolbar toolbar;
 
     private DetailAdapter mDetailAdapter;
+
+    private PromoAdapter mPromoAdapter;
 
     private ProductVO productVO;
 
@@ -107,6 +115,8 @@ public class ProductDetailsActivity extends BaseActivity {
     private int selectedItem = 0;
 
     private List<OrderUnitVO> orderUnitVOList;
+
+    private List<PromoRewardVO> promoRewardVOList;
 
     //cart items
     private int cartItems = 0;
@@ -136,6 +146,10 @@ public class ProductDetailsActivity extends BaseActivity {
         mDetailAdapter = new DetailAdapter(this);
         rcDetails.setLayoutManager(new LinearLayoutManager(this));
         rcDetails.setAdapter(mDetailAdapter);
+        mPromoAdapter = new PromoAdapter(this);
+        rcPromo.setLayoutManager(new LinearLayoutManager(this));
+        rcPromo.setAdapter(mPromoAdapter);
+        promoRewardVOList = new ArrayList<>();
 
         ibaShared = new IBAPreferenceManager(this);
         if (getIntent().hasExtra("BackActivity")) {
@@ -218,6 +232,8 @@ public class ProductDetailsActivity extends BaseActivity {
                 edQuantity.setText(String.valueOf(quantity));
                 String s = String.format("%,d", Long.parseLong(String.valueOf(orderUnitVOList.get(i).getPricePerUnit() * quantity)));
                 tvPrice.setText(s + " MMK");
+                promoRewardVOList=orderUnitVOList.get(i).getPromoRewardVOList();
+//                setUpPromo();
             }
 
             @Override
@@ -260,6 +276,17 @@ public class ProductDetailsActivity extends BaseActivity {
         });
     }
 
+    private void setUpPromo(){
+        for(PromoRewardVO temp:promoRewardVOList){
+            temp.setShowUnit("1"+orderUnitVOList.get(selectedItem).getUnitName()+" per "+orderUnitVOList.get(selectedItem).getItemsPerUnit()+" "+orderUnitVOList.get(selectedItem).getItemName());
+            for(PromoRewardDetailVO detailVO:temp.getPromoRewardDetailVOList()){
+                if(detailVO.getOrderUnitId()==orderUnitVOList.get(selectedItem).getId()){
+                    temp.setPromoQuantity(detailVO.getOrderQuantity());
+                }
+            }
+        }
+        mPromoAdapter.setNewData(promoRewardVOList);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
