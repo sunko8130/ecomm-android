@@ -106,9 +106,9 @@ public class OrderHistoryViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    int body = response.body();
+//                    int body = response.body();
                     if (response.isSuccessful()) {
-                        apiResponse.setData(body);
+                        apiResponse.setData(response.body());
                     } else {
                         apiResponse.setError(new ApiException(response.code()));
                     }

@@ -175,13 +175,13 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         OrderUnitVO tempOrder = new OrderUnitVO();
         for (int i = 0; i < cartVOList.size(); i++) {
             for (ProductVO productVO : productVOList) {
-                if (productVO.getId() == cartVOList.get(i).getProductId()) {
+                if (productVO.getId().equals(cartVOList.get(i).getProductId())) {
                     tempProduct = productVO;
                 }
             }
             if (tempProduct.getOrderUnits().size() > 0) {
                 for (OrderUnitVO order : tempProduct.getOrderUnits()) {
-                    if (order.getId() == cartVOList.get(i).getOrderUnitId()) {
+                    if (order.getId().equals(cartVOList.get(i).getOrderUnitId())) {
                         tempOrder = order;
                     }
                 }

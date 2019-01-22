@@ -292,7 +292,7 @@ public class OrderItemsActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(!loadingDialog.isShowing()){
+        if (!loadingDialog.isShowing()) {
             super.onBackPressed();
         }
     }

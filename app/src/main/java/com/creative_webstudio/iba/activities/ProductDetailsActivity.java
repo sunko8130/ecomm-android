@@ -233,7 +233,7 @@ public class ProductDetailsActivity extends BaseActivity {
                 String s = String.format("%,d", Long.parseLong(String.valueOf(orderUnitVOList.get(i).getPricePerUnit() * quantity)));
                 tvPrice.setText(s + " MMK");
                 promoRewardVOList=orderUnitVOList.get(i).getPromoRewardVOList();
-//                setUpPromo();
+//                loadPromo();
             }
 
             @Override
@@ -276,7 +276,7 @@ public class ProductDetailsActivity extends BaseActivity {
         });
     }
 
-    private void setUpPromo(){
+    private void loadPromo(){
         for(PromoRewardVO temp:promoRewardVOList){
             temp.setShowUnit("1"+orderUnitVOList.get(selectedItem).getUnitName()+" per "+orderUnitVOList.get(selectedItem).getItemsPerUnit()+" "+orderUnitVOList.get(selectedItem).getItemName());
             for(PromoRewardDetailVO detailVO:temp.getPromoRewardDetailVOList()){

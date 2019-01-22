@@ -1,8 +1,8 @@
 package com.creative_webstudio.iba.datas.vos;
 
 public class CartShowVO {
-    private long productId;
-    private long unitId;
+    private Long productId;
+    private Long unitId;
     private Integer itemQuantity;
     private Long thumbnailId;
     private String productName;
