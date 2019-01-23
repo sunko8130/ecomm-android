@@ -3,8 +3,6 @@ package com.creative_webstudio.iba.activities;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -94,7 +92,7 @@ public class OrderItemsActivity extends BaseActivity {
                 tvStatus.setTextColor(ContextCompat.getColor(this, R.color.blue2));
                 break;
             case "Shipped":
-                tvStatus.setTextColor(ContextCompat.getColor(this, R.color.indianRed));
+                tvStatus.setTextColor(ContextCompat.getColor(this, R.color.orange));
                 break;
             case "Completed":
                 tvStatus.setTextColor(ContextCompat.getColor(this, R.color.limeGreen));

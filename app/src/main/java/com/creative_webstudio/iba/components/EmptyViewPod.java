@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.R;
 
 import org.mmtextview.components.MMTextView;
@@ -31,6 +32,9 @@ public class EmptyViewPod extends RelativeLayout {
 
     @BindView(R.id.btn_refresh_empty)
     MMTextView btnRefresh;
+
+//    @BindView(R.id.anim_empty)
+//    LottieAnimationView animEmpty;
     public EmptyViewPod(Context context) {
         super(context);
     }

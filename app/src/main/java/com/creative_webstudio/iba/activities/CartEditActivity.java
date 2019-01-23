@@ -105,13 +105,13 @@ public class CartEditActivity extends BaseActivity {
         OrderUnitVO tempOrder = new OrderUnitVO();
         for (int i = 0; i < cartEditList.size(); i++) {
             for (ProductVO productVO : productVOList) {
-                if (productVO.getId() == cartEditList.get(i).getProductId()) {
+                if (productVO.getId().equals(cartEditList.get(i).getProductId())) {
                     tempProduct = productVO;
                 }
             }
             if (tempProduct.getOrderUnits().size() > 0) {
                 for (OrderUnitVO order : tempProduct.getOrderUnits()) {
-                    if (order.getId() == cartEditList.get(i).getOrderUnitId()) {
+                    if (order.getId().equals(cartEditList.get(i).getOrderUnitId())) {
                         tempOrder = order;
                     }
                 }
@@ -122,7 +122,7 @@ public class CartEditActivity extends BaseActivity {
                 cartShowVO.setThumbnailId(tempProduct.getThumbnailIdsList().get(0));
             }
             for(CartVO cart:orderCartList){
-                if(cart.getProductId()==tempProduct.getId() && cart.getOrderUnitId()==tempOrder.getId()){
+                if(cart.getProductId().equals(tempProduct.getId()) && cart.getOrderUnitId().equals(tempOrder.getId())){
                     cartShowVO.setItemQuantity(cart.getQuantity());
                 }
             }
@@ -139,13 +139,13 @@ public class CartEditActivity extends BaseActivity {
         if (quantity > 0) {
             cartShowVOList.get(pos).setItemQuantity(quantity);
             for (CartVO cart : editedList) {
-                if (cart.getProductId() == cartShowVOList.get(pos).getProductId() && cart.getOrderUnitId() == cartShowVOList.get(pos).getUnitId()) {
+                if (cart.getProductId().equals(cartShowVOList.get(pos).getProductId()) && cart.getOrderUnitId().equals(cartShowVOList.get(pos).getUnitId())) {
                     cart.setQuantity(quantity);
                 }
             }
         } else {
             for (CartVO cart : editedList) {
-                if (cart.getProductId() == cartShowVOList.get(pos).getProductId() && cart.getOrderUnitId() == cartShowVOList.get(pos).getUnitId()) {
+                if (cart.getProductId().equals(cartShowVOList.get(pos).getProductId()) && cart.getOrderUnitId().equals(cartShowVOList.get(pos).getUnitId())) {
                     cart.setQuantity(-1);
                 }
             }

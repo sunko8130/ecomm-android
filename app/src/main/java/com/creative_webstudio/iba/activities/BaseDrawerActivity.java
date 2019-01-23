@@ -189,8 +189,9 @@ public class BaseDrawerActivity extends BaseActivity {
         bundle.putLong("customer_id", customerVO.getId());
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "logout");
         mFirebaseAnalytics.logEvent("click_log_out", bundle);
-        ibaShared.removePreference("AccessToken");
-        ibaShared.removePreference("RefreshToken");
+//        ibaShared.removePreference("AccessToken");
+//        ibaShared.removePreference("RefreshToken");
+        ibaShared.clear();
         startActivity(SignInActivity.newIntent(this));
         finish();
     }

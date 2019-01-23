@@ -1,7 +1,6 @@
 package com.creative_webstudio.iba.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -60,12 +59,12 @@ public class OrderHistoryAdapter extends BaseRecyclerAdapter<OrderHistoryAdapter
             tvDate.setText("Order Date: "+data.getOrderDate());
             if (data.getStatus().equals("Pending")) {
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.blue2));
-            } else if (data.getStatus().equals("Customer Canceled")){
-                tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.redFull));
-            }else if(data.getStatus().equals("Shipped")){
-                tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.indianRed));
-            }else {
+            } else if (data.getStatus().equals("Complete")){
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.limeGreen));
+            }else if(data.getStatus().equals("Shipped")){
+                tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.orange));
+            }else {
+                tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.redFull));
             }
             tvStatus.setText(data.getStatus());
             long price=0;

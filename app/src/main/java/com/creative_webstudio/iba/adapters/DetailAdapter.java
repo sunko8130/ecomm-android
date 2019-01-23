@@ -42,7 +42,7 @@ public class DetailAdapter extends BaseRecyclerAdapter<DetailAdapter.DetailViewH
         @Override
         public void setData(ValueVo data) {
             tvTitle.setText(data.getTitle());
-            tvDescription.setText(": "+data.getDescription());
+            tvDescription.setText(data.getDescription());
         }
 
         @Override

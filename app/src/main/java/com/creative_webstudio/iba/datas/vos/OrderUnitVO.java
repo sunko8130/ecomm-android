@@ -24,7 +24,7 @@ public class OrderUnitVO {
     private Integer itemsPerUnit;
 
     @SerializedName("pricePerUnit")
-    private Long pricePerUnit;
+    private Double pricePerUnit;
 
     @SerializedName("unitInStock")
     private Integer unitInStock;
@@ -84,11 +84,11 @@ public class OrderUnitVO {
         this.itemsPerUnit = itemsPerUnit;
     }
 
-    public Long getPricePerUnit() {
+    public Double getPricePerUnit() {
         return pricePerUnit;
     }
 
-    public void setPricePerUnit(Long pricePerUnit) {
+    public void setPricePerUnit(Double pricePerUnit) {
         this.pricePerUnit = pricePerUnit;
     }
 

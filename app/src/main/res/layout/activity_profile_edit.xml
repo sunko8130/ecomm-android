@@ -85,7 +85,7 @@
                     <Spinner
                         android:id="@+id/spDivision"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="50dp"
                         android:padding="5dp" />
                 </RelativeLayout>
             </LinearLayout>
@@ -114,7 +114,7 @@
                     <Spinner
                         android:id="@+id/spTownship"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="50dp"
                         android:padding="5dp" />
                 </RelativeLayout>
             </LinearLayout>

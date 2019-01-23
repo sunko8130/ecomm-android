@@ -13,10 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.CartAdapter;
+import com.creative_webstudio.iba.components.EmptyViewPod;
+import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.datas.vos.CartShowVO;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
@@ -43,7 +48,7 @@ import retrofit2.Response;
 public class CartActivity extends BaseActivity implements View.OnClickListener {
     @Nullable
     @BindView(R.id.rv_cart_list)
-    RecyclerView rvCart;
+    SmartRecyclerView rvCart;
 
     @BindView(R.id.btnOrder)
     Button btnOrder;
@@ -60,6 +65,26 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.tvTotal)
     MMTextView tvTotal;
 
+    //empty view
+    @BindView(R.id.vp_empty_product)
+    EmptyViewPod emptyViewPod;
+
+    @Nullable
+    @BindView(R.id.tv_empty)
+    TextView tvEmpty;
+
+    @Nullable
+    @BindView(R.id.btn_refresh_empty)
+    MMTextView btnRefresh;
+
+    @Nullable
+    @BindView(R.id.anim_empty)
+    LottieAnimationView animEmpty;
+
+    @Nullable
+    @BindView(R.id.iv_empty)
+    ImageView ivEmpty;
+
     private CartAdapter mCartAdapter;
     private IBAPreferenceManager ibaShared;
     private long productIds[];
@@ -68,7 +93,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     private List<ProductVO> productVOList;
     private List<CartVO> cartVOList;
 
-    private long total = 0;
+    private Double total = 0.0;
     private int totalCartItem = 0;
 
     //loading dialog
@@ -92,6 +117,13 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         mCartAdapter = new CartAdapter(this);
         rvCart.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvCart.setAdapter(mCartAdapter);
+        rvCart.setEmptyView(emptyViewPod);
+        ivEmpty.setVisibility(View.GONE);
+        animEmpty.setVisibility(View.VISIBLE);
+        animEmpty.setAnimation(R.raw.bag_error);
+        animEmpty.playAnimation();
+        tvEmpty.setText("There is no order in your cart!");
+        btnRefresh.setVisibility(View.GONE);
         loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Your Order.Please wait!");
     }
 
@@ -103,7 +135,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void setUpData() {
-        total = 0;
+        total = 0.0;
         totalCartItem = 0;
         if (ibaShared.getItemsFromCart() != null) {
             cartVOList = ibaShared.getItemsFromCart();
@@ -122,12 +154,14 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             }
 
         } else {
+            animEmpty.playAnimation();
             productIds = null;
             cartVOList = new ArrayList<>();
         }
     }
 
     private void getCartProducts(int page, long[] productIds) {
+        animEmpty.setAnimation(R.raw.shopping_cart);
         if (!checkNetwork()) {
             retryDialog.show();
             retryDialog.tvRetry.setText("No Internet Connection");
@@ -140,6 +174,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             cartViewModel.getProductByID(page, productIds).observe(this, apiResponse -> {
                 if (loadingDialog.isShowing()) {
                     loadingDialog.dismiss();
+                    animEmpty.setAnimation(R.raw.bag_error);
                 }
                 if (apiResponse.getData() != null) {
                     productVOList = apiResponse.getData().getProductVOList();
@@ -169,7 +204,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void setUpRecycler() {
-        long tempTotal;
+        Double tempTotal;
         cartShowVOList = new ArrayList<>();
         ProductVO tempProduct = new ProductVO();
         OrderUnitVO tempOrder = new OrderUnitVO();
@@ -202,9 +237,10 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             totalCartItem += cartVOList.get(i).getQuantity();
         }
         mCartAdapter.setNewData(cartShowVOList);
-        tvTotal.setText(String.format("%,d", Long.parseLong(String.valueOf(total))) + " MMK");
-        tvSubtotal.setText(String.format("%,d", Long.parseLong(String.valueOf(total))) + " MMK");
-        tvCartCount.setText(String.format("%,d", Long.parseLong(String.valueOf(totalCartItem))) + " Items in your cart.");
+        String s = String.format("$%,.2f", total);
+        tvTotal.setText(s+ " MMK");
+        tvSubtotal.setText(s + " MMK");
+        tvCartCount.setText(String.valueOf(totalCartItem) + " Items in your cart.");
     }
 
 
@@ -261,7 +297,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         CartShowVO tempCartShow = cartShowVOList.get(deleteItem);
         List<CartVO> tempList = new ArrayList<>();
         for (CartVO cartVO : cartVOList) {
-            if (cartVO.getProductId() == tempCartShow.getProductId() && cartVO.getOrderUnitId() == tempCartShow.getUnitId()) {
+            if (cartVO.getProductId().equals(tempCartShow.getProductId()) && cartVO.getOrderUnitId().equals(tempCartShow.getUnitId())) {
             } else {
                 tempList.add(cartVO);
             }

@@ -5,8 +5,6 @@ public class PromoRewardDetailCriteria {
 
     private Long promoRewardId;
 
-    private Boolean withOrderUnit;
-
     public Long getOrderUnitId() {
         return orderUnitId;
     }
@@ -21,13 +19,5 @@ public class PromoRewardDetailCriteria {
 
     public void setPromoRewardId(Long promoRewardId) {
         this.promoRewardId = promoRewardId;
-    }
-
-    public Boolean getWithOrderUnit() {
-        return withOrderUnit;
-    }
-
-    public void setWithOrderUnit(Boolean withOrderUnit) {
-        this.withOrderUnit = withOrderUnit;
     }
 }

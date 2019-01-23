@@ -50,8 +50,8 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/ivPromo"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_promo_percent" />

@@ -11,6 +11,7 @@ public class ProductCriteria {
     private ThumbnailCriteria thumbnail;
     private boolean withDetail;
     private OrderUnitCriteria orderUnit;
+    private Boolean hasPromotion=false;
 
     public long[] getIncludeIds() {
         return includeIds;
@@ -82,5 +83,13 @@ public class ProductCriteria {
 
     public void setOrderUnit(OrderUnitCriteria orderUnit) {
         this.orderUnit = orderUnit;
+    }
+
+    public Boolean getHasPromotion() {
+        return hasPromotion;
+    }
+
+    public void setHasPromotion(Boolean hasPromotion) {
+        this.hasPromotion = hasPromotion;
     }
 }

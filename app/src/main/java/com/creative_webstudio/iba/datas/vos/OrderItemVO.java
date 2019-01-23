@@ -9,22 +9,22 @@ public class OrderItemVO {
     private Integer id;
     @SerializedName("orderId")
     @Expose
-    private long orderId;
+    private Long orderId;
     @SerializedName("productId")
     @Expose
-    private long productId;
+    private Long productId;
     @SerializedName("orderUnitId")
     @Expose
-    private long orderUnitId;
+    private Long orderUnitId;
     @SerializedName("quantity")
     @Expose
     private int quantity;
     @SerializedName("orderPrice")
     @Expose
-    private long orderPrice;
+    private Double orderPrice;
     @SerializedName("order")
     @Expose
-    private long order;
+    private Long order;
 
     @SerializedName("product")
     @Expose
@@ -42,27 +42,27 @@ public class OrderItemVO {
         this.id = id;
     }
 
-    public long getOrderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(long orderId) {
+    public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
 
-    public long getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
-    public long getOrderUnitId() {
+    public Long getOrderUnitId() {
         return orderUnitId;
     }
 
-    public void setOrderUnitId(long orderUnitId) {
+    public void setOrderUnitId(Long orderUnitId) {
         this.orderUnitId = orderUnitId;
     }
 
@@ -74,19 +74,19 @@ public class OrderItemVO {
         this.quantity = quantity;
     }
 
-    public long getOrderPrice() {
+    public Double getOrderPrice() {
         return orderPrice;
     }
 
-    public void setOrderPrice(long orderPrice) {
+    public void setOrderPrice(Double orderPrice) {
         this.orderPrice = orderPrice;
     }
 
-    public long getOrder() {
+    public Long getOrder() {
         return order;
     }
 
-    public void setOrder(long order) {
+    public void setOrder(Long order) {
         this.order = order;
     }
 

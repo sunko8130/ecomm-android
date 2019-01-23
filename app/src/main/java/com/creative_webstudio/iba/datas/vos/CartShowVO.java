@@ -7,23 +7,23 @@ public class CartShowVO {
     private Long thumbnailId;
     private String productName;
     private String unitShow;
-    private long pricePerUnit;
+    private Double pricePerUnit;
     private int max;
     private int min;
 
-    public long getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
-    public long getUnitId() {
+    public Long getUnitId() {
         return unitId;
     }
 
-    public void setUnitId(long unitId) {
+    public void setUnitId(Long unitId) {
         this.unitId = unitId;
     }
 
@@ -59,11 +59,11 @@ public class CartShowVO {
         this.unitShow = unitShow;
     }
 
-    public long getPricePerUnit() {
+    public Double getPricePerUnit() {
         return pricePerUnit;
     }
 
-    public void setPricePerUnit(long pricePerUnit) {
+    public void setPricePerUnit(Double pricePerUnit) {
         this.pricePerUnit = pricePerUnit;
     }
 

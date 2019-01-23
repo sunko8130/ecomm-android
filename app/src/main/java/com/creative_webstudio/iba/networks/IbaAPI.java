@@ -2,6 +2,7 @@ package com.creative_webstudio.iba.networks;
 
 import com.creative_webstudio.iba.datas.criterias.AdvertisementCriteria;
 import com.creative_webstudio.iba.datas.criterias.CustomerCriteria;
+import com.creative_webstudio.iba.datas.criterias.PromoRewardDetailCriteria;
 import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
@@ -14,6 +15,7 @@ import com.creative_webstudio.iba.datas.vos.OrderItemVO;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
+import com.creative_webstudio.iba.datas.vos.PromoRewardDetailVO;
 import com.creative_webstudio.iba.datas.vos.RegionVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.datas.vos.TownshipVO;
@@ -78,6 +80,10 @@ public interface IbaAPI {
     @POST("advertisement/search/list")
     Observable<Response<List<AdvertisementVO>>> getAdvertisement(@Header("Authorization") String authHeader,
                                                                  @Body AdvertisementCriteria criteriaVO);
+
+    @POST("promo_reward_detail/search/applied_rewards")
+    Observable<Response<List<PromoRewardDetailVO>>> getPromoDetails(@Header("Authorization") String authHeader,
+                                                                     @Body List<PromoRewardDetailCriteria> criteriaVO);
 
     @POST("product_category/search/list")
     Observable<Response<List<CategoryVO>>> getCategory(@Header("Authorization") String authHeader,

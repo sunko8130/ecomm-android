@@ -23,12 +23,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.creative_webstudio.iba.MyOnPageChangeListener;
 import com.creative_webstudio.iba.R;
-import com.creative_webstudio.iba.adapters.PagerAdapter;
 import com.creative_webstudio.iba.adapters.ProductAdapter;
 import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
@@ -43,7 +41,6 @@ import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.ProductViewModel;
-import com.creative_webstudio.iba.utils.CustomDialog;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -120,7 +117,7 @@ public class ProductActivity extends BaseDrawerActivity {
     private boolean mIsLoading;
     private boolean mIsNoMoreData;
 
-    private String[] items = {"All Product"};
+    private String[] items = {"All Product","Promotion"};
     private String chooseItem;
     private int checkedItem = 0;
 
@@ -129,7 +126,7 @@ public class ProductActivity extends BaseDrawerActivity {
 
 
     //category id
-    private int categoryId = -1;
+    private int categoryId = -2;
 
     private ArrayList<CategoryVO> mCategoryList;
 
@@ -143,7 +140,7 @@ public class ProductActivity extends BaseDrawerActivity {
     GridLayoutManager layoutManager;
 
     //loading show
-    AlertDialog loadingDialog;
+//    AlertDialog loadingDialog;
 
 
     public static Intent newIntent(Context context) {
@@ -159,13 +156,14 @@ public class ProductActivity extends BaseDrawerActivity {
         mProductAdapter = new ProductAdapter(this);
         mCategoryList = new ArrayList<>();
         mAdvertisementList = new ArrayList<>();
-        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Products.Please wait!");
+//        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Products.Please wait!");
         // TODO: specify the span count in res directory for phone and tablet size.
         layoutManager = new GridLayoutManager(this, 2);
         rvProduct.setLayoutManager(layoutManager);
         rvProduct.setAdapter(mProductAdapter);
         mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
         tvEmpty.setText("Loading Data........");
+        btnEmpty.setVisibility(View.GONE);
 //        getCategory();
         getAdvertisement();
         if (mProductAdapter.getItemCount() == 0) {
@@ -175,14 +173,14 @@ public class ProductActivity extends BaseDrawerActivity {
         }
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            categoryId = -1;
+            categoryId = -2;
             checkedItem = 0;
             btnProduct.setText(items[0]);
             refreshData();
         });
 
         btnEmpty.setOnClickListener(v -> {
-            categoryId = -1;
+            categoryId = -2;
             refreshData();
         });
 
@@ -208,16 +206,22 @@ public class ProductActivity extends BaseDrawerActivity {
     }
 
     private void refreshData() {
+        collapse();
         tvEmpty.setText("Loading Data......");
-        btnProduct.setText("All Product");
-        checkedItem = 0;
-        if (!loadingDialog.isShowing()) {
-            loadingDialog.show();
+        btnEmpty.setVisibility(View.GONE);
+        if(categoryId==-1) {
+            btnProduct.setText("Promotion");
+        }else if(categoryId==-2) {
+            btnProduct.setText("All Product");
         }
+        checkedItem = categoryId+2;
+//        if (!loadingDialog.isShowing()) {
+//            loadingDialog.show();
+//        }
         mProductAdapter.clearData();
         mIsLoading = true;
         mCurrentPage = 1;
-        if (categoryId == -1) {
+        if (categoryId == -1 || categoryId==-2) {
             getProduct(mCurrentPage, categoryId);
         } else {
             getProduct(mCurrentPage, mCategoryList.get(categoryId).getId());
@@ -225,7 +229,7 @@ public class ProductActivity extends BaseDrawerActivity {
     }
 
     private void getAdvertisement() {
-        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Advertisement.Please wait!");
+//        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Advertisement.Please wait!");
         if (!checkNetwork()) {
             retryDialog.show();
             retryDialog.tvRetry.setText("No Internet Connection");
@@ -234,11 +238,11 @@ public class ProductActivity extends BaseDrawerActivity {
                 getAdvertisement();
             });
         } else {
-            loadingDialog.show();
+//            loadingDialog.show();
             mProductViewModel.getAdvertisement().observe(this, apiResponse -> {
-                if (loadingDialog.isShowing()) {
-                    loadingDialog.dismiss();
-                }
+//                if (loadingDialog.isShowing()) {
+//                    loadingDialog.dismiss();
+//                }
                 if (apiResponse.getData() != null) {
                     mAdvertisementList = new ArrayList<>();
                     mAdvertisementList = (ArrayList<AdvertisementVO>) apiResponse.getData();
@@ -274,25 +278,24 @@ public class ProductActivity extends BaseDrawerActivity {
 
 
     private void getCategory() {
-        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Products.Please wait!");
+//        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Products.Please wait!");
         if (!checkNetwork()) {
-            retryDialog.show();
             retryDialog.tvRetry.setText("No Internet Connection");
             retryDialog.btnRetry.setOnClickListener(v -> {
                 retryDialog.dismiss();
                 getCategory();
             });
         } else {
-            loadingDialog.show();
+//            loadingDialog.show();
             mProductViewModel.getCategory().observe(this, apiResponse -> {
                 if (apiResponse.getData() != null) {
                     mCategoryList = (ArrayList<CategoryVO>) apiResponse.getData();
                     setupCategory();
                     getProduct(mCurrentPage, categoryId);
                 } else {
-                    if (loadingDialog.isShowing()) {
-                        loadingDialog.dismiss();
-                    }
+//                    if (loadingDialog.isShowing()) {
+//                        loadingDialog.dismiss();
+//                    }
                     if (apiResponse.getError() instanceof ApiException) {
                         int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
                         if (errorCode == 401) {
@@ -324,17 +327,18 @@ public class ProductActivity extends BaseDrawerActivity {
     }
 
     private void setupCategory() {
-        items = new String[mCategoryList.size() + 1];
+        items = new String[mCategoryList.size() + 2];
         items[0] = "All Product";
+        items[1] = "Promotion";
         for (int i = 0; i < mCategoryList.size(); i++) {
-            items[i + 1] = mCategoryList.get(i).getName();
+            items[i + 2] = mCategoryList.get(i).getName();
         }
         btnProduct.setOnClickListener(v -> {
             final AlertDialog.Builder builder = new AlertDialog.Builder(ProductActivity.this);
             builder.setTitle("Filter by");
             builder.setSingleChoiceItems(items, checkedItem, (dialog, item) -> {
                 chooseItem = items[item];
-                categoryId = item - 1;
+                categoryId = item - 2;
                 checkedItem = item;
             });
             builder.setPositiveButton("Ok", (dialog, which) -> {
@@ -363,9 +367,9 @@ public class ProductActivity extends BaseDrawerActivity {
             });
         } else {
             mProductViewModel.getProduct(page, productCategoryId).observe(this, apiResponse -> {
-                if (loadingDialog.isShowing()) {
-                    loadingDialog.dismiss();
-                }
+//                if (loadingDialog.isShowing()) {
+//                    loadingDialog.dismiss();
+//                }
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -398,6 +402,7 @@ public class ProductActivity extends BaseDrawerActivity {
                                 Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
                             } else {
                                 tvEmpty.setText("No Data to Display!");
+                                btnEmpty.setVisibility(View.VISIBLE);
                                 collapse();
                             }
 
@@ -548,10 +553,6 @@ public class ProductActivity extends BaseDrawerActivity {
         if (!scrollTop) {
             layoutManager.smoothScrollToPosition(rvProduct, null, 0);
             expand();
-        } else {
-            if (!loadingDialog.isShowing()) {
-                super.onBackPressed();
-            }
         }
     }
 

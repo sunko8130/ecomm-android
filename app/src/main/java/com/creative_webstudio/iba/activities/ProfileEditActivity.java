@@ -234,7 +234,6 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
         switch (v.getId()){
             case R.id.btnOk:
                 sendEditUser();
-                Toast.makeText(this, "Region: "+selectedRegion +", Township: "+selectedTownship, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnCancel:

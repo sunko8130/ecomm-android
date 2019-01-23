@@ -163,7 +163,7 @@ public class IBAPreferenceManager {
         }
 
         for(CartVO cart:cartList){
-            if(cart.getProductId()==cartVO.getProductId() && cart.getOrderUnitId()==cartVO.getOrderUnitId()){
+            if(cart.getProductId().equals(cartVO.getProductId()) && cart.getOrderUnitId().equals(cartVO.getOrderUnitId())){
                 cart.setQuantity(cart.getQuantity()+cartVO.getQuantity());
                 adding = true;
             }
@@ -183,8 +183,8 @@ public class IBAPreferenceManager {
         List<CartVO> cartList = gson.fromJson(json, token.getType());
         if (cartList != null) {
             for (int i = 0; i < cartList.size(); i++) {
-                if (removeCart.getProductId() == cartList.get(i).getProductId()
-                        && removeCart.getOrderUnitId() == cartList.get(i).getOrderUnitId()) {
+                if (removeCart.getProductId().equals(cartList.get(i).getProductId())
+                        && removeCart.getOrderUnitId().equals(cartList.get(i).getOrderUnitId())) {
                     cartList.remove(i);
                     AddListToCart(cartList);
                     return true;

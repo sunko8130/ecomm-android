@@ -49,13 +49,18 @@ public class PromoAdapter extends BaseRecyclerAdapter<PromoAdapter.PromoViewHold
                 case "Percentage":
                     tvPromo.setText("Save - "+data.getDiscountValue()+" %");
                     break;
-                case "FixAmount":
-                    String s = String.format("%,d", Long.parseLong(String.valueOf(data.getDiscountValue())));
+                case "Fixed Amount":
+                    String s = String.format("$%,.2f", data.getDiscountValue());
                     tvPromo.setText("Save - "+s+" MMK");
                     break;
                 default:
                     tvPromo.setText("Get - "+data.getRewardName());
                     break;
+            }
+            if(data.getQuantity()<data.getPromoQuantity()){
+                ivCheck.setImageResource(R.drawable.ic_delete);
+            }else {
+                ivCheck.setImageResource(R.drawable.ic_promo_get);
             }
         }
 

@@ -1,5 +1,6 @@
 package com.creative_webstudio.iba.activities;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -20,7 +21,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
@@ -30,12 +30,16 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.DetailAdapter;
 import com.creative_webstudio.iba.adapters.PromoAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
+import com.creative_webstudio.iba.datas.criterias.PromoRewardDetailCriteria;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.PromoRewardDetailVO;
 import com.creative_webstudio.iba.datas.vos.PromoRewardVO;
 import com.creative_webstudio.iba.datas.vos.SpinnerVO;
+import com.creative_webstudio.iba.exception.ApiException;
+import com.creative_webstudio.iba.networks.viewmodels.ProductViewModel;
+import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -78,7 +82,7 @@ public class ProductDetailsActivity extends BaseActivity {
     ImageView ivMinus;
 
     @BindView(R.id.ed_quantity)
-    EditText edQuantity;
+    MMTextView tvQuantity;
 
     @BindView(R.id.tv_price)
     MMTextView tvPrice;
@@ -118,8 +122,18 @@ public class ProductDetailsActivity extends BaseActivity {
 
     private List<PromoRewardVO> promoRewardVOList;
 
+    private List<PromoRewardDetailVO> promoDetailList;
+
+    private ProductViewModel mProductViewModel;
+
     //cart items
     private int cartItems = 0;
+
+    //loading dialog
+    AlertDialog loadingDialog;
+
+    //fro promo
+    List<PromoRewardDetailCriteria> promoCriteriaList;
 
     public static Intent newIntent(Context context, String backActivity) {
         Intent intent = new Intent(context, ProductDetailsActivity.class);
@@ -143,6 +157,8 @@ public class ProductDetailsActivity extends BaseActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Product Detail.Please wait!");
+        mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
         mDetailAdapter = new DetailAdapter(this);
         rcDetails.setLayoutManager(new LinearLayoutManager(this));
         rcDetails.setAdapter(mDetailAdapter);
@@ -156,8 +172,9 @@ public class ProductDetailsActivity extends BaseActivity {
             backActivity = getIntent().getStringExtra("BackActivity");
         }
         orderUnitVOList = new ArrayList<>();
+        promoCriteriaList = new ArrayList<>();
 
-        edQuantity.setText(String.valueOf(quantity));
+        tvQuantity.setText(String.valueOf(quantity));
         if (getIntent().hasExtra("productVo")) {
             String json = getIntent().getStringExtra("productVo");
             Gson gson = new Gson();
@@ -176,7 +193,20 @@ public class ProductDetailsActivity extends BaseActivity {
             if (productVO.getProductDetailsVo().getValueList() != null) {
                 mDetailAdapter.setNewData(productVO.getProductDetailsVo().getValueList());
             }
-            setUpSpinner();
+            if (productVO.getHasPromotion()) {
+                for (OrderUnitVO orderUnitVO : productVO.getOrderUnits()) {
+                    for (PromoRewardVO promoRewardVO : orderUnitVO.getPromoRewardVOList()) {
+                        PromoRewardDetailCriteria promo = new PromoRewardDetailCriteria();
+                        promo.setOrderUnitId(orderUnitVO.getId());
+                        promo.setPromoRewardId(promoRewardVO.getId());
+                        promoCriteriaList.add(promo);
+                    }
+
+                }
+                getPromoDetail(promoCriteriaList);
+            } else {
+                setUpSpinner();
+            }
             btnAddToCart.setOnClickListener(view -> {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailsActivity.this);
                 builder.setTitle("Sure?");
@@ -187,6 +217,48 @@ public class ProductDetailsActivity extends BaseActivity {
                 builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
                 AlertDialog productDialog = builder.create();
                 productDialog.show();
+            });
+        }
+    }
+
+    private void getPromoDetail(List<PromoRewardDetailCriteria> criteria) {
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                getPromoDetail(criteria);
+            });
+        } else {
+            loadingDialog.show();
+            mProductViewModel.getPromoDetail(promoCriteriaList).observe(this, apiResponse -> {
+                if (loadingDialog.isShowing()) {
+                    loadingDialog.dismiss();
+                }
+                if (apiResponse.getData() != null) {
+                    promoDetailList = new ArrayList<>();
+                    promoDetailList = apiResponse.getData();
+                    setUpSpinner();
+                } else {
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            super.refreshAccessToken();
+                        } else if (errorCode == 204) {
+                            // TODO: Server response successful but there is no data (Empty response).
+                        } else if (errorCode == 200) {
+                            // TODO: Reach End of List
+                            Snackbar.make(rcPromo, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        } else {
+                            retryDialog.show();
+                            retryDialog.tvRetry.setText("No Internet Connection");
+                            retryDialog.btnRetry.setOnClickListener(v -> {
+                                retryDialog.dismiss();
+                                getPromoDetail(promoCriteriaList);
+                            });
+                        }
+                    }
+                }
             });
         }
     }
@@ -229,11 +301,11 @@ public class ProductDetailsActivity extends BaseActivity {
 //                maxQuantity = 100;
                 quantity = minQuantity;
                 selectedItem = i;
-                edQuantity.setText(String.valueOf(quantity));
-                String s = String.format("%,d", Long.parseLong(String.valueOf(orderUnitVOList.get(i).getPricePerUnit() * quantity)));
+                tvQuantity.setText(String.valueOf(quantity));
+                String s = String.format("$%,.2f", orderUnitVOList.get(i).getPricePerUnit() * quantity);
                 tvPrice.setText(s + " MMK");
-                promoRewardVOList=orderUnitVOList.get(i).getPromoRewardVOList();
-//                loadPromo();
+                promoRewardVOList = orderUnitVOList.get(i).getPromoRewardVOList();
+                setUpPromo();
             }
 
             @Override
@@ -247,21 +319,22 @@ public class ProductDetailsActivity extends BaseActivity {
                 Snackbar.make(tvPrice, "Maximum order is :" + maxQuantity, Snackbar.LENGTH_SHORT).show();
             } else {
                 quantity++;
-                edQuantity.setText(String.valueOf(quantity));
+                tvQuantity.setText(String.valueOf(quantity));
             }
             if (quantity == maxQuantity) {
                 ivPlus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.redFull)));
             } else {
                 ivMinus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
             }
-            String s = String.format("%,d", Long.parseLong(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity)));
+            setUpPromo();
+            String s = String.format("$%,.2f", orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity);
             tvPrice.setText(s + " MMK");
         });
 
         ivMinus.setOnClickListener(view -> {
             if (quantity > minQuantity) {
                 quantity--;
-                edQuantity.setText(String.valueOf(quantity));
+                tvQuantity.setText(String.valueOf(quantity));
             } else {
                 Snackbar.make(tvPrice, "Minimum order is :" + minQuantity, Snackbar.LENGTH_SHORT).show();
             }
@@ -270,23 +343,26 @@ public class ProductDetailsActivity extends BaseActivity {
             } else {
                 ivPlus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
             }
-            String s = String.format("%,d", Long.parseLong(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity)));
+            setUpPromo();
+            String s = String.format("$%,.2f", orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity);
             tvPrice.setText(s + " MMK");
 
         });
     }
 
-    private void loadPromo(){
-        for(PromoRewardVO temp:promoRewardVOList){
-            temp.setShowUnit("1"+orderUnitVOList.get(selectedItem).getUnitName()+" per "+orderUnitVOList.get(selectedItem).getItemsPerUnit()+" "+orderUnitVOList.get(selectedItem).getItemName());
-            for(PromoRewardDetailVO detailVO:temp.getPromoRewardDetailVOList()){
-                if(detailVO.getOrderUnitId()==orderUnitVOList.get(selectedItem).getId()){
+    private void setUpPromo() {
+        for (PromoRewardVO temp : promoRewardVOList) {
+            temp.setShowUnit("1" + orderUnitVOList.get(selectedItem).getUnitName() + " per " + orderUnitVOList.get(selectedItem).getItemsPerUnit() + " " + orderUnitVOList.get(selectedItem).getItemName());
+            temp.setQuantity(quantity);
+            for (PromoRewardDetailVO detailVO : promoDetailList) {
+                if (detailVO.getOrderUnitId().equals(orderUnitVOList.get(selectedItem).getId())) {
                     temp.setPromoQuantity(detailVO.getOrderQuantity());
                 }
             }
         }
         mPromoAdapter.setNewData(promoRewardVOList);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
