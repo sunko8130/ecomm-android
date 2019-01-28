@@ -120,6 +120,9 @@ public class ProductVO {
     }
 
     public Boolean getHasPromotion() {
+        if(hasPromotion==null){
+            hasPromotion=false;
+        }
         return hasPromotion;
     }
 

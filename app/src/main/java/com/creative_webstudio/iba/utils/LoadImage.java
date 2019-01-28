@@ -22,8 +22,8 @@ public class LoadImage {
     public static RequestOptions getOption() {
         return new RequestOptions()
                 .centerCrop()
-                .placeholder(R.drawable.coco_coffee)
-                .error(R.drawable.coco_coffee);
+                .placeholder(R.drawable.blank_photo)
+                .error(R.drawable.blank_photo);
     }
 
 

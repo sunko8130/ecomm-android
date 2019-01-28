@@ -553,6 +553,8 @@ public class ProductActivity extends BaseDrawerActivity {
         if (!scrollTop) {
             layoutManager.smoothScrollToPosition(rvProduct, null, 0);
             expand();
+        }else {
+            super.onBackPressed();
         }
     }
 

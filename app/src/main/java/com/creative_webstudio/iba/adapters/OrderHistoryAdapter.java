@@ -59,7 +59,7 @@ public class OrderHistoryAdapter extends BaseRecyclerAdapter<OrderHistoryAdapter
             tvDate.setText("Order Date: "+data.getOrderDate());
             if (data.getStatus().equals("Pending")) {
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.blue2));
-            } else if (data.getStatus().equals("Complete")){
+            } else if (data.getStatus().equals("Completed")){
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.limeGreen));
             }else if(data.getStatus().equals("Shipped")){
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.orange));

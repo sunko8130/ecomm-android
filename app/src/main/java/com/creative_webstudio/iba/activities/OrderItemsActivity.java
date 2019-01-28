@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.CartAdapter;
@@ -50,6 +51,9 @@ public class OrderItemsActivity extends BaseActivity {
 
     @BindView(R.id.tvInfo)
     MMTextView tvInfo;
+
+    @BindView(R.id.layoutSpace)
+    RelativeLayout layoutSpace;
 
     private OrderHistoryVO orderHistoryVO;
     private List<OrderItemVO> itemList;
@@ -209,6 +213,7 @@ public class OrderItemsActivity extends BaseActivity {
     }
 
     private void disableCancel() {
+        layoutSpace.setVisibility(View.GONE);
         btnCancel.setVisibility(View.GONE);
         btnCancel.setOnClickListener(view -> {
             final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);

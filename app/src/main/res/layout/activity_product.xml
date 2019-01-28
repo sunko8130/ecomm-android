@@ -59,7 +59,7 @@
                         android:layout_marginEnd="@dimen/margin_medium_2"
                         android:layout_toStartOf="@+id/btn_product"
                         android:background="@color/backgroundColor"
-                        android:drawableStart="@drawable/ic_local_bar_black_24dp"
+                        android:drawableStart="@drawable/ic_filter"
                         android:drawablePadding="10dp"
                         android:drawableTint="@android:color/secondary_text_light"
                         android:gravity="center"

@@ -304,8 +304,10 @@ public class ProductDetailsActivity extends BaseActivity {
                 tvQuantity.setText(String.valueOf(quantity));
                 String s = String.format("$%,.2f", orderUnitVOList.get(i).getPricePerUnit() * quantity);
                 tvPrice.setText(s + " MMK");
-                promoRewardVOList = orderUnitVOList.get(i).getPromoRewardVOList();
-                setUpPromo();
+                if(productVO.getHasPromotion()) {
+                    promoRewardVOList = orderUnitVOList.get(i).getPromoRewardVOList();
+                    setUpPromo();
+                }
             }
 
             @Override
@@ -326,7 +328,9 @@ public class ProductDetailsActivity extends BaseActivity {
             } else {
                 ivMinus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
             }
-            setUpPromo();
+            if(productVO.getHasPromotion()) {
+                setUpPromo();
+            }
             String s = String.format("$%,.2f", orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity);
             tvPrice.setText(s + " MMK");
         });
@@ -343,7 +347,9 @@ public class ProductDetailsActivity extends BaseActivity {
             } else {
                 ivPlus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
             }
-            setUpPromo();
+            if(productVO.getHasPromotion()) {
+                setUpPromo();
+            }
             String s = String.format("$%,.2f", orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity);
             tvPrice.setText(s + " MMK");
 

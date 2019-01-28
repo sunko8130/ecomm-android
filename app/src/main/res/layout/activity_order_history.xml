@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".activities.OrderHistoryActivity">
 
@@ -10,10 +11,34 @@
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.creative_webstudio.iba.components.SmartRecyclerView
-            android:id="@+id/recycler_order_history"
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <com.creative_webstudio.iba.components.SmartRecyclerView
+                android:id="@+id/recycler_order_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <include
+                android:id="@+id/vp_empty_history"
+                layout="@layout/view_pod_empty_history"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/aniLoadMore"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/load_more_height"
+                app:lottie_autoPlay="true"
+                app:lottie_rawRes="@raw/load_more"
+                app:lottie_loop="true"
+                app:lottie_colorFilter="@color/colorAccent"
+                android:layout_alignBottom="@+id/recycler_order_history"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

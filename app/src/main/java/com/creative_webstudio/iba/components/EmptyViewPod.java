@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 
 public class EmptyViewPod extends RelativeLayout {
 
+    @Nullable
     @BindView(R.id.iv_empty)
     ImageView ivEmpty;
 
@@ -33,8 +34,9 @@ public class EmptyViewPod extends RelativeLayout {
     @BindView(R.id.btn_refresh_empty)
     MMTextView btnRefresh;
 
-//    @BindView(R.id.anim_empty)
-//    LottieAnimationView animEmpty;
+    @Nullable
+    @BindView(R.id.anim_empty)
+    LottieAnimationView animEmpty;
     public EmptyViewPod(Context context) {
         super(context);
     }

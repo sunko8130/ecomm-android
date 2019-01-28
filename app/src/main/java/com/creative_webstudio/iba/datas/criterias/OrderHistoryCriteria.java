@@ -2,9 +2,18 @@ package com.creative_webstudio.iba.datas.criterias;
 
 public class OrderHistoryCriteria {
 
+    private int pageNumber;
     private String orderBy;
     private String order;
     private boolean withOrderItem;
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
 
     public String getOrder() {
         return order;

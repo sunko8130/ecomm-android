@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.creative_webstudio.iba.components.EmptyViewPod xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/layoutImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/iv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/empty_data_placeholder"
+            android:visibility="gone"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/anim_empty"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@id/iv_empty"
+            android:layout_centerInParent="true"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/trail_loading"/>
+    </RelativeLayout>
+
+    <org.mmtextview.components.MMTextView
+        android:id="@+id/tv_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutImage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_large"
+        android:text="@string/msg_no_data" />
+
+    <org.mmtextview.components.MMTextView
+        android:id="@+id/btn_refresh_empty"
+        style="@style/AccentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_empty"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_card_medium_2"
+        android:text="@string/btn_refresh" />
+
+</com.creative_webstudio.iba.components.EmptyViewPod>

@@ -186,7 +186,7 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 getTownShip(regionVOList.get(position).getCode());
-                selectedRegion=regionVOList.get(position).getCode();
+                selectedRegion=regionVOList.get(position).getDescEN();
             }
 
             @Override
@@ -210,7 +210,7 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
         spTownship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedTownship=townshipVOList.get(position).getCode();
+                selectedTownship=townshipVOList.get(position).getDescEN();
             }
 
             @Override
@@ -233,7 +233,17 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnOk:
-                sendEditUser();
+                if (etName.getText().toString().trim().equalsIgnoreCase("")) {
+                    etName.setError("Enter Name");
+                } else if (etPhone.getText().toString().trim().equalsIgnoreCase("")) {
+                    etPhone.setError("Enter Phone");
+                }else if (etEmail.getText().toString().trim().equalsIgnoreCase("")) {
+                    etEmail.setError("Enter Email");
+                }else if (etAddress.getText().toString().trim().equalsIgnoreCase("")) {
+                    etAddress.setError("Enter Address");
+                }else {
+                    sendEditUser();
+                }
                 break;
 
             case R.id.btnCancel:
@@ -251,6 +261,9 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
         criteria.setName(String.valueOf(etName.getText()));
         criteria.setAddress(String.valueOf(etAddress.getText()));
         criteria.setPhone(String.valueOf(etPhone.getText()));
+        criteria.setDivision(String.valueOf(selectedRegion));
+        criteria.setTownship(String.valueOf(selectedTownship));
+        criteria.setEmail(String.valueOf(etEmail.getText()));
         loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Update Customer Information.Please wait!");
         loadingDialog.show();
         editViewModel.updateCustomer(criteria).observe(this, apiResponse -> {
