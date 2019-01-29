@@ -231,7 +231,7 @@ public class ProductDetailsActivity extends BaseActivity {
             });
         } else {
             loadingDialog.show();
-            mProductViewModel.getPromoDetail(promoCriteriaList).observe(this, apiResponse -> {
+            mProductViewModel.getPromoDetail(criteria).observe(this, apiResponse -> {
                 if (loadingDialog.isShowing()) {
                     loadingDialog.dismiss();
                 }
@@ -292,6 +292,7 @@ public class ProductDetailsActivity extends BaseActivity {
         orderAdapter.setDropDownViewResource(R.layout.spinner_item);
         // Apply the adapter to the spinner
         spOrder.setAdapter(orderAdapter);
+        setUpPromo();
 
         spOrder.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -304,10 +305,11 @@ public class ProductDetailsActivity extends BaseActivity {
                 tvQuantity.setText(String.valueOf(quantity));
                 String s = String.format("$%,.2f", orderUnitVOList.get(i).getPricePerUnit() * quantity);
                 tvPrice.setText(s + " MMK");
-                if(productVO.getHasPromotion()) {
-                    promoRewardVOList = orderUnitVOList.get(i).getPromoRewardVOList();
-                    setUpPromo();
-                }
+
+//                if(productVO.getHasPromotion()) {
+//                    promoRewardVOList = orderUnitVOList.get(i).getPromoRewardVOList();
+//                    setUpPromo();
+//                }
             }
 
             @Override
@@ -328,8 +330,8 @@ public class ProductDetailsActivity extends BaseActivity {
             } else {
                 ivMinus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
             }
-            if(productVO.getHasPromotion()) {
-                setUpPromo();
+            if (productVO.getHasPromotion()) {
+                updatePromo(orderUnitVOList.get(selectedItem).getId());
             }
             String s = String.format("$%,.2f", orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity);
             tvPrice.setText(s + " MMK");
@@ -347,23 +349,59 @@ public class ProductDetailsActivity extends BaseActivity {
             } else {
                 ivPlus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.blackFull)));
             }
-            if(productVO.getHasPromotion()) {
-                setUpPromo();
+            if (productVO.getHasPromotion()) {
+                updatePromo(orderUnitVOList.get(selectedItem).getId());
             }
             String s = String.format("$%,.2f", orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity);
             tvPrice.setText(s + " MMK");
-
         });
     }
 
+//    private void checkPromo(int selected){
+//        for(PromoRewardVO temp: promoRewardVOList){
+//            if(temp.getUnitId().equals(orderUnitVOList.get(selected))){
+//                temp.setQuantity(quantity);
+//            }
+//        }
+//        mPromoAdapter.setNewData(promoRewardVOList);
+//    }
+
     private void setUpPromo() {
-        for (PromoRewardVO temp : promoRewardVOList) {
-            temp.setShowUnit("1" + orderUnitVOList.get(selectedItem).getUnitName() + " per " + orderUnitVOList.get(selectedItem).getItemsPerUnit() + " " + orderUnitVOList.get(selectedItem).getItemName());
-            temp.setQuantity(quantity);
-            for (PromoRewardDetailVO detailVO : promoDetailList) {
-                if (detailVO.getOrderUnitId().equals(orderUnitVOList.get(selectedItem).getId())) {
-                    temp.setPromoQuantity(detailVO.getOrderQuantity());
+        promoRewardVOList = new ArrayList<>();
+        if (productVO.getHasPromotion()) {
+            for (OrderUnitVO orderUnitVO : orderUnitVOList) {
+                if (orderUnitVO.getPromoRewardVOList() != null) {
+                    for (PromoRewardVO promoRewardVO : orderUnitVO.getPromoRewardVOList()) {
+                        promoRewardVO.setQuantity(quantity);
+                        promoRewardVO.setUnitId(orderUnitVO.getId());
+                        promoRewardVO.setShowUnit("1" + orderUnitVO.getUnitName() + " per " + orderUnitVO.getItemsPerUnit() + " " + orderUnitVO.getItemName());
+                        for (PromoRewardDetailVO detailVO : promoDetailList) {
+                            if (detailVO.getOrderUnitId().equals(orderUnitVO.getId())) {
+                                promoRewardVO.setPromoQuantity(detailVO.getOrderQuantity());
+                            }
+                        }
+                        promoRewardVOList.add(promoRewardVO);
+                    }
                 }
+            }
+        }
+
+//        for (PromoRewardVO temp : promoRewardVOList) {
+////            temp.setShowUnit("1" + orderUnitVOList.get(selectedItem).getUnitName() + " per " + orderUnitVOList.get(selectedItem).getItemsPerUnit() + " " + orderUnitVOList.get(selectedItem).getItemName());
+////            temp.setQuantity(quantity);
+//            for (PromoRewardDetailVO detailVO : promoDetailList) {
+//                if (detailVO.getOrderUnitId().equals(orderUnitVOList.get(selectedItem).getId())) {
+//                    temp.setPromoQuantity(detailVO.getOrderQuantity());
+//                }
+//            }
+//        }
+        mPromoAdapter.setNewData(promoRewardVOList);
+    }
+
+    public void updatePromo(long promoId) {
+        for(PromoRewardVO promoRewardVO:promoRewardVOList){
+            if(promoRewardVO.getUnitId().equals(promoId)){
+                promoRewardVO.setQuantity(quantity);
             }
         }
         mPromoAdapter.setNewData(promoRewardVOList);

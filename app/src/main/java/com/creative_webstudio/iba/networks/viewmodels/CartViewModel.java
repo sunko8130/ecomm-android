@@ -6,10 +6,13 @@ import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
 import com.creative_webstudio.iba.datas.ApiResponse;
+import com.creative_webstudio.iba.datas.criterias.OrderUnitCriteria;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
+import com.creative_webstudio.iba.datas.criterias.PromoRewardDetailCriteria;
 import com.creative_webstudio.iba.datas.criterias.ThumbnailCriteria;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
+import com.creative_webstudio.iba.datas.vos.PromoRewardDetailVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.IbaAPI;
 import com.creative_webstudio.iba.networks.ServiceGenerator;
@@ -39,6 +42,9 @@ public class CartViewModel extends AndroidViewModel {
         ThumbnailCriteria thumbnailCriteria = new ThumbnailCriteria();
         thumbnailCriteria.setThumbnailType(1);
         criteriaVO.setThumbnail(thumbnailCriteria);
+        OrderUnitCriteria orderUnitCriteria = new OrderUnitCriteria();
+        orderUnitCriteria.setWithPromoReward(true);
+        criteriaVO.setOrderUnit(orderUnitCriteria);
         ApiResponse<ProductResponse> apiResponse = new ApiResponse();
         IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
         IBAPreferenceManager prefs = new IBAPreferenceManager(getApplication());
@@ -96,6 +102,31 @@ public class CartViewModel extends AndroidViewModel {
                     result.setValue(apiResponse);
                 });
 
+        return result;
+    }
+
+    public MutableLiveData<ApiResponse<List<PromoRewardDetailVO>>> getPromoDetail(List<PromoRewardDetailCriteria> criteria) {
+        MutableLiveData<ApiResponse<List<PromoRewardDetailVO>>> result = new MutableLiveData<>();
+        ApiResponse<List<PromoRewardDetailVO>> apiResponse = new ApiResponse<>();
+        IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
+        IBAPreferenceManager prefs = new IBAPreferenceManager(getApplication());
+        String accessToken = prefs.getAccessToken();
+        String userAuth = "Bearer " + accessToken;
+        api.getPromoDetails(userAuth, criteria)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    List<PromoRewardDetailVO> body = response.body();
+                    if (response.isSuccessful() && body != null && !body.isEmpty()) {
+                        apiResponse.setData(body);
+                    } else {
+                        apiResponse.setError(new ApiException(response.code()));
+                    }
+                    result.setValue(apiResponse);
+                }, throwable -> {
+                    apiResponse.setError(new ApiException(throwable));
+                    result.setValue(apiResponse);
+                });
         return result;
     }
 }

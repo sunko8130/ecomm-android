@@ -28,7 +28,9 @@ public class PromoRewardVO {
 
     private String showUnit;
 
-    private Integer quantity;
+    private Integer quantity = 0;
+
+    private Long unitId;
 
     public Long getId() {
         return id;
@@ -100,5 +102,13 @@ public class PromoRewardVO {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Long getUnitId() {
+        return unitId;
+    }
+
+    public void setUnitId(Long unitId) {
+        this.unitId = unitId;
     }
 }

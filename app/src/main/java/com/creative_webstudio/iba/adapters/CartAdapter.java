@@ -73,6 +73,12 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
         @BindView(R.id.btn_delete)
         ImageView btnDelete;
 
+        @BindView(R.id.tv_promoAmount)
+        MMTextView tvPromoAmount;
+
+        @BindView(R.id.tv_promoItem)
+        MMTextView tvPromoItem;
+
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
         }
@@ -82,7 +88,7 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
         public void setData(CartShowVO data) {
             tvProductName.setText(data.getProductName());
             String s = String.format("$%,.2f", data.getPricePerUnit());
-            tvPrice.setText(s + " MMK" );
+            tvPrice.setText(s + " KS" );
             tvQuantity.setText(data.getItemQuantity() + " " + data.getUnitShow());
             GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(), data.getThumbnailId());
             Glide.with(itemView.getContext())
@@ -90,6 +96,14 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
                     .apply(LoadImage.getOption())
                     .load(glideUrl)
                     .into(ivProduct);
+            if(!data.getPromoAmount().equals("")){
+                tvPromoAmount.setVisibility(View.VISIBLE);
+                tvPromoAmount.setText(data.getPromoAmount());
+            }
+            if(!data.getPromoItem().equals("")){
+                tvPromoItem.setVisibility(View.VISIBLE);
+                tvPromoItem.setText(data.getPromoItem());
+            }
         }
 
         @Override

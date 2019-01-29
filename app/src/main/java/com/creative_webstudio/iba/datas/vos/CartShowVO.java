@@ -10,6 +10,8 @@ public class CartShowVO {
     private Double pricePerUnit;
     private int max;
     private int min;
+    private String promoAmount;
+    private String promoItem;
 
     public Long getProductId() {
         return productId;
@@ -81,5 +83,21 @@ public class CartShowVO {
 
     public void setMin(int min) {
         this.min = min;
+    }
+
+    public String getPromoAmount() {
+        return promoAmount;
+    }
+
+    public void setPromoAmount(String promoAmount) {
+        this.promoAmount = promoAmount;
+    }
+
+    public String getPromoItem() {
+        return promoItem;
+    }
+
+    public void setPromoItem(String promoItem) {
+        this.promoItem = promoItem;
     }
 }
