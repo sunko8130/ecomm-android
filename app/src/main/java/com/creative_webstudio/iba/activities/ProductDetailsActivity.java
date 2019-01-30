@@ -305,7 +305,7 @@ public class ProductDetailsActivity extends BaseActivity {
                 tvQuantity.setText(String.valueOf(quantity));
                 String s = String.format("$%,.2f", orderUnitVOList.get(i).getPricePerUnit() * quantity);
                 tvPrice.setText(s + " MMK");
-
+                setUpPromo();
 //                if(productVO.getHasPromotion()) {
 //                    promoRewardVOList = orderUnitVOList.get(i).getPromoRewardVOList();
 //                    setUpPromo();
@@ -376,7 +376,7 @@ public class ProductDetailsActivity extends BaseActivity {
                         promoRewardVO.setUnitId(orderUnitVO.getId());
                         promoRewardVO.setShowUnit("1" + orderUnitVO.getUnitName() + " per " + orderUnitVO.getItemsPerUnit() + " " + orderUnitVO.getItemName());
                         for (PromoRewardDetailVO detailVO : promoDetailList) {
-                            if (detailVO.getOrderUnitId().equals(orderUnitVO.getId())) {
+                            if (detailVO.getOrderUnitId().equals(orderUnitVO.getId()) && detailVO.getPromoRewardId().equals(promoRewardVO.getId())) {
                                 promoRewardVO.setPromoQuantity(detailVO.getOrderQuantity());
                             }
                         }
@@ -402,6 +402,8 @@ public class ProductDetailsActivity extends BaseActivity {
         for(PromoRewardVO promoRewardVO:promoRewardVOList){
             if(promoRewardVO.getUnitId().equals(promoId)){
                 promoRewardVO.setQuantity(quantity);
+            }else {
+                promoRewardVO.setQuantity(1);
             }
         }
         mPromoAdapter.setNewData(promoRewardVOList);

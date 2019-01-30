@@ -1,7 +1,9 @@
 package com.creative_webstudio.iba.adapters;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -43,7 +45,7 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position, @NonNull List<Object> payloads) {
         super.onBindViewHolder(holder, position, payloads);
-        if(mContext instanceof CartActivity) {
+        if (mContext instanceof CartActivity) {
             holder.btnDelete.setOnClickListener(view -> {
                 CartShowVO cart = getItem(position);
                 if (cart != null) {
@@ -51,7 +53,7 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
                 }
                 //((CartActivity) mContext).onClickItem(1,null,position);
             });
-        }else {
+        } else {
             holder.btnDelete.setVisibility(View.GONE);
         }
     }
@@ -87,20 +89,24 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
         @Override
         public void setData(CartShowVO data) {
             tvProductName.setText(data.getProductName());
-            String s = String.format("$%,.2f", data.getPricePerUnit());
-            tvPrice.setText(s + " KS" );
             tvQuantity.setText(data.getItemQuantity() + " " + data.getUnitShow());
+            String s = String.format("%,.2f", data.getPricePerUnit());
             GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(), data.getThumbnailId());
             Glide.with(itemView.getContext())
                     .asBitmap()
                     .apply(LoadImage.getOption())
                     .load(glideUrl)
                     .into(ivProduct);
-            if(!data.getPromoAmount().equals("")){
+            if (data.getPromoAmount()!=null && data.getPromoAmount()>data.getPricePerUnit()) {
                 tvPromoAmount.setVisibility(View.VISIBLE);
-                tvPromoAmount.setText(data.getPromoAmount());
+                tvPromoAmount.setPaintFlags(tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                tvPromoAmount.setTextColor(ContextCompat.getColor(mContext,R.color.redFull));
+                tvPromoAmount.setText(s + " Ks");
+                tvPrice.setText(String.format("%,.2f", data.getPromoAmount()) + " Ks");
+            }else {
+                tvPrice.setText(s + " Ks");
             }
-            if(!data.getPromoItem().equals("")){
+            if(data.getPromoItem()!=null){
                 tvPromoItem.setVisibility(View.VISIBLE);
                 tvPromoItem.setText(data.getPromoItem());
             }

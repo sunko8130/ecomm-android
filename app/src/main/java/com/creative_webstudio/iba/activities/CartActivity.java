@@ -221,14 +221,14 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
                     if (tempProduct.getOrderUnits().size() > 0) {
                         for (OrderUnitVO order : tempProduct.getOrderUnits()) {
                             if (order.getId().equals(cartVOList.get(i).getOrderUnitId())) {
-                                if (order.getHasPromotion()) {
-                                    for (PromoRewardVO promoRewardVO : order.getPromoRewardVOList()) {
-                                        PromoRewardDetailCriteria promo = new PromoRewardDetailCriteria();
-                                        promo.setOrderUnitId(order.getId());
-                                        promo.setPromoRewardId(promoRewardVO.getId());
-                                        promoCriteriaList.add(promo);
-                                    }
+//                                if (order.getHasPromotion() || order.getHasPromotion()!=null) {
+                                for (PromoRewardVO promoRewardVO : order.getPromoRewardVOList()) {
+                                    PromoRewardDetailCriteria promo = new PromoRewardDetailCriteria();
+                                    promo.setOrderUnitId(order.getId());
+                                    promo.setPromoRewardId(promoRewardVO.getId());
+                                    promoCriteriaList.add(promo);
                                 }
+//                                }
                             }
                         }
                     }
@@ -288,7 +288,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         cartShowVOList = new ArrayList<>();
         ProductVO tempProduct = new ProductVO();
         OrderUnitVO tempOrder = new OrderUnitVO();
-        String promoAmount = "";
+        Double promoAmount = 0.0;
         String promoItem = "";
         for (int i = 0; i < cartVOList.size(); i++) {
             for (ProductVO productVO : productVOList) {
@@ -306,7 +306,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             for (PromoRewardDetailVO promoDetail : promoDetailList) {
                 if (tempOrder.getId().equals(promoDetail.getOrderUnitId())) {
                     for (PromoRewardVO promoRewardVO : tempOrder.getPromoRewardVOList()) {
-                        if (promoRewardVO.getId().equals(promoDetail.getPromoRewardId())) {
+                        if (promoRewardVO.getId().equals(promoDetail.getPromoRewardId())&& promoDetail.getPromoRewardId().equals(promoRewardVO.getId())) {
                             promoRewardVO.setPromoQuantity(promoDetail.getOrderQuantity());
                         }
                     }
@@ -318,38 +318,48 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             if (!tempProduct.getThumbnailIdsList().isEmpty()) {
                 cartShowVO.setThumbnailId(tempProduct.getThumbnailIdsList().get(0));
             }
-            double amount = 0;
-            String tempString=" ";
-            for (PromoRewardVO promoRewardVO : tempOrder.getPromoRewardVOList()) {
-                if (promoRewardVO.getPromoQuantity() >= cartVOList.get(i).getQuantity()) {
-                    if (promoRewardVO.getRewardType().equals("Give Away")) {
-                        promoItem.concat("Get "+promoRewardVO.getRewardName()+" ");
-                    } else {
-                        if (promoRewardVO.getRewardType().equals("Percentage")) {
-                            amount += cartVOList.get(i).getQuantity() * tempOrder.getPricePerUnit() * (promoRewardVO.getDiscountValue() / 100);
-                            tempString.concat("("+promoRewardVO.getDiscountValue()+"% Off)");
-                        } else {
-                            int temp = cartVOList.get(i).getQuantity() /promoRewardVO.getPromoQuantity();
-                            amount += cartVOList.get(i).getQuantity()* tempOrder.getPricePerUnit()-(promoRewardVO.getDiscountValue()*temp);
-                            tempString.concat("\n("+promoRewardVO.getDiscountValue()+"Ks Save)");
+            if (tempProduct.getHasPromotion()) {
+                promoAmount = 0.0;
+                promoItem = "";
+                for (PromoRewardVO promoRewardVO : tempOrder.getPromoRewardVOList()) {
+                    if (cartVOList.get(i).getQuantity()>=promoRewardVO.getPromoQuantity() ) {
+                        if (promoRewardVO.getRewardType().equals("Give Away")) {
+                            promoItem = promoItem.concat("Get " + promoRewardVO.getRewardName() + " ");
                         }
+                        if (promoRewardVO.getRewardType().equals("Percentage")) {
+                            promoAmount += cartVOList.get(i).getQuantity() * tempOrder.getPricePerUnit() * (promoRewardVO.getDiscountValue() / 100);
+                            promoItem = promoItem.concat("(" + promoRewardVO.getDiscountValue() + "% Off)");
+                        }
+                        if (promoRewardVO.getRewardType().equals("Fixed Amount")) {
+                            int temp = cartVOList.get(i).getQuantity() / promoRewardVO.getPromoQuantity();
+                            promoAmount += promoRewardVO.getDiscountValue() * temp;
+                            promoItem = promoItem.concat("(" + promoRewardVO.getDiscountValue() + " Ks Save)\n");
+                        }
+
                     }
                 }
+//                String str = String.format("%,.2f", (tempOrder.getPricePerUnit() * cartVOList.get(i).getQuantity()));
+                cartShowVO.setPromoItem(promoItem);
+                if(promoAmount>0) {
+                    cartShowVO.setPromoAmount(tempOrder.getPricePerUnit() * cartVOList.get(i).getQuantity());
+                    cartShowVO.setPricePerUnit(cartVOList.get(i).getQuantity() * tempOrder.getPricePerUnit() - promoAmount);
+                }else {
+                    cartShowVO.setPricePerUnit(tempOrder.getPricePerUnit() * cartVOList.get(i).getQuantity());
+                }
+            }else {
+                cartShowVO.setPricePerUnit(tempOrder.getPricePerUnit() * cartVOList.get(i).getQuantity());
             }
-            promoAmount = amount+tempString;
             cartShowVO.setUnitShow("- ( 1" + tempOrder.getUnitName() + " per " + tempOrder.getItemsPerUnit() + " " + tempOrder.getItemName() + ")");
-            cartShowVO.setPricePerUnit(tempOrder.getPricePerUnit());
             cartShowVO.setUnitId(tempOrder.getId());
             cartShowVO.setProductId(tempProduct.getId());
-            cartShowVO.setPromoAmount(promoAmount);
-            cartShowVO.setPromoItem(promoItem);
             cartShowVOList.add(cartShowVO);
             tempTotal = cartVOList.get(i).getQuantity() * tempOrder.getPricePerUnit();
             total += tempTotal;
             totalCartItem += cartVOList.get(i).getQuantity();
+
         }
         mCartAdapter.setNewData(cartShowVOList);
-        String s = String.format("$%,.2f", total);
+        String s = String.format("%,.2f", total);
         tvTotal.setText(s + " Ks");
         tvSubtotal.setText(s + " Ks");
         tvCartCount.setText(String.valueOf(totalCartItem) + " Items in your cart.");
