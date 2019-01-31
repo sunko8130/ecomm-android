@@ -26,11 +26,15 @@ import android.widget.Spinner;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.creative_webstudio.iba.MyOnPageChangeListener;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.DetailAdapter;
+import com.creative_webstudio.iba.adapters.DetailBannerAdapter;
 import com.creative_webstudio.iba.adapters.PromoAdapter;
+import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
 import com.creative_webstudio.iba.datas.criterias.PromoRewardDetailCriteria;
+import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
 import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
@@ -44,6 +48,7 @@ import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import org.mmtextview.components.MMTextView;
 
@@ -53,6 +58,7 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager;
 
 
 public class ProductDetailsActivity extends BaseActivity {
@@ -66,8 +72,8 @@ public class ProductDetailsActivity extends BaseActivity {
     @BindView(R.id.tv_item_name)
     MMTextView tvItemName;
 
-    @BindView(R.id.iv_details_top_image)
-    ImageView ivDetailTopImage;
+//    @BindView(R.id.iv_details_top_image)
+//    ImageView ivDetailTopImage;
 
     @BindView(R.id.tv_item_content)
     MMTextView tvItemContent;
@@ -100,6 +106,11 @@ public class ProductDetailsActivity extends BaseActivity {
     @BindView(R.id.toolbar_details)
     Toolbar toolbar;
 
+    //Image Scroll
+    @Nullable
+    @BindView(R.id.view_pager)
+    AutoScrollViewPager viewPager;
+
     private DetailAdapter mDetailAdapter;
 
     private PromoAdapter mPromoAdapter;
@@ -131,6 +142,7 @@ public class ProductDetailsActivity extends BaseActivity {
 
     //loading dialog
     AlertDialog loadingDialog;
+    private CirclePageIndicator titlePageIndicator;
 
     //fro promo
     List<PromoRewardDetailCriteria> promoCriteriaList;
@@ -186,10 +198,11 @@ public class ProductDetailsActivity extends BaseActivity {
             }
             orderUnitVOList = productVO.getOrderUnits();
             tvPrice.setText(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit()) + " MMK");
-            if (!productVO.getThumbnailIdsList().isEmpty()) {
-                GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(), productVO.getThumbnailIdsList().get(0));
-                Glide.with(this).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(ivDetailTopImage);
-            }
+            setupViewPager();
+//            if (!productVO.getThumbnailIdsList().isEmpty()) {
+//                GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(), productVO.getThumbnailIdsList().get(0));
+//                Glide.with(this).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(ivDetailTopImage);
+//            }
             if (productVO.getProductDetailsVo().getValueList() != null) {
                 mDetailAdapter.setNewData(productVO.getProductDetailsVo().getValueList());
             }
@@ -219,6 +232,26 @@ public class ProductDetailsActivity extends BaseActivity {
                 productDialog.show();
             });
         }
+    }
+
+    private void setupViewPager() {
+        List<Long> list=new ArrayList<>();
+        if(productVO.getThumbnailIdsList()==null || productVO.getThumbnailIdsList().isEmpty()){
+            list.add((long) 0);
+        }else {
+            list=productVO.getThumbnailIdsList();
+        }
+        DetailBannerAdapter adapter = new DetailBannerAdapter(this.getSupportFragmentManager(), list);
+        if (viewPager != null) {
+            viewPager.setAdapter(adapter);
+            viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
+            viewPager.setInterval(10000);
+            viewPager.startAutoScroll();
+            titlePageIndicator = findViewById(R.id.title_page_indicator);
+            titlePageIndicator.setViewPager(viewPager);
+            titlePageIndicator.setSnap(true);
+        }
+
     }
 
     private void getPromoDetail(List<PromoRewardDetailCriteria> criteria) {

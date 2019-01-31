@@ -101,8 +101,8 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
                 tvPromoAmount.setVisibility(View.VISIBLE);
                 tvPromoAmount.setPaintFlags(tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 tvPromoAmount.setTextColor(ContextCompat.getColor(mContext,R.color.redFull));
-                tvPromoAmount.setText(s + " Ks");
-                tvPrice.setText(String.format("%,.2f", data.getPromoAmount()) + " Ks");
+                tvPromoAmount.setText(String.format("%,.2f", data.getPromoAmount()) + " Ks");
+                tvPrice.setText(s + " Ks");
             }else {
                 tvPrice.setText(s + " Ks");
             }

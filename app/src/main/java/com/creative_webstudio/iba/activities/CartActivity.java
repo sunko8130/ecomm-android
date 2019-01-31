@@ -343,17 +343,19 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
                 if(promoAmount>0) {
                     cartShowVO.setPromoAmount(tempOrder.getPricePerUnit() * cartVOList.get(i).getQuantity());
                     cartShowVO.setPricePerUnit(cartVOList.get(i).getQuantity() * tempOrder.getPricePerUnit() - promoAmount);
+                    tempTotal = cartVOList.get(i).getQuantity() * tempOrder.getPricePerUnit() - promoAmount;
                 }else {
                     cartShowVO.setPricePerUnit(tempOrder.getPricePerUnit() * cartVOList.get(i).getQuantity());
+                    tempTotal = cartVOList.get(i).getQuantity() * tempOrder.getPricePerUnit();
                 }
             }else {
                 cartShowVO.setPricePerUnit(tempOrder.getPricePerUnit() * cartVOList.get(i).getQuantity());
+                tempTotal = cartVOList.get(i).getQuantity() * tempOrder.getPricePerUnit();
             }
             cartShowVO.setUnitShow("- ( 1" + tempOrder.getUnitName() + " per " + tempOrder.getItemsPerUnit() + " " + tempOrder.getItemName() + ")");
             cartShowVO.setUnitId(tempOrder.getId());
             cartShowVO.setProductId(tempProduct.getId());
             cartShowVOList.add(cartShowVO);
-            tempTotal = cartVOList.get(i).getQuantity() * tempOrder.getPricePerUnit();
             total += tempTotal;
             totalCartItem += cartVOList.get(i).getQuantity();
 

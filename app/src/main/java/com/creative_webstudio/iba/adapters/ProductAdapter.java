@@ -78,12 +78,16 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
         @Override
         public void setData(ProductVO data) {
             tvProductName.setText(data.getProductName());
-            if(!data.getThumbnailIdsList().isEmpty()){
+            if(!data.getThumbnailIdsList().isEmpty() && data.getThumbnailIdsList()!=null){
                 GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(),data.getThumbnailIdsList().get(0));
                 Glide.with(itemView.getContext())
                         .asBitmap()
                         .apply(LoadImage.getOption())
                         .load(glideUrl)
+                        .into(ivProduct);
+            }else {
+                Glide.with(itemView.getContext())
+                        .load(R.drawable.blank_photo)
                         .into(ivProduct);
             }
 

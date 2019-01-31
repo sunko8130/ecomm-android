@@ -22,6 +22,7 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.SearchAdapter;
 import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
+import com.creative_webstudio.iba.datas.criterias.OrderUnitCriteria;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.criterias.ThumbnailCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
@@ -133,6 +134,9 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         ThumbnailCriteria thumbnailCriteria=new ThumbnailCriteria();
         thumbnailCriteria.setThumbnailType(1);
         criteriaVO.setThumbnail(thumbnailCriteria);
+        OrderUnitCriteria orderUnitCriteria = new OrderUnitCriteria();
+        orderUnitCriteria.setWithPromoReward(true);
+        criteriaVO.setOrderUnit(orderUnitCriteria);
         Bundle bundle = new Bundle();
         bundle.putString("search_dey", userInput);
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "search_product");
