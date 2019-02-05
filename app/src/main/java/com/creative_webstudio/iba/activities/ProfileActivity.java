@@ -126,6 +126,8 @@ public class ProfileActivity extends BaseActivity {
             return true;
         }else if(item.getItemId() == R.id.menu_edit){
             startActivity(ProfileEditActivity.newIntent(this));
+        }else if(item.getItemId() == R.id.menu_password){
+            startActivity(ChangePasswordActivity.newIntent(this));
         }
         return super.onOptionsItemSelected(item);
     }

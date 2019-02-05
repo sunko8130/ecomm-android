@@ -107,6 +107,12 @@ public interface IbaAPI {
                                               @Field("orderId") long orderId,
                                               @Field("status") String status);
 
+    @FormUrlEncoded
+    @PUT("customer/me/change_password")
+    Observable<Response<Integer>> updatePassword(@Header("Authorization") String authHeader,
+                                              @Field("oldPassword") String oldPassword,
+                                              @Field("newPassword") String newPassword);
+
     @GET("customer/me")
     Observable<Response<CustomerVO>> getCustomerInfo(@Header("Authorization") String authHeader);
 

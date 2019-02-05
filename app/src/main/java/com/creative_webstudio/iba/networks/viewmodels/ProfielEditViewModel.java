@@ -98,4 +98,27 @@ public class ProfielEditViewModel extends AndroidViewModel {
                 });
         return result;
     }
+
+    public MutableLiveData<ApiResponse<Integer>> updatePassword(String oldPassword,String newPassword) {
+        MutableLiveData<ApiResponse<Integer>> result = new MutableLiveData<>();
+        ApiResponse<Integer> apiResponse = new ApiResponse();
+        IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
+        String accessToken = prefs.getAccessToken();
+        String userAuth = "Bearer " + accessToken;
+        api.updatePassword(userAuth,oldPassword,newPassword)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    if (response.isSuccessful()) {
+                        apiResponse.setData(response.body());
+                    } else {
+                        apiResponse.setError(new ApiException(response.code()));
+                    }
+                    result.setValue(apiResponse);
+                }, throwable -> {
+                    apiResponse.setError(new ApiException(throwable));
+                    result.setValue(apiResponse);
+                });
+        return result;
+    }
 }

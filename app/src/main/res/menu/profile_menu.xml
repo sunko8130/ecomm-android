@@ -2,8 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menu_password"
+        android:icon="@drawable/ic_lock"
+        android:title="passwordChange"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/menu_edit"
         android:icon="@drawable/ic_edit"
-        android:title="@string/cart"
+        android:title="profileEdit"
         app:showAsAction="always" />
+
+
 </menu>
