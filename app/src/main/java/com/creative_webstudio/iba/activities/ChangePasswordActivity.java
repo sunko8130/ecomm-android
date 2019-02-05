@@ -87,6 +87,9 @@ public class ChangePasswordActivity extends BaseActivity implements View.OnClick
                 } else if (etNewPw.getText().toString().trim().equalsIgnoreCase("")) {
                     tilNewPw.setError("Enter new Password");
                     tilRetypePw.setError(null);
+                } else if (etNewPw.getText().toString().length()<8) {
+                    tilNewPw.setError("Your password must have at least 8 characters");
+                    tilRetypePw.setError(null);
                 } else if (etReTypePw.getText().toString().trim().equalsIgnoreCase("")) {
                     tilRetypePw.setError("Re-type your new password");
                     tilNewPw.setError(null);

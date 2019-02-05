@@ -50,6 +50,6 @@ public class RegionVO {
 
     @Override
     public String toString() {
-        return getDescEN();
+        return getDescMM();
     }
 }

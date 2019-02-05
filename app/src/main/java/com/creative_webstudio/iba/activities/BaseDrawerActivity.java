@@ -59,6 +59,7 @@ public class BaseDrawerActivity extends BaseActivity {
 
 
     IBAPreferenceManager ibaShared;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,14 +81,15 @@ public class BaseDrawerActivity extends BaseActivity {
     }
 
 
-
     private void setupCustomerInfo() {
-        customerVO=IbaModel.getInstance().getCustomerVO();
+        customerVO = IbaModel.getInstance().getCustomerVO();
         View headerView = navigationView.getHeaderView(0);
         MMTextView name = headerView.findViewById(R.id.tvCustomerName);
         MMTextView email = headerView.findViewById(R.id.tvCustomerEmail);
         name.setText(customerVO.getName());
-        email.setText(customerVO.getEmail());
+        if (customerVO.getEmail() != null) {
+            email.setText(customerVO.getEmail());
+        }
         headerView.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             startActivity(ProfileActivity.newIntent(context));
@@ -233,7 +235,7 @@ public class BaseDrawerActivity extends BaseActivity {
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         } else */
         if (this instanceof ProductActivity) {
-                if (doubleBackToExitPressedOnce) {
+            if (doubleBackToExitPressedOnce) {
                 super.onBackPressed();
                 moveTaskToBack(true);
                 return;

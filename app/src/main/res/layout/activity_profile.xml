@@ -30,7 +30,6 @@
                 android:paddingTop="10dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
-                android:text="Customer 9999"
                 android:textSize="@dimen/text_regular_2x" />
 
             <org.mmtextview.components.MMTextView
@@ -59,7 +58,6 @@
                 android:paddingTop="10dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
-                android:text="Customer@gmail"
                 android:textSize="@dimen/text_regular_2x" />
 
             <org.mmtextview.components.MMTextView
@@ -87,7 +85,6 @@
                 android:paddingTop="10dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
-                android:text="Customer 9999"
                 android:textSize="@dimen/text_regular_2x" />
 
             <org.mmtextview.components.MMTextView
@@ -115,7 +112,6 @@
                 android:paddingTop="10dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
-                android:text="Customer 9999"
                 android:textSize="@dimen/text_regular_2x" />
 
             <org.mmtextview.components.MMTextView
@@ -143,7 +139,6 @@
                 android:paddingTop="10dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
-                android:text="Customer 9999"
                 android:textSize="@dimen/text_regular_2x" />
 
             <org.mmtextview.components.MMTextView
@@ -171,7 +166,6 @@
                 android:paddingTop="10dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
-                android:text="Customer 9999"
                 android:textSize="@dimen/text_regular_2x" />
 
             <org.mmtextview.components.MMTextView
@@ -199,7 +193,6 @@
                 android:paddingTop="10dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="5dp"
-                android:text="Customer 9999"
                 android:textSize="@dimen/text_regular_2x" />
 
             <org.mmtextview.components.MMTextView

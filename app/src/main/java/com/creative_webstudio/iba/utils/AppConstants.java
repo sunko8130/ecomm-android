@@ -16,9 +16,9 @@ public class AppConstants {
 
     public static final Integer ERROR_ACCESSTOKEN = 789;
 
-    public static final String BASE_PRODUCT_SEARCH_URL = "http://192.168.100.111:8282/iba-api/api/";
-    public static final String BASE_OAUTH_URL = "http://192.168.100.111:8281/iba-uae/";
-    public static final String IMAGE_URL = "http://192.168.100.111:8282/iba-api/api/files/thumbnail/";
+    public static final String BASE_PRODUCT_SEARCH_URL = "http://68.183.239.3:8582/iba-api/api/";
+    public static final String BASE_OAUTH_URL = "http://68.183.239.3:8581/iba-uae/";
+    public static final String IMAGE_URL = "http://68.183.239.3:8582/iba-api/api/files/thumbnail/";
 
 //    public static final String BASE_PRODUCT_SEARCH_URL = "http://192.168.100.111:8582/iba-api/api/";
 //    public static final String BASE_OAUTH_URL = "http://192.168.100.111:8581/iba-uae/";

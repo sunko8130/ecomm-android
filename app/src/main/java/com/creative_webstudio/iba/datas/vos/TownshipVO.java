@@ -61,6 +61,6 @@ public class TownshipVO {
 
     @Override
     public String toString() {
-        return getDescEN();
+        return getDescMM();
     }
 }

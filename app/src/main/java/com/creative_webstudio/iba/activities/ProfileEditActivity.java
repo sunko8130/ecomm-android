@@ -178,7 +178,7 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
         // Apply the adapter to the spinner
         spDivision.setAdapter(regionAdapter);
         for(int i =0;i<regionVOList.size();i++){
-            if(regionVOList.get(i).getDescEN().equals(customerVO.getDivision())){
+            if(regionVOList.get(i).getDescMM().equals(customerVO.getDivision())){
                 spDivision.setSelection(i);
             }
         }
@@ -186,7 +186,7 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 getTownShip(regionVOList.get(position).getCode());
-                selectedRegion=regionVOList.get(position).getDescEN();
+                selectedRegion=regionVOList.get(position).getDescMM();
             }
 
             @Override
@@ -203,14 +203,14 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
         // Apply the adapter to the spinner
         spTownship.setAdapter(regionAdapter);
         for(int i =0;i<townshipVOList.size();i++){
-            if(townshipVOList.get(i).getDescEN().equals(customerVO.getDivision())){
+            if(townshipVOList.get(i).getDescMM().equals(customerVO.getDivision())){
                 spTownship.setSelection(i);
             }
         }
         spTownship.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedTownship=townshipVOList.get(position).getDescEN();
+                selectedTownship=townshipVOList.get(position).getDescMM();
             }
 
             @Override
