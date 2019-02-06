@@ -197,8 +197,11 @@ public class OrderHistoryActivity extends BaseActivity {
                             } else {
                                 tvEmpty.setText("No Data to Display!");
                                 btnRefresh.setVisibility(View.VISIBLE);
+                                ivEmpty.setVisibility(View.VISIBLE);
+                                animEmpty.setVisibility(View.GONE);
                             }
                         }
+
                     } else {
                         retryDialog.show();
                         retryDialog.tvRetry.setText("No Internet Connection");
