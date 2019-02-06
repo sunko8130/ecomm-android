@@ -5,6 +5,8 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -48,6 +50,23 @@ public class CartEditAdapter extends BaseRecyclerAdapter<CartEditAdapter.CartEdi
         CartShowVO cart = getItem(position);
         final int[] quantity = {0};
         quantity[0] = cart.getItemQuantity();
+        holder.tvQuantity.setText(String.valueOf(quantity[0]));
+        holder.tvQuantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                ((CartEditActivity) mContext).updateOrder(position, Integer.parseInt(String.valueOf(s)),cart);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         holder.btnDelete.setOnClickListener(view -> {
             if (cart != null) {
                 ((CartEditActivity) mContext).updateOrder(position,-1,cart);
@@ -57,7 +76,7 @@ public class CartEditAdapter extends BaseRecyclerAdapter<CartEditAdapter.CartEdi
             if (quantity[0] < cart.getMax()) {
                 quantity[0]++;
                 ((CartEditActivity) mContext).updateOrder(position, quantity[0],cart);
-                holder.edQuantity.setText(String.valueOf(quantity[0]));
+                holder.tvQuantity.setText(String.valueOf(quantity[0]));
                 if(quantity[0]==cart.getMax()){
                     holder.ivPlus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.redFull)));
                 }else {
@@ -69,9 +88,9 @@ public class CartEditAdapter extends BaseRecyclerAdapter<CartEditAdapter.CartEdi
             if (quantity[0] > cart.getMin()) {
                 quantity[0]--;
                 ((CartEditActivity) mContext).updateOrder(position, quantity[0],cart);
-                holder.edQuantity.setText(String.valueOf(quantity[0]));
+                holder.tvQuantity.setText(String.valueOf(quantity[0]));
                 if (quantity[0] <= cart.getMax()) {
-                    holder.edQuantity.setTextColor(ContextCompat.getColor(mContext, R.color.limeGreen));
+                    holder.tvQuantity.setTextColor(ContextCompat.getColor(mContext, R.color.limeGreen));
                 }
                 if(quantity[0]==cart.getMin()){
                     holder.ivMinus.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.redFull)));
@@ -100,8 +119,8 @@ public class CartEditAdapter extends BaseRecyclerAdapter<CartEditAdapter.CartEdi
         @BindView(R.id.iv_minus)
         ImageView ivMinus;
 
-        @BindView(R.id.ed_quantity)
-        EditText edQuantity;
+        @BindView(R.id.tv_quantity)
+        EditText tvQuantity;
 
         @BindView(R.id.btn_delete)
         ImageView btnDelete;

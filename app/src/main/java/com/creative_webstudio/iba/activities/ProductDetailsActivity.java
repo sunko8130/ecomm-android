@@ -332,13 +332,15 @@ public class ProductDetailsActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 minQuantity = orderUnitVOList.get(i).getMinimumOrderQuantity();
                 maxQuantity = orderUnitVOList.get(i).getUnitInStock();
-//                maxQuantity = 100;
+//                maxQuantity = 1000;
                 quantity = minQuantity;
+//                quantity=700;
                 selectedItem = i;
                 tvQuantity.setText(String.valueOf(quantity));
                 String s = String.format("$%,.2f", orderUnitVOList.get(i).getPricePerUnit() * quantity);
                 tvPrice.setText(s + " MMK");
-                setUpPromo();
+//                setUpPromo();
+                updatePromo(orderUnitVOList.get(i).getId());
 //                if(productVO.getHasPromotion()) {
 //                    promoRewardVOList = orderUnitVOList.get(i).getPromoRewardVOList();
 //                    setUpPromo();

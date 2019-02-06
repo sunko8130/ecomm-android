@@ -76,16 +76,18 @@
                     android:src="@drawable/ic_minus"/>
 
                 <EditText
-                    android:id="@+id/ed_quantity"
+                    android:id="@+id/tv_quantity"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:padding="5dp"
                     android:text="10"
+                    android:maxLength="3"
                     android:inputType="number"
                     android:textColor="@color/redFull"
-                    android:textSize="@dimen/text_regular_3x" />
+                    android:textSize="@dimen/text_regular_3x"
+                    android:background="@drawable/round_rect_black_line"/>
 
                 <ImageView
                     android:id="@+id/iv_plus"
