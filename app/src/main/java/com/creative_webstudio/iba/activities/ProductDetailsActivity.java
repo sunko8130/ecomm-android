@@ -203,7 +203,7 @@ public class ProductDetailsActivity extends BaseActivity {
 //                GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(), productVO.getThumbnailIdsList().get(0));
 //                Glide.with(this).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(ivDetailTopImage);
 //            }
-            if (productVO.getProductDetailsVo().getValueList() != null) {
+            if (productVO.getProductDetailsVo()!=null && productVO.getProductDetailsVo().getValueList() != null) {
                 mDetailAdapter.setNewData(productVO.getProductDetailsVo().getValueList());
             }
             if (productVO.getHasPromotion()) {
@@ -337,7 +337,7 @@ public class ProductDetailsActivity extends BaseActivity {
 //                quantity=700;
                 selectedItem = i;
                 tvQuantity.setText(String.valueOf(quantity));
-                String s = String.format("$%,.2f", orderUnitVOList.get(i).getPricePerUnit() * quantity);
+                String s = String.format("%,.2f", orderUnitVOList.get(i).getPricePerUnit() * quantity);
                 tvPrice.setText(s + " MMK");
 //                setUpPromo();
                 updatePromo(orderUnitVOList.get(i).getId());

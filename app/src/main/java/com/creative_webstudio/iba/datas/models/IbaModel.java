@@ -1,7 +1,6 @@
 package com.creative_webstudio.iba.datas.models;
 
 import android.accounts.NetworkErrorException;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.util.Base64;
@@ -9,13 +8,12 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.creative_webstudio.iba.datas.ApiResponse;
+import com.creative_webstudio.iba.datas.criterias.ConfigurationCriteria;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
+import com.creative_webstudio.iba.datas.vos.ConfigurationVO;
 import com.creative_webstudio.iba.datas.vos.CustomerVO;
-import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
-import com.creative_webstudio.iba.datas.vos.RegionVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
-import com.creative_webstudio.iba.datas.vos.TownshipVO;
 import com.creative_webstudio.iba.enents.TokenEvent;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.IbaAPI;
@@ -72,6 +70,34 @@ public class IbaModel extends BaseModel {
                             && body != null) {
                         apiResponse.setData(body);
                         customerVO = body;
+                    } else {
+                        apiResponse.setError(new ApiException(response.code()));
+                    }
+                    result.setValue(apiResponse);
+                }, throwable -> {
+                    Crashlytics.logException(throwable);
+                    apiResponse.setError(new ApiException(throwable));
+                    result.setValue(apiResponse);
+                });
+
+        return result;
+    }
+
+    public MutableLiveData<ApiResponse<ConfigurationVO>> getConfigData(){
+        ConfigurationCriteria criteria=new ConfigurationCriteria();
+        MutableLiveData<ApiResponse<ConfigurationVO>> result = new MutableLiveData<>();
+        ApiResponse<ConfigurationVO> apiResponse = new ApiResponse();
+        IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
+        String accessToken = ibaPreference.getAccessToken();
+        String userAuth = "Bearer " + accessToken;
+        api.getConfigurationInfo(userAuth,criteria)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    ConfigurationVO body = response.body();
+                    if (response.isSuccessful()
+                            && body != null) {
+                        apiResponse.setData(body);
                     } else {
                         apiResponse.setError(new ApiException(response.code()));
                     }
@@ -146,6 +172,8 @@ public class IbaModel extends BaseModel {
                 });
 
     }
+
+
 
     public void getTokenByRefresh() {
         String refreshToken = ibaPreference.fromPreference("RefreshToken", "");
@@ -254,7 +282,8 @@ public class IbaModel extends BaseModel {
     }
 
 
-//    public void getProduct(Criteria criteriaVO, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
+
+//    public void getProduct(ConfigurationCriteria criteriaVO, final MutableLiveData<List<ProductVO>> mProductList, final MutableLiveData<Integer> responseCode) {
 //        String base = ibaPreference.fromPreference("AccessToken", "");
 //        String auth = "Bearer " + base;
 //        theApiProductSearch.getProductPaging(auth, criteriaVO)

@@ -234,6 +234,7 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
                             rvSearch.setEmptyView(vpEmpty);
+                            vpEmpty.setVisibility(View.VISIBLE);
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
                             Snackbar.make(rvSearch, "End of Product List", Snackbar.LENGTH_LONG).show();

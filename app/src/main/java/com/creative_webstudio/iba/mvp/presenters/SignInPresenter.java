@@ -16,6 +16,10 @@ public class SignInPresenter extends BasePresenter<SignInView> {
         IbaModel.getInstance().getTokenByUP(userName,password,mResponseCode);
     }
 
+    public void getConfigurationData(){
+
+    }
+
     public void refreshToken(String userName, String password){
         IbaModel.getInstance().getTokenByUP(userName,password,mResponseCode);
     }

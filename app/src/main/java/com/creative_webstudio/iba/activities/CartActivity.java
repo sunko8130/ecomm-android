@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,6 +87,12 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     @Nullable
     @BindView(R.id.iv_empty)
     ImageView ivEmpty;
+
+    @BindView(R.id.layoutOne)
+    LinearLayout layoutOne;
+
+    @BindView(R.id.layoutTwo)
+    LinearLayout layoutTwo;
 
     private CartAdapter mCartAdapter;
     private IBAPreferenceManager ibaShared;
@@ -164,6 +171,8 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             animEmpty.playAnimation();
             productIds = null;
             cartVOList = new ArrayList<>();
+            layoutOne.setVisibility(View.GONE);
+            layoutTwo.setVisibility(View.GONE);
         }
     }
 

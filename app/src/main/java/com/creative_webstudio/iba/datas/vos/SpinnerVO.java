@@ -37,6 +37,6 @@ public class SpinnerVO {
 
     @Override
     public String toString() {
-        return "1"+getUnitName()+" per "+getItemPerUnit()+" "+getItemName();
+        return "1"+getUnitName()+" ("+getItemPerUnit()+" "+getItemName()+")";
     }
 }

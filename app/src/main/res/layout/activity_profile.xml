@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,23 +16,26 @@
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/profile" />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp">
+            android:padding="5dp" >
 
-            <org.mmtextview.components.MMTextView
-                android:id="@+id/tvName"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_height="match_parent"
                 android:background="@drawable/round_rect_primary_line"
-                android:paddingLeft="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
-                android:textSize="@dimen/text_regular_2x" />
+                android:layout_marginTop="10dp">
+
+                <org.mmtextview.components.MMTextView
+                    android:id="@+id/tvName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:padding="5dp"
+                    android:textSize="@dimen/text_regular_2x"
+                    android:text="Maung Maung"/>
+            </RelativeLayout>
 
             <org.mmtextview.components.MMTextView
                 android:layout_width="wrap_content"

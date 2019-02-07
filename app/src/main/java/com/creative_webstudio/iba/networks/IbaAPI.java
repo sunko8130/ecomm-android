@@ -1,6 +1,7 @@
 package com.creative_webstudio.iba.networks;
 
 import com.creative_webstudio.iba.datas.criterias.AdvertisementCriteria;
+import com.creative_webstudio.iba.datas.criterias.ConfigurationCriteria;
 import com.creative_webstudio.iba.datas.criterias.CustomerCriteria;
 import com.creative_webstudio.iba.datas.criterias.PromoRewardDetailCriteria;
 import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
@@ -8,6 +9,7 @@ import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.datas.criterias.OrderHistoryCriteria;
+import com.creative_webstudio.iba.datas.vos.ConfigurationVO;
 import com.creative_webstudio.iba.datas.vos.CustomerVO;
 import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
 import com.creative_webstudio.iba.datas.criterias.OrderItemCriteria;
@@ -63,7 +65,7 @@ public interface IbaAPI {
 //    @POST("product/search/paging")
 //    Observable<Response<ProductResponse>> getProductPaging(
 //            @Header("Authorization") String authHeader,
-//            @Body Criteria criteriaVO);
+//            @Body ConfigurationCriteria criteriaVO);
 
     @POST("product/search/paging")
     Observable<Response<ProductResponse>> getProduct(@Header("Authorization") String authHeader,
@@ -75,7 +77,7 @@ public interface IbaAPI {
 
 //    @POST("order_unit/search/list")
 //    Observable<Response<List<OrderUnitVO>>> getOrderUnit(@Header("Authorization") String authHeader,
-//                                                         @Body Criteria criteriaVO);
+//                                                         @Body ConfigurationCriteria criteriaVO);
 
     @POST("advertisement/search/list")
     Observable<Response<List<AdvertisementVO>>> getAdvertisement(@Header("Authorization") String authHeader,
@@ -115,6 +117,10 @@ public interface IbaAPI {
 
     @GET("customer/me")
     Observable<Response<CustomerVO>> getCustomerInfo(@Header("Authorization") String authHeader);
+
+    @POST("customer/me")
+    Observable<Response<ConfigurationVO>> getConfigurationInfo(@Header("Authorization") String authHeader,
+                                                               @Body ConfigurationCriteria configurationCriteria);
 
     @PUT("customer/me")
     Observable<Response<Integer>> updateCustomerInfo(@Header("Authorization") String authHeader,

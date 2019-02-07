@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -70,9 +71,9 @@ public class ProductActivity extends BaseDrawerActivity {
     @BindView(R.id.view_pager)
     AutoScrollViewPager viewPager;
 
-    @Nullable
-    @BindView(R.id.appbar)
-    AppBarLayout appBar;
+//    @Nullable
+//    @BindView(R.id.appbar)
+//    AppBarLayout appBar;
 
     @Nullable
     @BindView(R.id.ll)
@@ -109,6 +110,10 @@ public class ProductActivity extends BaseDrawerActivity {
     @BindView(R.id.tvNoMoreData)
     MMTextView tvNoMoreData;
 
+    @Nullable
+    @BindView(R.id.nestedScroll)
+    NestedScrollView nestedScrollView;
+
     private ProductAdapter mProductAdapter;
     private CirclePageIndicator titlePageIndicator;
 
@@ -116,7 +121,7 @@ public class ProductActivity extends BaseDrawerActivity {
     private boolean mIsLoading;
     private boolean mIsNoMoreData;
 
-    private String[] items = {"All Product","Promotion"};
+    private String[] items = {"All Product", "Promotion"};
     private String chooseItem;
     private int checkedItem = 0;
 
@@ -165,38 +170,59 @@ public class ProductActivity extends BaseDrawerActivity {
         btnEmpty.setVisibility(View.GONE);
 //        getCategory();
         getAdvertisement();
-        if (mProductAdapter.getItemCount() == 0) {
-            appBar.setExpanded(false);
-        } else {
-            appBar.setExpanded(true);
-        }
+//        if (mProductAdapter.getItemCount() == 0) {
+//            appBar.setExpanded(false);
+//        } else {
+//            appBar.setExpanded(true);
+//        }
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            categoryId = -2;
-            checkedItem = 0;
-            btnProduct.setText(items[0]);
+//            categoryId = -2;
+//            checkedItem = 0;∂
+//            btnProduct.setText(items[0]);
             refreshData();
         });
 
         btnEmpty.setOnClickListener(v -> {
-            categoryId = -2;
+//            categoryId = -2;
             refreshData();
         });
 
 
-        rvProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//        rvProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                if (!mIsLoading && !mIsNoMoreData && layoutManager.findLastVisibleItemPosition() == mProductAdapter.getItemCount() - 1) {
+//                    mIsLoading = true;
+//                    aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
+//                    getProduct(mCurrentPage, categoryId);
+//                }
+//                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+//                    scrollTop = true;
+//                } else {
+//                    scrollTop = false;
+//                }
+//            }
+//        });
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (!mIsLoading && !mIsNoMoreData && layoutManager.findLastVisibleItemPosition() == mProductAdapter.getItemCount() - 1) {
-                    mIsLoading = true;
-                    aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
-                    getProduct(mCurrentPage, categoryId);
-                }
-                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-                    scrollTop = true;
-                } else {
-                    scrollTop = false;
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (v.getChildAt(v.getChildCount() - 1) != null) {
+                    if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                            scrollY > oldScrollY) {
+                        int visibleItemCount = layoutManager.getChildCount();
+                        int totalItemCount = layoutManager.getItemCount();
+                        int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                        if (!mIsLoading) {
+                            mIsLoading = true;
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
+                                getProduct(mCurrentPage, categoryId);
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -205,22 +231,22 @@ public class ProductActivity extends BaseDrawerActivity {
     }
 
     private void refreshData() {
-        collapse();
+//        collapse();
         tvEmpty.setText("Loading Data......");
         btnEmpty.setVisibility(View.GONE);
-        if(categoryId==-1) {
+        if (categoryId == -1) {
             btnProduct.setText("Promotion");
-        }else if(categoryId==-2) {
+        } else if (categoryId == -2) {
             btnProduct.setText("All Product");
         }
-        checkedItem = categoryId+2;
+        checkedItem = categoryId + 2;
 //        if (!loadingDialog.isShowing()) {
 //            loadingDialog.show();
 //        }
         mProductAdapter.clearData();
         mIsLoading = true;
         mCurrentPage = 1;
-        if (categoryId == -1 || categoryId==-2) {
+        if (categoryId == -1 || categoryId == -2) {
             getProduct(mCurrentPage, categoryId);
         } else {
             getProduct(mCurrentPage, mCategoryList.get(categoryId).getId());
@@ -253,7 +279,7 @@ public class ProductActivity extends BaseDrawerActivity {
                         if (errorCode == 401) {
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
-                            AdvertisementVO advertisementVO=new AdvertisementVO();
+                            AdvertisementVO advertisementVO = new AdvertisementVO();
                             mAdvertisementList.add(advertisementVO);
                             setupViewPager(mAdvertisementList);
                             getCategory();
@@ -375,7 +401,7 @@ public class ProductActivity extends BaseDrawerActivity {
                 aniLoadMore.setVisibility(View.GONE);
                 if (apiResponse.getData() != null) {
                     if (mCurrentPage == 1) {
-                        expand();
+//                        expand();
                     }
                     categoryId = (int) productCategoryId;
                     mCurrentPage++;
@@ -394,7 +420,7 @@ public class ProductActivity extends BaseDrawerActivity {
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
                             // TODO: Server response successful but there is no data (Empty response).
-                            collapse();
+//                            collapse();
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
                             if (mCurrentPage > 1) {
@@ -402,7 +428,7 @@ public class ProductActivity extends BaseDrawerActivity {
                             } else {
                                 tvEmpty.setText("No Data to Display!");
                                 btnEmpty.setVisibility(View.VISIBLE);
-                                collapse();
+//                                collapse();
                             }
 
                         } else {
@@ -551,8 +577,8 @@ public class ProductActivity extends BaseDrawerActivity {
     public void onBackPressed() {
         if (!scrollTop) {
             layoutManager.smoothScrollToPosition(rvProduct, null, 0);
-            expand();
-        }else {
+//            expand();
+        } else {
             super.onBackPressed();
         }
     }
@@ -568,23 +594,23 @@ public class ProductActivity extends BaseDrawerActivity {
         startActivity(ProductDetailsActivity.newIntent(this, "Product", json));
     }
 
-    public void expand() {
+//    public void expand() {
 //        final float scale = getResources().getDisplayMetrics().density;
 //        int height = (int) (300 * scale);
 //        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
 //        params.height = height; // HEIGHT
 //        appBar.setLayoutParams(params);
-        appBar.setExpanded(true);
-    }
+//        appBar.setExpanded(true);
+//    }
 
-    public void collapse() {
+//    public void collapse() {
 //        final float scale = getResources().getDisplayMetrics().density;
 //        int height = (int) (0 * scale);
 //        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
 //        params.height = height; // HEIGHT
 //        appBar.setLayoutParams(params);
-        appBar.setExpanded(false);
-    }
+//        appBar.setExpanded(false);
+//    }
 
     public void launchWebView(String url) {
         if (url != null) {
