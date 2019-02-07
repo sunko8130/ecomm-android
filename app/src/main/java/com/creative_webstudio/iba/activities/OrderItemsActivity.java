@@ -238,7 +238,7 @@ public class OrderItemsActivity extends BaseActivity {
             loadingDialog.show();
             OrderHistoryViewModel viewModel = ViewModelProviders.of(this).get(OrderHistoryViewModel.class);
             viewModel.getOrderItems(itemIds).observe(this, apiResponse -> {
-                if (loadingDialog.isShowing()) {
+                 if (loadingDialog.isShowing()) {
                     loadingDialog.dismiss();
                 }
                 if (apiResponse.getData() != null) {
@@ -278,7 +278,7 @@ public class OrderItemsActivity extends BaseActivity {
                 cartShowVO.setThumbnailId(order.getProduct().getThumbnailIdsList().get(0));
             }
             cartShowVO.setUnitShow("- ( 1" + order.getOrderUnit().getUnitName() + " per " + order.getOrderUnit().getItemsPerUnit() + " " + order.getOrderUnit().getItemName() + ")");
-            cartShowVO.setPricePerUnit(order.getOrderUnit().getPricePerUnit());
+            cartShowVO.setPricePerUnit(order.getOrderPrice());
             cartShowVOList.add(cartShowVO);
         }
         mAdapter.setNewData(cartShowVOList);
