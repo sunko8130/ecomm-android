@@ -19,3 +19,14 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# OkHttp
+-dontnote retrofit2.Platform
+-dontwarn retrofit2.Platform$Java8adapters.
+-keepattributes Signature
+-keepattributes Exceptions
+-dontwarn org.xmlpull.v1.**
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn retrofit2.Platform$Java8
