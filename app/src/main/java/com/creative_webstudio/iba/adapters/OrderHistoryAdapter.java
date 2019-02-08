@@ -67,11 +67,11 @@ public class OrderHistoryAdapter extends BaseRecyclerAdapter<OrderHistoryAdapter
                 tvStatus.setTextColor(ContextCompat.getColor(mContext,R.color.redFull));
             }
             tvStatus.setText(data.getStatus());
-            long price=0;
+            double price=0;
             for (OrderItemVO order:data.getOrderItems()){
                 price+=order.getOrderPrice();
             }
-            tvOrderPrice.setText(price+" MMK");
+            tvOrderPrice.setText(String.format("%,.2f", price) + " Ks");
             tvOrderId.setText("Order ID: "+data.getOrderNumber());
             historyVO = data;
         }

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
+import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -91,7 +92,7 @@ public class ProfileEditActivity extends  BaseActivity implements View.OnClickLi
         etAddress.setText(customerVO.getAddress());
         etEmail.setText(customerVO.getEmail());
         getRegion();
-
+        etAddress.setMovementMethod(new ScrollingMovementMethod());
         btnOk.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
     }

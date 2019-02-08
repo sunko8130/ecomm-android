@@ -50,9 +50,6 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
     SmartRecyclerView rvSearch;
     @BindView(R.id.search_view)
     SearchView searchView;
-    @BindView(R.id.tv_result)
-    TextView tvResult;
-
     //search loading
     @BindView(R.id.loadingSearch)
     LottieAnimationView loadingSearch;
@@ -106,11 +103,11 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         searchView.setIconified(false);
         searchView.requestFocusFromTouch();
 
-        tvResult.setOnClickListener(view -> {
-            Log.e("onclickTvResult", "onClick: Success ");
-            mPresenter.onTapSearch("e");
-            mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, productVOS -> searchAdapter.setNewData(productVOS));
-        });
+//        tvResult.setOnClickListener(view -> {
+//            Log.e("onclickTvResult", "onClick: Success ");
+//            mPresenter.onTapSearch("e");
+//            mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, productVOS -> searchAdapter.setNewData(productVOS));
+//        });
 
     }
 

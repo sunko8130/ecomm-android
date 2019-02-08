@@ -41,7 +41,7 @@ public class ProductViewModel extends AndroidViewModel {
     public MutableLiveData<ApiResponse<ProductResponse>> getProduct(int page, long categoryId) {
         ProductCriteria criteriaVO = new ProductCriteria();
         ThumbnailCriteria thumbnailCriteria = new ThumbnailCriteria();
-        thumbnailCriteria.setThumbnailType(1);
+        thumbnailCriteria.setThumbnailType(2);
         OrderUnitCriteria orderUnitCriteria = new OrderUnitCriteria();
         orderUnitCriteria.setWithPromoReward(true);
         criteriaVO.setOrderUnit(orderUnitCriteria);

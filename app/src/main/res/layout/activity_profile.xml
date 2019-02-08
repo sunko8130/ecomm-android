@@ -16,199 +16,173 @@
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/profile" />
-        <RelativeLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp" >
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/round_rect_primary_line"
-                android:layout_marginTop="10dp">
-
-                <org.mmtextview.components.MMTextView
-                    android:id="@+id/tvName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:padding="5dp"
-                    android:textSize="@dimen/text_regular_2x"
-                    android:text="Maung Maung"/>
-            </RelativeLayout>
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <org.mmtextview.components.MMTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:background="@color/whiteFull"
                 android:text="Name"
                 android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_regular" />
+
+            <org.mmtextview.components.MMTextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_rect_primary_line"
+                android:padding="@dimen/margin_medium"
                 android:textSize="@dimen/text_regular_2x" />
-        </RelativeLayout>
+
+        </LinearLayout>
 
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="5dp">
+
+            <org.mmtextview.components.MMTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/whiteFull"
+                android:text="Phone"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_regular" />
 
             <org.mmtextview.components.MMTextView
                 android:id="@+id/tvPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/round_rect_primary_line"
-                android:paddingLeft="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
+                android:padding="@dimen/margin_medium"
                 android:textSize="@dimen/text_regular_2x" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <org.mmtextview.components.MMTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:background="@color/whiteFull"
-                android:text="Phone"
+                android:text="Address"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_regular_2x" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
+                android:textSize="@dimen/text_regular" />
 
             <org.mmtextview.components.MMTextView
                 android:id="@+id/tvAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/round_rect_primary_line"
-                android:paddingLeft="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
+                android:padding="@dimen/margin_medium"
                 android:textSize="@dimen/text_regular_2x" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <org.mmtextview.components.MMTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:background="@color/whiteFull"
-                android:text="Address"
+                android:text="Email"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_regular_2x" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
+                android:textSize="@dimen/text_regular" />
 
             <org.mmtextview.components.MMTextView
                 android:id="@+id/tvEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/round_rect_primary_line"
-                android:paddingLeft="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
+                android:padding="@dimen/margin_medium"
                 android:textSize="@dimen/text_regular_2x" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <org.mmtextview.components.MMTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:background="@color/whiteFull"
-                android:text="Email"
+                android:text="Township"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_regular_2x" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
+                android:textSize="@dimen/text_regular" />
 
             <org.mmtextview.components.MMTextView
                 android:id="@+id/tvTownShip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/round_rect_primary_line"
-                android:paddingLeft="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
+                android:padding="@dimen/margin_medium"
                 android:textSize="@dimen/text_regular_2x" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <org.mmtextview.components.MMTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:background="@color/whiteFull"
-                android:text="Township"
+                android:text="Division"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_regular_2x" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
+                android:textSize="@dimen/text_regular" />
 
             <org.mmtextview.components.MMTextView
                 android:id="@+id/tvDivision"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/round_rect_primary_line"
-                android:paddingLeft="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
+                android:padding="@dimen/margin_medium"
                 android:textSize="@dimen/text_regular_2x" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <org.mmtextview.components.MMTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:background="@color/whiteFull"
-                android:text="Division"
+                android:text="Shopname"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_regular_2x" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
+                android:textSize="@dimen/text_regular" />
 
             <org.mmtextview.components.MMTextView
                 android:id="@+id/tvShopName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:background="@drawable/round_rect_primary_line"
-                android:paddingLeft="5dp"
-                android:paddingTop="10dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
+                android:padding="@dimen/margin_medium"
                 android:textSize="@dimen/text_regular_2x" />
 
-            <org.mmtextview.components.MMTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@color/whiteFull"
-                android:text="Shopname"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_regular_2x" />
-        </RelativeLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

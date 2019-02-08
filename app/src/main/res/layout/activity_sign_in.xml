@@ -78,7 +78,7 @@
             android:hint="@string/userName"
             android:textSize="@dimen/text_regular_2x"
             android:maxLines="1"
-            android:text="IBA-muV2i1002"/>
+            android:text=""/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -95,7 +95,7 @@
             android:hint="@string/password"
             android:textSize="@dimen/text_regular_2x"
             android:maxLines="1"
-            android:text="11111111"
+            android:text=""
             android:inputType="textPassword"/>
     </android.support.design.widget.TextInputLayout>
 

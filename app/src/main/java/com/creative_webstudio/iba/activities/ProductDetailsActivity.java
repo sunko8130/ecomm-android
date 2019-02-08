@@ -337,7 +337,7 @@ public class ProductDetailsActivity extends BaseActivity {
 //                quantity=700;
                 selectedItem = i;
                 tvQuantity.setText(String.valueOf(quantity));
-                String s = String.format("%,.2f", orderUnitVOList.get(i).getPricePerUnit() * quantity);
+                String s = String.format("%,.2f", orderUnitVOList.get(i).getPricePerUnit());
                 tvPrice.setText(s + " MMK");
 //                setUpPromo();
                 updatePromo(orderUnitVOList.get(i).getId());
@@ -368,8 +368,6 @@ public class ProductDetailsActivity extends BaseActivity {
             if (productVO.getHasPromotion()) {
                 updatePromo(orderUnitVOList.get(selectedItem).getId());
             }
-            String s = String.format("$%,.2f", orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity);
-            tvPrice.setText(s + " MMK");
         });
 
         ivMinus.setOnClickListener(view -> {
@@ -387,8 +385,6 @@ public class ProductDetailsActivity extends BaseActivity {
             if (productVO.getHasPromotion()) {
                 updatePromo(orderUnitVOList.get(selectedItem).getId());
             }
-            String s = String.format("$%,.2f", orderUnitVOList.get(selectedItem).getPricePerUnit() * quantity);
-            tvPrice.setText(s + " MMK");
         });
     }
 

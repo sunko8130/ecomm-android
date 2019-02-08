@@ -167,7 +167,7 @@ public class OrderItemsActivity extends BaseActivity {
                     canUpdate = false;
                     final AlertDialog.Builder builder = new AlertDialog.Builder(OrderItemsActivity.this);
                     builder.setTitle("Success");
-                    builder.setMessage("Your order update is success!");
+                    builder.setMessage("Your order cancel is success!");
                     builder.setPositiveButton("Ok", (dialog, which) -> {
                         dialog.dismiss();
                         disableCancel();

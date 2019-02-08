@@ -18,7 +18,7 @@
             <RelativeLayout
                 android:id="@+id/rl_viewpager"
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="250dp">
 
                 <cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager
                     android:id="@+id/view_pager"

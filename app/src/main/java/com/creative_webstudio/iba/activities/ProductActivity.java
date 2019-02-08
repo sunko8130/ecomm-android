@@ -114,6 +114,10 @@ public class ProductActivity extends BaseDrawerActivity {
     @BindView(R.id.nestedScroll)
     NestedScrollView nestedScrollView;
 
+    @Nullable
+    @BindView(R.id.rl_viewpager)
+    RelativeLayout rlViewPager;
+
     private ProductAdapter mProductAdapter;
     private CirclePageIndicator titlePageIndicator;
 
@@ -178,7 +182,7 @@ public class ProductActivity extends BaseDrawerActivity {
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
 //            categoryId = -2;
-//            checkedItem = 0;∂
+//            checkedItem = 0;
 //            btnProduct.setText(items[0]);
             refreshData();
         });
@@ -205,22 +209,23 @@ public class ProductActivity extends BaseDrawerActivity {
 //                }
 //            }
 //        });
-        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (v.getChildAt(v.getChildCount() - 1) != null) {
-                    if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
-                            scrollY > oldScrollY) {
-                        int visibleItemCount = layoutManager.getChildCount();
-                        int totalItemCount = layoutManager.getItemCount();
-                        int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
-
-                        if (!mIsLoading) {
-                            mIsLoading = true;
-                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                                aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
-                                getProduct(mCurrentPage, categoryId);
-                            }
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY == 0) {
+                scrollTop=true;
+            }else {
+                scrollTop=false;
+            }
+            if (v.getChildAt(v.getChildCount() - 1) != null) {
+                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                        scrollY > oldScrollY) {
+                    int visibleItemCount = layoutManager.getChildCount();
+                    int totalItemCount = layoutManager.getItemCount();
+                    int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                    if (!mIsLoading) {
+                        mIsLoading = true;
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
+                            getProduct(mCurrentPage, categoryId);
                         }
                     }
                 }
@@ -279,9 +284,11 @@ public class ProductActivity extends BaseDrawerActivity {
                         if (errorCode == 401) {
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
-                            AdvertisementVO advertisementVO = new AdvertisementVO();
-                            mAdvertisementList.add(advertisementVO);
-                            setupViewPager(mAdvertisementList);
+                            //to show placeholder if no ad
+//                            AdvertisementVO advertisementVO = new AdvertisementVO();
+//                            mAdvertisementList.add(advertisementVO);
+//                            setupViewPager(mAdvertisementList);
+                            rlViewPager.setVisibility(View.GONE);
                             getCategory();
                             // TODO: Server response successful but there is no data (Empty response).
                         } else if (errorCode == 200) {
@@ -403,7 +410,7 @@ public class ProductActivity extends BaseDrawerActivity {
                     if (mCurrentPage == 1) {
 //                        expand();
                     }
-                    categoryId = (int) productCategoryId;
+//                    categoryId = (int) productCategoryId;
                     mCurrentPage++;
                     mIsLoading = false;
                     List<ProductVO> list = new ArrayList<>();
@@ -576,7 +583,11 @@ public class ProductActivity extends BaseDrawerActivity {
     @Override
     public void onBackPressed() {
         if (!scrollTop) {
-            layoutManager.smoothScrollToPosition(rvProduct, null, 0);
+            nestedScrollView.fling(0);
+            nestedScrollView.smoothScrollTo(0, 0);
+//            nestedScrollView.fullScroll(View.FOCUS_UP);
+//            nestedScrollView.scrollTo(0, 0);
+//            layoutManager.smoothScrollToPosition(rvProduct, null, 0);
 //            expand();
         } else {
             super.onBackPressed();
