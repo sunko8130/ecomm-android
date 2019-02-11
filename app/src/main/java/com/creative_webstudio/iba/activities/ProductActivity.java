@@ -3,6 +3,7 @@ package com.creative_webstudio.iba.activities;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -166,7 +167,11 @@ public class ProductActivity extends BaseDrawerActivity {
         mAdvertisementList = new ArrayList<>();
 //        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Products.Please wait!");
         // TODO: specify the span count in res directory for phone and tablet size.
-        layoutManager = new GridLayoutManager(this, 2);
+        if(isTablet(this)){
+            layoutManager = new GridLayoutManager(this, 3);
+        }else {
+            layoutManager = new GridLayoutManager(this, 2);
+        }
         rvProduct.setLayoutManager(layoutManager);
         rvProduct.setAdapter(mProductAdapter);
         mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
@@ -641,5 +646,11 @@ public class ProductActivity extends BaseDrawerActivity {
                     Uri.parse(url),
                     new WebViewFallback());
         }
+    }
+
+    public boolean isTablet(Context context) {
+        boolean xlarge = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == 4);
+        boolean large = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
+        return (xlarge || large);
     }
 }
