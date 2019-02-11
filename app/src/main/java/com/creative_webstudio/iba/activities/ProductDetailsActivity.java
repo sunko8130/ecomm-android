@@ -4,13 +4,17 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,9 +26,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.MyOnPageChangeListener;
 import com.creative_webstudio.iba.R;
@@ -33,6 +40,7 @@ import com.creative_webstudio.iba.adapters.DetailBannerAdapter;
 import com.creative_webstudio.iba.adapters.PromoAdapter;
 import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
+import com.creative_webstudio.iba.components.TouchImageView;
 import com.creative_webstudio.iba.datas.criterias.PromoRewardDetailCriteria;
 import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
 import com.creative_webstudio.iba.datas.vos.CartVO;
@@ -46,6 +54,8 @@ import com.creative_webstudio.iba.networks.viewmodels.ProductViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
+import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
+import com.github.piasy.biv.view.BigImageView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -111,6 +121,13 @@ public class ProductDetailsActivity extends BaseActivity {
     @BindView(R.id.view_pager)
     AutoScrollViewPager viewPager;
 
+    //photo view
+    @BindView(R.id.rl_viewpager)
+    RelativeLayout rlViewPager;
+
+    @BindView(R.id.photo_view_pager)
+    ViewPager photoViewPager;
+
     private DetailAdapter mDetailAdapter;
 
     private PromoAdapter mPromoAdapter;
@@ -147,6 +164,9 @@ public class ProductDetailsActivity extends BaseActivity {
     //fro promo
     List<PromoRewardDetailCriteria> promoCriteriaList;
 
+    List<Long> list;
+    Context context;
+
     public static Intent newIntent(Context context, String backActivity) {
         Intent intent = new Intent(context, ProductDetailsActivity.class);
         intent.putExtra("BackActivity", backActivity);
@@ -168,7 +188,7 @@ public class ProductDetailsActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
+        context = this;
         loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Product Detail.Please wait!");
         mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
         mDetailAdapter = new DetailAdapter(this);
@@ -198,12 +218,15 @@ public class ProductDetailsActivity extends BaseActivity {
             }
             orderUnitVOList = productVO.getOrderUnits();
             tvPrice.setText(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit()) + " MMK");
+            list = new ArrayList<>();
             setupViewPager();
-//            if (!productVO.getThumbnailIdsList().isEmpty()) {
+//            appBarLayout.setOnClickListener(v -> {
+//                bigImageView.setVisibility(View.VISIBLE);
+//                Toast.makeText(this, "View", Toast.LENGTH_SHORT).show();
 //                GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(), productVO.getThumbnailIdsList().get(0));
-//                Glide.with(this).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(ivDetailTopImage);
-//            }
-            if (productVO.getProductDetailsVo()!=null && productVO.getProductDetailsVo().getValueList() != null) {
+//                Glide.with(context).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(bigImageView);
+//            });
+            if (productVO.getProductDetailsVo() != null && productVO.getProductDetailsVo().getValueList() != null) {
                 mDetailAdapter.setNewData(productVO.getProductDetailsVo().getValueList());
             }
             if (productVO.getHasPromotion()) {
@@ -235,13 +258,12 @@ public class ProductDetailsActivity extends BaseActivity {
     }
 
     private void setupViewPager() {
-        List<Long> list=new ArrayList<>();
-        if(productVO.getThumbnailIdsList()==null || productVO.getThumbnailIdsList().isEmpty()){
+        if (productVO.getThumbnailIdsList() == null || productVO.getThumbnailIdsList().isEmpty()) {
             list.add((long) 0);
-        }else {
-            list=productVO.getThumbnailIdsList();
+        } else {
+            list = productVO.getThumbnailIdsList();
         }
-        DetailBannerAdapter adapter = new DetailBannerAdapter(this.getSupportFragmentManager(), list);
+        DetailBannerAdapter adapter = new DetailBannerAdapter(this.getSupportFragmentManager(), list, 1);
         if (viewPager != null) {
             viewPager.setAdapter(adapter);
             viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
@@ -251,7 +273,22 @@ public class ProductDetailsActivity extends BaseActivity {
             titlePageIndicator.setViewPager(viewPager);
             titlePageIndicator.setSnap(true);
         }
+    }
 
+    public void clickViewPager() {
+        if (productVO.getThumbnailIdsList() == null || productVO.getThumbnailIdsList().isEmpty()) {
+            Toast.makeText(context, "No photo to Display", Toast.LENGTH_SHORT).show();
+        } else {
+            btnAddToCart.setVisibility(View.GONE);
+            rlViewPager.setVisibility(View.VISIBLE);
+            DetailBannerAdapter adapter = new DetailBannerAdapter(this.getSupportFragmentManager(), list, 2);
+            if (photoViewPager != null) {
+                photoViewPager.setAdapter(adapter);
+            }
+        }
+//        Toast.makeText(this, "View", Toast.LENGTH_SHORT).show();
+//        GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(), productVO.getThumbnailIdsList().get(0));
+//        Glide.with(context).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(bigImageView);
     }
 
     private void getPromoDetail(List<PromoRewardDetailCriteria> criteria) {
@@ -430,10 +467,10 @@ public class ProductDetailsActivity extends BaseActivity {
     }
 
     public void updatePromo(long promoId) {
-        for(PromoRewardVO promoRewardVO:promoRewardVOList){
-            if(promoRewardVO.getUnitId().equals(promoId)){
+        for (PromoRewardVO promoRewardVO : promoRewardVOList) {
+            if (promoRewardVO.getUnitId().equals(promoId)) {
                 promoRewardVO.setQuantity(quantity);
-            }else {
+            } else {
                 promoRewardVO.setQuantity(1);
             }
         }
@@ -505,7 +542,12 @@ public class ProductDetailsActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (rlViewPager.getVisibility() == View.VISIBLE) {
+            rlViewPager.setVisibility(View.GONE);
+            btnAddToCart.setVisibility(View.VISIBLE);
+        } else {
+            super.onBackPressed();
+        }
     }
 
 

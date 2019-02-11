@@ -13,22 +13,19 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
-import com.creative_webstudio.iba.activities.ProductActivity;
 import com.creative_webstudio.iba.activities.ProductDetailsActivity;
-import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
-import com.google.gson.Gson;
 
 
-public class FragmentDetailBanner extends Fragment {
+public class FragmentPhotoView extends Fragment {
 
     ImageView ivImage;
     IBAPreferenceManager mIbaShared;
     Context mContext;
     Long imageId;
-    public static FragmentDetailBanner newInstance(Long imageId) {
-        FragmentDetailBanner fragment = new FragmentDetailBanner();
+    public static FragmentPhotoView newInstance(Long imageId) {
+        FragmentPhotoView fragment = new FragmentPhotoView();
         Bundle args = new Bundle();
         args.putLong("imageId", imageId);
         fragment.setArguments(args);
@@ -46,7 +43,7 @@ public class FragmentDetailBanner extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_detail_banner, container, false);
+        View view = inflater.inflate(R.layout.fragment_photo_view, container, false);
         ivImage = view.findViewById(R.id.ivImage);
         if (imageId != 0) {
             GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(), imageId);
@@ -56,9 +53,6 @@ public class FragmentDetailBanner extends Fragment {
                     .load(glideUrl)
                     .into(ivImage);
         }
-        ivImage.setOnClickListener(v -> {
-            ((ProductDetailsActivity) mContext).clickViewPager();
-        });
         return view;
     }
 
