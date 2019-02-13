@@ -1,6 +1,7 @@
 package com.creative_webstudio.iba.fragments;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,11 +17,12 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.activities.ProductDetailsActivity;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
+import com.github.chrisbanes.photoview.PhotoView;
 
 
 public class FragmentPhotoView extends Fragment {
 
-    ImageView ivImage;
+    PhotoView ivImage;
     IBAPreferenceManager mIbaShared;
     Context mContext;
     Long imageId;
@@ -47,6 +49,7 @@ public class FragmentPhotoView extends Fragment {
         ivImage = view.findViewById(R.id.ivImage);
         if (imageId != 0) {
             GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(), imageId);
+//            ivImage.showImage( Uri.parse(glideUrl.toStringUrl()));
             Glide.with(ivImage.getContext())
                     .asBitmap()
                     .apply(LoadImage.getOption())

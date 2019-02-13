@@ -21,8 +21,6 @@ import com.creative_webstudio.iba.networks.ServiceGenerator;
 import com.creative_webstudio.iba.utils.AppConstants;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -152,14 +150,17 @@ public class IbaModel extends BaseModel {
                     public void onError(Throwable e) {
                         //network error
                         if (e instanceof IOException) {
-                            TokenEvent event = new TokenEvent(AppConstants.ERROR_IOEXCEPTION);
-                            EventBus.getDefault().post(event);
+//                            TokenEvent event = new TokenEvent(AppConstants.ERROR_IOEXCEPTION);
+//                            EventBus.getDefault().post(event);
+                            mResponseCode.setValue(AppConstants.ERROR_IOEXCEPTION);
                         } else if (e instanceof NetworkErrorException) {
-                            TokenEvent event = new TokenEvent(AppConstants.ERROR_NETWORK);
-                            EventBus.getDefault().post(event);
+//                            TokenEvent event = new TokenEvent(AppConstants.ERROR_NETWORK);
+//                            EventBus.getDefault().post(event);
+                            mResponseCode.setValue(AppConstants.ERROR_IOEXCEPTION);
                         } else {
-                            TokenEvent event = new TokenEvent(AppConstants.ERROR_UNKNOWN);
-                            EventBus.getDefault().post(event);
+//                            TokenEvent event = new TokenEvent(AppConstants.ERROR_UNKNOWN);
+//                            EventBus.getDefault().post(event);
+                            mResponseCode.setValue(AppConstants.ERROR_IOEXCEPTION);
                         }
                         Log.e("auth", "onError: " + e.getMessage());
                         Log.e("auth", "onError: " + e.getLocalizedMessage());
@@ -175,111 +176,111 @@ public class IbaModel extends BaseModel {
 
 
 
-    public void getTokenByRefresh() {
-        String refreshToken = ibaPreference.fromPreference("RefreshToken", "");
-        String base = AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET;
-        String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        theApi.getTokenByRefresh(userAuth, refreshToken, "refresh_token")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<TokenVO>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+//    public void getTokenByRefresh() {
+//        String refreshToken = ibaPreference.fromPreference("RefreshToken", "");
+//        String base = AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET;
+//        String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+//        theApi.getTokenByRefresh(userAuth, refreshToken, "refresh_token")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<Response<TokenVO>>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Response<TokenVO> response) {
+//                        if (response.code() == 200) {
+//                            Log.e("auth", "onNext: " + response.code());
+//                            TokenVO tokenVO = response.body();
+//                            ibaPreference.toPreference("AccessToken", tokenVO.getAccessToken());
+//                            ibaPreference.toPreference("RefreshToken", tokenVO.getRefreshToken());
+//                            TokenEvent event = new TokenEvent(response.code());
+//                            EventBus.getDefault().post(event);
+//
+//                        } else if (response.code() == AppConstants.ERROR_NODATA) {
+//                            //no data
+//                            TokenEvent event = new TokenEvent(response.code());
+//                            EventBus.getDefault().post(event);
+//                        } else {
+//                            TokenEvent event = new TokenEvent(AppConstants.ERROR_ACCESSTOKEN);
+//                            EventBus.getDefault().post(event);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        //network error
+//                        if (e instanceof IOException) {
+//                            TokenEvent event = new TokenEvent(AppConstants.ERROR_IOEXCEPTION);
+//                            EventBus.getDefault().post(event);
+//                        } else if (e instanceof NetworkErrorException) {
+//                            TokenEvent event = new TokenEvent(AppConstants.ERROR_NETWORK);
+//                            EventBus.getDefault().post(event);
+//                        } else {
+//                            TokenEvent event = new TokenEvent(AppConstants.ERROR_UNKNOWN);
+//                            EventBus.getDefault().post(event);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+//    }
 
-                    }
-
-                    @Override
-                    public void onNext(Response<TokenVO> response) {
-                        if (response.code() == 200) {
-                            Log.e("auth", "onNext: " + response.code());
-                            TokenVO tokenVO = response.body();
-                            ibaPreference.toPreference("AccessToken", tokenVO.getAccessToken());
-                            ibaPreference.toPreference("RefreshToken", tokenVO.getRefreshToken());
-                            TokenEvent event = new TokenEvent(response.code());
-                            EventBus.getDefault().post(event);
-
-                        } else if (response.code() == AppConstants.ERROR_NODATA) {
-                            //no data
-                            TokenEvent event = new TokenEvent(response.code());
-                            EventBus.getDefault().post(event);
-                        } else {
-                            TokenEvent event = new TokenEvent(AppConstants.ERROR_ACCESSTOKEN);
-                            EventBus.getDefault().post(event);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        //network error
-                        if (e instanceof IOException) {
-                            TokenEvent event = new TokenEvent(AppConstants.ERROR_IOEXCEPTION);
-                            EventBus.getDefault().post(event);
-                        } else if (e instanceof NetworkErrorException) {
-                            TokenEvent event = new TokenEvent(AppConstants.ERROR_NETWORK);
-                            EventBus.getDefault().post(event);
-                        } else {
-                            TokenEvent event = new TokenEvent(AppConstants.ERROR_UNKNOWN);
-                            EventBus.getDefault().post(event);
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    public void getProductSearchList(final ProductCriteria criteriaVO, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
-        String base = ibaPreference.fromPreference("AccessToken", "");
-        String userAuth = "Bearer " + base;
-        theApiProductSearch.getProductSearch(userAuth, criteriaVO)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Response<List<ProductVO>>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Response<List<ProductVO>> listResponse) {
-                        if (listResponse.code() == 401) {
-                            getTokenByRefresh();
-                        } else if (listResponse.code() == 200) {
-                            Log.e("auth", "getProductSearch onNext: " + listResponse.body().size());
-                            productSearList.setValue(listResponse.body());
-                        } else if (listResponse.code() == 204) {
-                            //no data
-                            responseCode.setValue(listResponse.code());
-                            Log.e("auth", "noData: " + listResponse.code());
-                        } else {
-                            responseCode.setValue(300);
-                            Log.e("auth", "severError: " + listResponse.code());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        //network error
-                        if (e instanceof IOException) {
-                            responseCode.setValue(666);
-                        } else if (e instanceof NetworkErrorException) {
-                            responseCode.setValue(777);
-                        } else {
-                            responseCode.setValue(888);
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-
-
-                });
-
-    }
+//    public void getProductSearchList(final ProductCriteria criteriaVO, final MutableLiveData<List<ProductVO>> productSearList, final MutableLiveData<Integer> responseCode) {
+//        String base = ibaPreference.fromPreference("AccessToken", "");
+//        String userAuth = "Bearer " + base;
+//        theApiProductSearch.getProductSearch(userAuth, criteriaVO)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<Response<List<ProductVO>>>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Response<List<ProductVO>> listResponse) {
+//                        if (listResponse.code() == 401) {
+//                            getTokenByRefresh();
+//                        } else if (listResponse.code() == 200) {
+//                            Log.e("auth", "getProductSearch onNext: " + listResponse.body().size());
+//                            productSearList.setValue(listResponse.body());
+//                        } else if (listResponse.code() == 204) {
+//                            //no data
+//                            responseCode.setValue(listResponse.code());
+//                            Log.e("auth", "noData: " + listResponse.code());
+//                        } else {
+//                            responseCode.setValue(300);
+//                            Log.e("auth", "severError: " + listResponse.code());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        //network error
+//                        if (e instanceof IOException) {
+//                            responseCode.setValue(666);
+//                        } else if (e instanceof NetworkErrorException) {
+//                            responseCode.setValue(777);
+//                        } else {
+//                            responseCode.setValue(888);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//
+//
+//                });
+//
+//    }
 
 
 

@@ -1,0 +1,721 @@
+{
+	"info": {
+		"_postman_id": "5643f53c-78ec-4d42-893c-dbe1095a6523",
+		"name": "IBA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Refresh and Access Token",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "iba-mobile",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "IBAmobile@cws$S3c43T",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "68.183.239.3:8581/iba-uae/oauth/token?username=IBA-muV2i1002&password=11111111&grant_type=password",
+					"host": [
+						"68",
+						"183",
+						"239",
+						"3"
+					],
+					"port": "8581",
+					"path": [
+						"iba-uae",
+						"oauth",
+						"token"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "IBA-muV2i1002"
+						},
+						{
+							"key": "password",
+							"value": "11111111"
+						},
+						{
+							"key": "grant_type",
+							"value": "password"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Access Token using RefreshToken",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "iba-mobile",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "IBAmobile@cws$S3c43T",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "192.168.100.26:8281/iba-uae/oauth/token?refresh_token=161993b9-8f1f-442d-9b0f-2b40b4a8c052&grant_type=refresh_token",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"26"
+					],
+					"port": "8281",
+					"path": [
+						"iba-uae",
+						"oauth",
+						"token"
+					],
+					"query": [
+						{
+							"key": "refresh_token",
+							"value": "161993b9-8f1f-442d-9b0f-2b40b4a8c052"
+						},
+						{
+							"key": "grant_type",
+							"value": "refresh_token"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Products Main Paging",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "4aeb0047-3736-4f2d-9bf1-b876416bccc9",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"withThumbnail\":true,\n\t\"thumbnail\": {\"thumbnailType\":1},\n\t\"pageNumber\":1,\n\t\"withOrderUnit\": true,\n\t\"withDetail\": true,\n\t\"orderUnit\":{\"withPromoReward\":true},\n\t\"hasPromotion\":false\n}"
+				},
+				"url": {
+					"raw": "192.168.100.111:8282/iba-api/api/product/search/paging?",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"111"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"product",
+						"search",
+						"paging"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "20",
+							"disabled": true
+						},
+						{
+							"key": "offset",
+							"value": "0",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product by ID Array",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "b568acd4-03b2-4b0f-a592-8dc649f93c1e",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"includeIds\":[3999,2000]\n}"
+				},
+				"url": {
+					"raw": "192.168.100.100:8282/iba-api/api/product/search/list",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"100"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"product",
+						"search",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order Unit by productId",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "b568acd4-03b2-4b0f-a592-8dc649f93c1e",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"productId\": 1000\n}"
+				},
+				"url": {
+					"raw": "192.168.100.100:8282/iba-api/api/order_unit/search/list",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"100"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"order_unit",
+						"search",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "2c65ce3a-3c17-4d14-990d-3faa942c756a",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Customer 86\",\n    \"address\": \"No(777), 1st quarter, Thitsar Street\",\n    \"phone\": \"09-blahblah\",\n    \"division\": \"MMRO13\",\n    \"township\": \"MMR013046\",\n    \"shopName\": null,\n    \"email\": null\n}"
+				},
+				"url": {
+					"raw": "192.168.100.24:8282/iba-api/api/customer/me",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"24"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"customer",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Profile",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "e4b8b691-e4b7-4225-8b8f-7829480541d3",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "192.168.100.111:8282/iba-api/api/customer/me",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"111"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"customer",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRegion",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "2c65ce3a-3c17-4d14-990d-3faa942c756a",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "192.168.100.24:8282/iba-api/api/mm_map/state_region",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"24"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"mm_map",
+						"state_region"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getTownShip",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "2c65ce3a-3c17-4d14-990d-3faa942c756a",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "192.168.100.24:8282/iba-api/api/mm_map/township?stateRegionCode=MMR012",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"24"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"mm_map",
+						"township"
+					],
+					"query": [
+						{
+							"key": "stateRegionCode",
+							"value": "MMR012"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAdvertisment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "f49fd5a0-446a-4fdb-94a7-e652ce339ca9",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\n}"
+				},
+				"url": {
+					"raw": "192.168.100.100:8282/iba-api/api/advertisement/search/list",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"100"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"advertisement",
+						"search",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getPromoDetail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "1e71366e-bcc5-4c79-9c5c-67092091c258",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"orderUnitId\":1018,\n\t\"promoRewardId\":1010,\n\t\"withOrderUnit\":true\n\t\n}"
+				},
+				"url": {
+					"raw": "192.168.100.100:8282/iba-api/api/promo_reward_detail/search/list",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"100"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"promo_reward_detail",
+						"search",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getOrderItem",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "259a5edb-e921-467f-9e87-b7b0914a53fe",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"includeIds\": [1002,1001],\n\t\"withOrderUnit\" : true,\n\t\"withProduct\" : true,\n\t\"product\":{\"withThumbnail\":true,\"thumbnail\": {\"thumbnailType\":1}}\n}"
+				},
+				"url": {
+					"raw": "192.168.100.100:8282/iba-api/api/order_item/search/list",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"100"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"order_item",
+						"search",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getOrderPaging",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "ad33d3ec-b446-4d36-ac70-0323b848b0b5",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"orderBy\":\"id\",\n\t\"withOrderItem\":true,\n\t\"pageNumber\":null\n}"
+				},
+				"url": {
+					"raw": "192.168.100.111:8282/iba-api/api/order/search/paging",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"111"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"order",
+						"search",
+						"paging"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updatePassword",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "f46225d8-8fb4-40da-903a-20d1deea3640",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "192.168.100.111:8282/iba-api/api/customer/me/change_password?oldPassword=55555&newPassword=IBA-MG0tu1002P@ssw0rd",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"111"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"customer",
+						"me",
+						"change_password"
+					],
+					"query": [
+						{
+							"key": "oldPassword",
+							"value": "55555"
+						},
+						{
+							"key": "newPassword",
+							"value": "IBA-MG0tu1002P@ssw0rd"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "192.168.100.111:8282/iba-api/api/promo_reward_detail/search/applied_rewards",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "e06753a3-0615-49c2-9150-28841fbf5424",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\t{\n\t\t\"orderUnitId\":1393,\n\t\t\"promoRewardId\":1007\n\t},\n\t{\n\t\t\"orderUnitId\":1393,\n\t\t\"promoRewardId\":1009\n\t},\n\t{\n\t\t\"orderUnitId\":1393,\n\t\t\"promoRewardId\":1010\n\t},\n\t{\n\t\t\"orderUnitId\":1393,\n\t\t\"promoRewardId\":1011\n\t}\n]"
+				},
+				"url": {
+					"raw": "192.168.100.111:8282/iba-api/api/promo_reward_detail/search/applied_rewards",
+					"host": [
+						"192",
+						"168",
+						"100",
+						"111"
+					],
+					"port": "8282",
+					"path": [
+						"iba-api",
+						"api",
+						"promo_reward_detail",
+						"search",
+						"applied_rewards"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

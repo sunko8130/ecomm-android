@@ -4,10 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.mvp.views.BaseView;
-
-import org.greenrobot.eventbus.EventBus;
 
 public abstract class BasePresenter<T extends BaseView> extends ViewModel {
 

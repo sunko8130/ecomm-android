@@ -21,12 +21,31 @@
 #-renamesourcefileattribute SourceFile
 
 # OkHttp
--dontnote retrofit2.Platform
--dontwarn retrofit2.Platform$Java8adapters.
--keepattributes Signature
--keepattributes Exceptions
--dontwarn org.xmlpull.v1.**
--dontwarn okhttp3.**
--dontwarn okio.**
+#-dontnote retrofit2.Platform
+#-dontwarn retrofit2.Platform$Java8adapters.
+#-keepattributes Signature
+#-keepattributes Exceptions
+#-dontwarn org.xmlpull.v1.**
+#-ignorewarnings
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+-keepattributes Signature, InnerClasses, EnclosingMethod
+-keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
+-keepclassmembers,allowshrinking,allowobfuscation interface * {
+    @retrofit2.http.* <methods>;
+}
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn javax.annotation.**
--dontwarn retrofit2.Platform$Java8
+-dontwarn kotlin.Unit
+-dontwarn retrofit2.-KotlinExtensions
+-if interface * { @retrofit2.http.* <methods>; }
+-keep,allowobfuscation interface <1>
+
+-dontwarn okhttp3.internal.platform.*
+
+-keep class com.creative_webstudio.iba.datas.** { *; }

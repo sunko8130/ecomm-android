@@ -324,7 +324,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             CartShowVO cartShowVO = new CartShowVO();
             cartShowVO.setProductName(tempProduct.getProductName());
             cartShowVO.setItemQuantity(cartVOList.get(i).getQuantity());
-            if (!tempProduct.getThumbnailIdsList().isEmpty()) {
+            if (tempProduct.getThumbnailIdsList()!=null || !tempProduct.getThumbnailIdsList().isEmpty()) {
                 cartShowVO.setThumbnailId(tempProduct.getThumbnailIdsList().get(0));
             }
             if (tempProduct.getHasPromotion()) {

@@ -41,6 +41,7 @@ import com.creative_webstudio.iba.adapters.PromoAdapter;
 import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
 import com.creative_webstudio.iba.components.TouchImageView;
+import com.creative_webstudio.iba.components.ViewPagerFixed;
 import com.creative_webstudio.iba.datas.criterias.PromoRewardDetailCriteria;
 import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
 import com.creative_webstudio.iba.datas.vos.CartVO;
@@ -53,9 +54,6 @@ import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.ProductViewModel;
 import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
-import com.creative_webstudio.iba.utils.LoadImage;
-import com.github.piasy.biv.indicator.progresspie.ProgressPieIndicator;
-import com.github.piasy.biv.view.BigImageView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -126,7 +124,7 @@ public class ProductDetailsActivity extends BaseActivity {
     RelativeLayout rlViewPager;
 
     @BindView(R.id.photo_view_pager)
-    ViewPager photoViewPager;
+    ViewPagerFixed photoViewPager;
 
     private DetailAdapter mDetailAdapter;
 
@@ -216,7 +214,9 @@ public class ProductDetailsActivity extends BaseActivity {
             if (productVO.getDescription() != null) {
                 tvItemContent.setText(productVO.getDescription());
             }
-            orderUnitVOList = productVO.getOrderUnits();
+            if(productVO.getOrderUnits()!=null) {
+                orderUnitVOList = productVO.getOrderUnits();
+            }
             tvPrice.setText(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit()) + " MMK");
             list = new ArrayList<>();
             setupViewPager();
@@ -542,7 +542,7 @@ public class ProductDetailsActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (rlViewPager.getVisibility() == View.VISIBLE) {
+        if (btnAddToCart.getVisibility() == View.GONE) {
             rlViewPager.setVisibility(View.GONE);
             btnAddToCart.setVisibility(View.VISIBLE);
         } else {

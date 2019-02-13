@@ -7,8 +7,6 @@ import android.arch.lifecycle.MutableLiveData;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.mvp.views.ProductView;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.List;
 
 public class ProductPresenter extends BasePresenter<ProductView> {
@@ -31,12 +29,5 @@ public class ProductPresenter extends BasePresenter<ProductView> {
 
     public LiveData<List<ProductVO>> getProductList() {
         return mProductList;
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        EventBus eventBus = EventBus.getDefault();
-        eventBus.unregister(this);
     }
 }
