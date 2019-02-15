@@ -32,6 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     //FirebaseAnalytics
     FirebaseAnalytics mFirebaseAnalytics;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         String refreshToken = prefs.fromPreference("RefreshToken", "");
         String base = AppConstants.CLIENT_ID + ":" + AppConstants.CLIENT_SECRET;
         String userAuth = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
+        IbaAPI api = ServiceGenerator.createSignInService(IbaAPI.class);
         api.getTokenByRefresh(userAuth, refreshToken, "refresh_token")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -73,7 +74,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
-
+        TokenVO tokenVO = (TokenVO) response.body();
+        IBAPreferenceManager prefs = new IBAPreferenceManager(this);
+        prefs.toPreference("AccessToken", tokenVO.getAccessToken());
+        prefs.toPreference("RefreshToken", tokenVO.getRefreshToken());
+        finish();
+        startActivity(getIntent());
     }
     public void onAccessTokenRefreshFailure(Throwable t) {
         if (t instanceof ApiException) {

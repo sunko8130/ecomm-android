@@ -464,10 +464,10 @@ public class ProductActivity extends BaseDrawerActivity {
         }
     }
 
-    @Override
-    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
-        getProduct(mCurrentPage, categoryId);
-    }
+//    @Override
+//    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
+//        getProduct(mCurrentPage, categoryId);
+//    }
 
     @Override
     public void onAccessTokenRefreshFailure(Throwable t) {

@@ -275,15 +275,23 @@ public class ProductDetailsActivity extends BaseActivity {
         }
     }
 
-    public void clickViewPager() {
+    public void clickViewPager(Long imageId) {
         if (productVO.getThumbnailIdsList() == null || productVO.getThumbnailIdsList().isEmpty()) {
             Toast.makeText(context, "No photo to Display", Toast.LENGTH_SHORT).show();
         } else {
             btnAddToCart.setVisibility(View.GONE);
             rlViewPager.setVisibility(View.VISIBLE);
+            int index = 0;
+            for(int i =0;i<productVO.getThumbnailIdsList().size();i++){
+                if(imageId.equals(productVO.getThumbnailIdsList().get(i))){
+                    index = i;
+                    break;
+                }
+            }
             DetailBannerAdapter adapter = new DetailBannerAdapter(this.getSupportFragmentManager(), list, 2);
             if (photoViewPager != null) {
                 photoViewPager.setAdapter(adapter);
+                photoViewPager.setCurrentItem(index);
             }
         }
 //        Toast.makeText(this, "View", Toast.LENGTH_SHORT).show();

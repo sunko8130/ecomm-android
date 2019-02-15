@@ -57,7 +57,7 @@ public class FragmentDetailBanner extends Fragment {
                     .into(ivImage);
         }
         ivImage.setOnClickListener(v -> {
-            ((ProductDetailsActivity) mContext).clickViewPager();
+            ((ProductDetailsActivity) mContext).clickViewPager(imageId);
         });
         return view;
     }
