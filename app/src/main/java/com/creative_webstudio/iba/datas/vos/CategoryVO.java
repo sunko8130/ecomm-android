@@ -11,7 +11,7 @@ public class CategoryVO {
     private Long parentCategoryId;
 
     @SerializedName("thumbnailId")
-    private Integer thumbnailId;
+    private Long thumbnailId;
 
     @SerializedName("name")
     private String name;
@@ -38,11 +38,11 @@ public class CategoryVO {
         this.parentCategoryId = parentCategoryId;
     }
 
-    public Integer getThumbnailId() {
+    public Long getThumbnailId() {
         return thumbnailId;
     }
 
-    public void setThumbnailId(Integer thumbnailId) {
+    public void setThumbnailId(Long thumbnailId) {
         this.thumbnailId = thumbnailId;
     }
 

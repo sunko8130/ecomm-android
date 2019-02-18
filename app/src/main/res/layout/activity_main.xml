@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.MainActivity">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nestedScroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/rl_viewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp">
+
+                    <cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager
+                        android:id="@+id/view_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.viewpagerindicator.CirclePageIndicator
+                        android:id="@+id/title_page_indicator"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:padding="@dimen/margin_medium"
+                        app:fillColor="@color/colorPrimary" />
+                </RelativeLayout>
+
+                <org.mmtextview.components.MMTextView
+                    android:id="@+id/header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_medium"
+                    android:text="Category :"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_regular_3x"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:id="@+id/ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.creative_webstudio.iba.components.SmartRecyclerView
+                        android:id="@+id/rv_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false" />
+
+                    <include
+                        android:id="@+id/vp_empty_product"
+                        layout="@layout/view_pod_empty"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/aniLoadMore"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/load_more_height"
+                        android:layout_alignBottom="@+id/rv_product"
+                        android:visibility="gone"
+                        app:lottie_autoPlay="true"
+                        app:lottie_colorFilter="@color/colorAccent"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/load_more" />
+
+                    <org.mmtextview.components.MMTextView
+                        android:id="@+id/tvNoMoreData"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/rv_product"
+                        android:gravity="center"
+                        android:text="No more Data"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/text_regular_2x"
+                        android:visibility="gone" />
+                </RelativeLayout>
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</android.support.design.widget.CoordinatorLayout>

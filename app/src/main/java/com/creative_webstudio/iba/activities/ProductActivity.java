@@ -546,16 +546,16 @@ public class ProductActivity extends BaseDrawerActivity {
     }
 
     private void setupViewPager(ArrayList<AdvertisementVO> mAdvertisementList) {
-        SectionPagerAdapter adapter = new SectionPagerAdapter(this.getSupportFragmentManager(), mAdvertisementList);
-        if (viewPager != null) {
-            viewPager.setAdapter(adapter);
-            viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
-            viewPager.setInterval(10000);
-            viewPager.startAutoScroll();
-            titlePageIndicator = findViewById(R.id.title_page_indicator);
-            titlePageIndicator.setViewPager(viewPager);
-            titlePageIndicator.setSnap(true);
-        }
+//        SectionPagerAdapter adapter = new SectionPagerAdapter(this.getSupportFragmentManager(), mAdvertisementList);
+//        if (viewPager != null) {
+//            viewPager.setAdapter(adapter);
+//            viewPager.addOnPageChangeListener(new MyOnPageChangeListener());
+//            viewPager.setInterval(10000);
+//            viewPager.startAutoScroll();
+//            titlePageIndicator = findViewById(R.id.title_page_indicator);
+//            titlePageIndicator.setViewPager(viewPager);
+//            titlePageIndicator.setSnap(true);
+//        }
 
     }
 

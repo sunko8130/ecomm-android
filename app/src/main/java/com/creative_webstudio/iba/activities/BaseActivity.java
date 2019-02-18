@@ -74,7 +74,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
-        TokenVO tokenVO = (TokenVO) response.body();
+        TokenVO tokenVO = response.body();
         IBAPreferenceManager prefs = new IBAPreferenceManager(this);
         prefs.toPreference("AccessToken", tokenVO.getAccessToken());
         prefs.toPreference("RefreshToken", tokenVO.getRefreshToken());
@@ -85,7 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (t instanceof ApiException) {
             // Server response with one of the HTTP error status code.
             int errorCode = ((ApiException) t).getErrorCode();
-            if (errorCode == 401) {
+            if (errorCode == 400 || errorCode == 401) {
                 // Refresh token is expired.
                 startActivity(new Intent(this, SignInActivity.class));
             } else {

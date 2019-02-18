@@ -68,7 +68,6 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
         @BindView(R.id.ivPromo)
         ImageView ivPromo;
 
-
         private ProductVO productVO;
 
         public ProductViewHolder(@NonNull View itemView) {

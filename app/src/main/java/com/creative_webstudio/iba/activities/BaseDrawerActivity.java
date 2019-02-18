@@ -234,7 +234,7 @@ public class BaseDrawerActivity extends BaseActivity {
             startActivity(ProductActivity.newIntent(this));
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
         } else */
-        if (this instanceof ProductActivity) {
+        if (this instanceof MainActivity) {
             if (doubleBackToExitPressedOnce) {
                 super.onBackPressed();
                 moveTaskToBack(true);

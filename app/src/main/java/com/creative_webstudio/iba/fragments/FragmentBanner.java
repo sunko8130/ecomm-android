@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
+import com.creative_webstudio.iba.activities.MainActivity;
 import com.creative_webstudio.iba.activities.ProductActivity;
 import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
@@ -91,7 +92,7 @@ public class FragmentBanner extends Fragment {
                     .into(ivImage);
         }
         ivImage.setOnClickListener(v -> {
-            ((ProductActivity) mContext).launchWebView(url);
+            ((MainActivity) mContext).launchWebView(url);
         });
         return view;
     }

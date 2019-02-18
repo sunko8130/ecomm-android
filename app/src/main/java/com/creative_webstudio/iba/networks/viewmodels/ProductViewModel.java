@@ -119,6 +119,34 @@ public class ProductViewModel extends AndroidViewModel {
         return result;
     }
 
+    public MutableLiveData<ApiResponse<List<CategoryVO>>> getSubCategory(Long categoryId) {
+        CategoryCriteria criteriaVO = new CategoryCriteria();
+        criteriaVO.setType("SUB");
+        criteriaVO.setParentCategoryId(categoryId);
+        MutableLiveData<ApiResponse<List<CategoryVO>>> result = new MutableLiveData<>();
+        ApiResponse<List<CategoryVO>> apiResponse = new ApiResponse();
+        IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
+        IBAPreferenceManager prefs = new IBAPreferenceManager(getApplication());
+        String accessToken = prefs.getAccessToken();
+        String userAuth = "Bearer " + accessToken;
+        api.getCategory(userAuth, criteriaVO)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    List<CategoryVO> body = response.body();
+                    if (response.isSuccessful() && body != null && !body.isEmpty()) {
+                        apiResponse.setData(body);
+                    } else {
+                        apiResponse.setError(new ApiException(response.code()));
+                    }
+                    result.setValue(apiResponse);
+                }, throwable -> {
+                    apiResponse.setError(new ApiException(throwable));
+                    result.setValue(apiResponse);
+                });
+        return result;
+    }
+
     public MutableLiveData<ApiResponse<List<AdvertisementVO>>> getAdvertisement() {
         AdvertisementCriteria criteria = new AdvertisementCriteria();
         MutableLiveData<ApiResponse<List<AdvertisementVO>>> result = new MutableLiveData<>();
