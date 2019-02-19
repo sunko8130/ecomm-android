@@ -101,6 +101,9 @@ public class ProductDetailsActivity extends BaseActivity {
     @BindView(R.id.tv_price)
     MMTextView tvPrice;
 
+    @BindView(R.id.tv_in_stock)
+    MMTextView tvInStock;
+
     @BindView(R.id.btn_addToCart)
     Button btnAddToCart;
 
@@ -214,7 +217,7 @@ public class ProductDetailsActivity extends BaseActivity {
             if (productVO.getDescription() != null) {
                 tvItemContent.setText(productVO.getDescription());
             }
-            if(productVO.getOrderUnits()!=null) {
+            if (productVO.getOrderUnits() != null) {
                 orderUnitVOList = productVO.getOrderUnits();
             }
             tvPrice.setText(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit()) + " MMK");
@@ -282,8 +285,8 @@ public class ProductDetailsActivity extends BaseActivity {
             btnAddToCart.setVisibility(View.GONE);
             rlViewPager.setVisibility(View.VISIBLE);
             int index = 0;
-            for(int i =0;i<productVO.getThumbnailIdsList().size();i++){
-                if(imageId.equals(productVO.getThumbnailIdsList().get(i))){
+            for (int i = 0; i < productVO.getThumbnailIdsList().size(); i++) {
+                if (imageId.equals(productVO.getThumbnailIdsList().get(i))) {
                     index = i;
                     break;
                 }
@@ -390,6 +393,15 @@ public class ProductDetailsActivity extends BaseActivity {
 //                    promoRewardVOList = orderUnitVOList.get(i).getPromoRewardVOList();
 //                    setUpPromo();
 //                }
+                if (maxQuantity < 1) {
+                    tvInStock.setText("Out of stock");
+                    tvInStock.setTextColor(ContextCompat.getColor(ProductDetailsActivity.this, R.color.redFull));
+                    btnAddToCart.setEnabled(false);
+                } else {
+                    tvInStock.setText("In Stock");
+                    tvInStock.setTextColor(ContextCompat.getColor(ProductDetailsActivity.this, R.color.limeGreen));
+                    btnAddToCart.setEnabled(true);
+                }
             }
 
             @Override
@@ -400,7 +412,7 @@ public class ProductDetailsActivity extends BaseActivity {
 
         ivPlus.setOnClickListener(view -> {
             if (quantity >= maxQuantity) {
-                Snackbar.make(tvPrice, "Maximum order is :" + maxQuantity, Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(tvPrice, "Available stock quantity is " + maxQuantity, Snackbar.LENGTH_SHORT).show();
             } else {
                 quantity++;
                 tvQuantity.setText(String.valueOf(quantity));

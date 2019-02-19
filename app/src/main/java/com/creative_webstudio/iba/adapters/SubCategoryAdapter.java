@@ -2,14 +2,18 @@ package com.creative_webstudio.iba.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.activities.MainActivity;
+import com.creative_webstudio.iba.activities.ProductShowActivity;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
@@ -20,12 +24,12 @@ import org.mmtextview.components.MMTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CategoryAdapter extends BaseRecyclerAdapter<CategoryAdapter.CategoryViewHolder, CategoryVO> {
+public class SubCategoryAdapter extends BaseRecyclerAdapter<SubCategoryAdapter.SubCategoryViewHolder,CategoryVO>{
 
     IBAPreferenceManager mIbaShared;
     Context mContext;
 
-    public CategoryAdapter(Context context) {
+    public SubCategoryAdapter(Context context) {
         super(context);
         mContext = context;
         mIbaShared = new IBAPreferenceManager(mContext);
@@ -33,12 +37,12 @@ public class CategoryAdapter extends BaseRecyclerAdapter<CategoryAdapter.Categor
 
     @NonNull
     @Override
-    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = mLayoutInflator.inflate(R.layout.view_holder_category, parent, false);
-        return new CategoryViewHolder(view);
+    public SubCategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = mLayoutInflator.inflate(R.layout.view_holder_sub_category, parent, false);
+        return new SubCategoryViewHolder(view);
     }
 
-    public class CategoryViewHolder extends BaseViewHolder<CategoryVO> {
+    public class SubCategoryViewHolder extends BaseViewHolder<CategoryVO>{
 
         @BindView(R.id.tvCateName)
         MMTextView tvCateName;
@@ -46,40 +50,41 @@ public class CategoryAdapter extends BaseRecyclerAdapter<CategoryAdapter.Categor
         @BindView(R.id.ivImage)
         ImageView ivImage;
 
+        @BindView(R.id.layoutCate)
+        LinearLayout layoutCate;
+
         private CategoryVO categoryVO;
 
-        public CategoryViewHolder(View itemView) {
+        public SubCategoryViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            ButterKnife.bind(this,itemView);
         }
 
         @Override
         public void setData(CategoryVO data) {
-            categoryVO = data;
+            categoryVO=data;
             tvCateName.setText(data.getName());
-            if (data.getId().equals(Long.valueOf(-2))) {
-                Glide.with(itemView.getContext())
-                        .load(R.drawable.banner)
-                        .into(ivImage);
-            } else if (data.getId().equals(Long.valueOf(-1))) {
-                Glide.with(itemView.getContext())
-                        .load(R.drawable.promotion)
-                        .into(ivImage);
-            } else if (data.getThumbnailId() != null) {
-                GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(), data.getThumbnailId());
+            if(data.getThumbnailId()!=null){
+                GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(),data.getThumbnailId());
                 Glide.with(itemView.getContext())
                         .asBitmap()
                         .apply(LoadImage.getOption())
                         .load(glideUrl)
                         .into(ivImage);
-            } else {
+            }else {
                 ivImage.setVisibility(View.GONE);
+            }
+
+            if(data.isSelected()){
+                layoutCate.setPadding(8,8,8,8);
+            }else {
+                layoutCate.setPadding(16,16,16,16);
             }
         }
 
         @Override
         public void onClick(View v) {
-            ((MainActivity) mContext).onItemClick(categoryVO);
+            ((ProductShowActivity) mContext).onSubItemClick(categoryVO);
         }
     }
 }

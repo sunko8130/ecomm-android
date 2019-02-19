@@ -116,14 +116,15 @@
 
             <org.mmtextview.components.MMTextView
                 android:id="@+id/tv_item_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/item_name"
                 android:textColor="@color/textColor"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_toStartOf="@+id/tv_price"/>
 
             <org.mmtextview.components.MMTextView
                 android:id="@+id/tv_in_stock"

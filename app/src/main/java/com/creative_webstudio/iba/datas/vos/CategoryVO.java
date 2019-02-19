@@ -22,6 +22,8 @@ public class CategoryVO {
     @SerializedName("childCategoryCount")
     private Integer childCategoryCount;
 
+    private boolean isSelected = false;
+
     public Long getId() {
         return id;
     }
@@ -68,5 +70,13 @@ public class CategoryVO {
 
     public void setChildCategoryCount(Integer childCategoryCount) {
         this.childCategoryCount = childCategoryCount;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

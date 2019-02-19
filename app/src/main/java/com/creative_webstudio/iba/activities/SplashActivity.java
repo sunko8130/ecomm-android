@@ -50,14 +50,6 @@ public class SplashActivity extends BaseActivity implements SplashView {
         mPresenter.initPresenter(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         refreshToken = ibaShared.fromPreference("RefreshToken", null);
-
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                finish();
-//            }
-//        }, 2000);
     }
 
     @Override
@@ -89,6 +81,7 @@ public class SplashActivity extends BaseActivity implements SplashView {
                     if (apiResponse.getError() instanceof ApiException) {
                         int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
                         if (errorCode == 401) {
+                            // Invalid or expired access token.
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
                             // TODO: Server response successful but there is no data (Empty response).

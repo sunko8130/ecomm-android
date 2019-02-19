@@ -136,7 +136,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         animEmpty.setVisibility(View.VISIBLE);
         animEmpty.setAnimation(R.raw.bag_error);
         animEmpty.playAnimation();
-        tvEmpty.setText("There is no order in your cart!");
+        tvEmpty.setText("There is no item in your cart!");
         btnRefresh.setVisibility(View.GONE);
         loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Your Order.Please wait!");
     }
@@ -164,7 +164,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             } else {
                 tvTotal.setText(0 + " MMK");
                 tvSubtotal.setText(0 + " MMK");
-                tvCartCount.setText(0 + " Items in your cart.");
+                tvCartCount.setText(0 + " items in your cart.");
             }
 
         } else {
@@ -324,7 +324,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
             CartShowVO cartShowVO = new CartShowVO();
             cartShowVO.setProductName(tempProduct.getProductName());
             cartShowVO.setItemQuantity(cartVOList.get(i).getQuantity());
-            if (tempProduct.getThumbnailIdsList()!=null || !tempProduct.getThumbnailIdsList().isEmpty()) {
+            if (tempProduct.getThumbnailIdsList()!=null && !tempProduct.getThumbnailIdsList().isEmpty()) {
                 cartShowVO.setThumbnailId(tempProduct.getThumbnailIdsList().get(0));
             }
             if (tempProduct.getHasPromotion()) {
@@ -421,7 +421,6 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         cartVO.setQuantity(cart.getItemQuantity());
         if (ibaShared.removeCart(cartVO)) {
             mCartAdapter.clearData();
-            Toast.makeText(this, "Removed!", Toast.LENGTH_SHORT).show();
             setUpData(); // Fetch data from server.
         }
     }

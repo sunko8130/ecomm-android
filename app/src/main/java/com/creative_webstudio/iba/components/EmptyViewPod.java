@@ -37,6 +37,7 @@ public class EmptyViewPod extends RelativeLayout {
     @Nullable
     @BindView(R.id.anim_empty)
     LottieAnimationView animEmpty;
+
     public EmptyViewPod(Context context) {
         super(context);
     }
@@ -53,7 +54,6 @@ public class EmptyViewPod extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.bind(this, this);
-        tvEmpty.setOnClickListener(v -> Toast.makeText(getContext(), "zzzzz", Toast.LENGTH_SHORT).show());
     }
 
     public void setEmptyData(int emptyImageId, String emptyMsg) {
@@ -65,10 +65,10 @@ public class EmptyViewPod extends RelativeLayout {
         tvEmpty.setText(emptyMsg);
     }
 
-    public void setRefreshButton(boolean visible){
-        if(visible){
+    public void setRefreshButton(boolean visible) {
+        if (visible) {
             btnRefresh.setVisibility(VISIBLE);
-        }else {
+        } else {
             btnRefresh.setVisibility(GONE);
         }
     }

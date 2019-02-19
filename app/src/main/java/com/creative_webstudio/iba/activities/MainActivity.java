@@ -13,7 +13,6 @@ import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.Menu;
@@ -27,9 +26,11 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.CategoryAdapter;
 import com.creative_webstudio.iba.adapters.SectionPagerAdapter;
 import com.creative_webstudio.iba.components.CountDrawable;
+import com.creative_webstudio.iba.components.CustomRetryDialog;
 import com.creative_webstudio.iba.components.EmptyViewPod;
 import com.creative_webstudio.iba.components.SmartRecyclerView;
 import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
+import com.creative_webstudio.iba.datas.vos.CartVO;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.viewmodels.ProductViewModel;
@@ -38,6 +39,7 @@ import com.google.gson.Gson;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -191,6 +193,10 @@ public class MainActivity extends BaseDrawerActivity {
 
     private void getCategory() {
         if (!checkNetwork()) {
+            if (swipeRefreshLayout.isRefreshing()) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+            retryDialog.show();
             retryDialog.tvRetry.setText("No Internet Connection");
             retryDialog.btnRetry.setOnClickListener(v -> {
                 retryDialog.dismiss();
@@ -202,9 +208,10 @@ public class MainActivity extends BaseDrawerActivity {
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 if (apiResponse.getData() != null) {
-                    mCategoryList = (ArrayList<CategoryVO>) apiResponse.getData();
-                    mCategoryAdapter.setNewData(mCategoryList);
-//                    setupCategory();
+                    setupCategory();
+                    mCategoryList.addAll(apiResponse.getData());
+                    List<CategoryVO> temp = mCategoryList;
+                    mCategoryAdapter.setNewData(temp);
 //                    getProduct(mCurrentPage, categoryId);
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {
@@ -235,6 +242,18 @@ public class MainActivity extends BaseDrawerActivity {
                 }
             });
         }
+    }
+
+    private void setupCategory() {
+        mCategoryList = new ArrayList<>();
+        CategoryVO allProduct = new CategoryVO();
+        allProduct.setName("All Product");
+        allProduct.setId((long) -2);
+        CategoryVO promo = new CategoryVO();
+        promo.setName("Promo Product");
+        promo.setId((long) -1);
+        mCategoryList.add(allProduct);
+        mCategoryList.add(promo);
     }
 
     private void setupViewPager(ArrayList<AdvertisementVO> mAdvertisementList) {
@@ -318,15 +337,34 @@ public class MainActivity extends BaseDrawerActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onItemClick(CategoryVO categoryVO){
+    public void onItemClick(CategoryVO categoryVO) {
         Gson gson = new Gson();
         String json = gson.toJson(categoryVO);
-        startActivity(ProductShowActivity.newIntent(this,json));
+        startActivity(ProductShowActivity.newIntent(this, json));
     }
+
     public boolean isTablet(Context context) {
         boolean xlarge = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == 4);
         boolean large = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
         return (xlarge || large);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // start auto scroll when onResume
+        viewPager.startAutoScroll();
+        //load cart items
+        if (ibaShared.getItemsFromCart() != null) {
+            cartItems = 0;
+            for (CartVO cartVO : ibaShared.getItemsFromCart()) {
+                cartItems += cartVO.getQuantity();
+            }
+
+        } else {
+            cartItems = 0;
+        }
+        invalidateOptionsMenu();
     }
 
     @Override

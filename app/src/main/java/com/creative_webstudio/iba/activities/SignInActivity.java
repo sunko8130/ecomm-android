@@ -67,10 +67,9 @@ public class SignInActivity extends BaseActivity implements SignInView {
         dialog =   new CustomRetryDialog(SignInActivity.this);
         dialog.setCanceledOnTouchOutside(false);
         btnSignIn.setOnClickListener(view -> {
-//            Crashlytics.log(Log.ERROR,SignInActivity.class.getSimpleName(),"ForceCrash");
-//            Crashlytics.getInstance().crash();
             signIn();
         });
+        getResponse();
     }
 
     private void getConfigurationData() {
@@ -85,6 +84,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
             IbaModel.getInstance().getConfigData().observe(this, apiResponse -> {
                 if (apiResponse.getData() != null) {
                     configurationVO = apiResponse.getData();
+                    startActivity(MainActivity.newIntent(this));
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {
                         int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
@@ -134,20 +134,20 @@ public class SignInActivity extends BaseActivity implements SignInView {
             etPassword.setError("Enter Password");
         } else {
             btnSignIn.setClickable(false);
+            loadingDialog.show();
             mPresenter.getToken(etUserName.getText().toString(), etPassword.getText().toString());
-            getResponse();
         }
 
     }
 
     public void getResponse(){
-        loadingDialog.show();
         mPresenter.getResponseCode().observe(this, integer -> {
             if(loadingDialog.isShowing()){
                 loadingDialog.dismiss();
             }
             switch (integer) {
                 case 200:
+//                    getConfigurationData();
                     startActivity(SplashActivity.newIntent(SignInActivity.this));
                     break;
                 case 400:

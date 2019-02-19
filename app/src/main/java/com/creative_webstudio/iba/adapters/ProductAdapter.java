@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.activities.ProductActivity;
+import com.creative_webstudio.iba.activities.ProductShowActivity;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
@@ -100,7 +101,7 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
 
         @Override
         public void onClick(View v) {
-            ((ProductActivity) mContext).onItemClick(productVO);
+            ((ProductShowActivity) mContext).onProductItemClick(productVO);
         }
     }
 

@@ -134,7 +134,7 @@ public class BaseDrawerActivity extends BaseActivity {
     }
 
     private void addDrawerItems() {
-        if (this instanceof ProductActivity) {
+        if (this instanceof MainActivity) {
             navigationView.getMenu().findItem(R.id.menuProduct).setChecked(true);
         }
 
@@ -142,10 +142,10 @@ public class BaseDrawerActivity extends BaseActivity {
             Bundle bundle = new Bundle();
             switch (item.getItemId()) {
                 case (R.id.menuProduct):
-                    if (item.getItemId() == R.id.menuProduct && !(context instanceof ProductActivity)) {
+                    if (item.getItemId() == R.id.menuProduct && !(context instanceof MainActivity)) {
                         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_products");
                         mFirebaseAnalytics.logEvent("click_product", bundle);
-                        startActivity(ProductActivity.newIntent(context));
+                        startActivity(MainActivity.newIntent(context));
 //                            finish();
 //                        overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
                     }

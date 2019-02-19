@@ -1,6 +1,7 @@
 package com.creative_webstudio.iba.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -141,7 +142,8 @@ public class OrderHistoryActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            super.onBackPressed();
+//            super.onBackPressed();
+            startActivity(MainActivity.newIntent(this));
             finish();
             return true;
         }
@@ -235,7 +237,8 @@ public class OrderHistoryActivity extends BaseActivity {
         if (!scrollTop) {
             layoutManager.smoothScrollToPosition(rvOrderHistory, null, 0);
         } else {
-            super.onBackPressed();
+            startActivity(MainActivity.newIntent(this));
+//            super.onBackPressed();
         }
     }
 }
