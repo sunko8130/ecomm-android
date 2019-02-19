@@ -109,16 +109,16 @@ public class SignInActivity extends BaseActivity implements SignInView {
     }
 
     public void signIn() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            //we are connected to a network
-            connected = true;
-        } else {
-            connected = false;
-        }
+//        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+//                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+//            //we are connected to a network
+//            connected = true;
+//        } else {
+//            connected = false;
+//        }
 
-        if (!connected) {
+        if (!checkNetwork()) {
             dialog.show();
             dialog.tvRetry.setText("No Internet Connection");
             dialog.btnRetry.setOnClickListener(v -> {

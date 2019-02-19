@@ -27,16 +27,9 @@ import butterknife.BindView;
 
 public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductViewHolder,ProductVO> {
 
-    private ProductDelegate mProductDelegate;
     Context mContext;
-    protected List<ProductVO> mData;
     IBAPreferenceManager mIbaShared;
 
-
-    public ProductAdapter(Context context, ProductDelegate productDelegate) {
-        super(context);
-        this.mProductDelegate = productDelegate;
-    }
 
     public ProductAdapter(Context context) {
         super(context);
@@ -50,14 +43,6 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
         View view = mLayoutInflator.inflate(R.layout.view_holder_product_list, parent, false);
         return new ProductViewHolder(view);
     }
-
-//    @Override
-//    public void onBindViewHolder(ProductViewHolder holder, int position) {
-//        holder.setData(mData.get(position));
-//        if (mContext instanceof ProductActivity) {
-//            ((ProductActivity) mContext).onItemClick(mData.get(position));
-//        }
-//    }
 
     public class ProductViewHolder extends BaseViewHolder<ProductVO> {
         @BindView(R.id.tv_product_name)
@@ -101,6 +86,7 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
 
         @Override
         public void onClick(View v) {
+            itemView.setEnabled(false);
             ((ProductShowActivity) mContext).onProductItemClick(productVO);
         }
     }

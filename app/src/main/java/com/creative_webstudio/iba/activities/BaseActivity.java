@@ -21,6 +21,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.lang.reflect.Method;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
@@ -32,6 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     //FirebaseAnalytics
     FirebaseAnalytics mFirebaseAnalytics;
 
+    public boolean isTokenCalling = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .subscribe(authResponse -> {
                     if (authResponse.isSuccessful()) {
                         onAccessTokenRefreshSuccess(authResponse);
+
                     } else {
                         onAccessTokenRefreshFailure(new ApiException(authResponse.code()));
                     }
@@ -62,15 +65,18 @@ public abstract class BaseActivity extends AppCompatActivity {
                 });
     }
 
-    public boolean checkNetwork(){
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            //we are connected to a network
-            return true;
-        } else {
-            return false;
-        }
+    public boolean checkNetwork() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+//        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+//                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+//            //we are connected to a network
+//            return true;
+//        } else {
+//            return false;
+//        }
+//        ConnectivityManager connectivityManager= (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
@@ -78,9 +84,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         IBAPreferenceManager prefs = new IBAPreferenceManager(this);
         prefs.toPreference("AccessToken", tokenVO.getAccessToken());
         prefs.toPreference("RefreshToken", tokenVO.getRefreshToken());
-        finish();
-        startActivity(getIntent());
+        recreate();
+//        if(this.isDestroyed() && isTokenCalling){
+//            isTokenCalling=false;
+//            startActivity(getIntent());
+//        }
     }
+
     public void onAccessTokenRefreshFailure(Throwable t) {
         if (t instanceof ApiException) {
             // Server response with one of the HTTP error status code.

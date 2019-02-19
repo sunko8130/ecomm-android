@@ -375,10 +375,10 @@ public class ProductShowActivity extends BaseActivity {
         mCurrentPage = 1;
         categoryId = categoryVO.getId();
         getProduct(mCurrentPage, categoryId);
-        for(int i=0;i<mCategoryList.size();i++){
-            if(mCategoryList.get(i).getId().equals(categoryId)){
+        for (int i = 0; i < mCategoryList.size(); i++) {
+            if (mCategoryList.get(i).getId().equals(categoryId)) {
                 mCategoryList.get(i).setSelected(true);
-            }else {
+            } else {
                 mCategoryList.get(i).setSelected(false);
             }
         }
