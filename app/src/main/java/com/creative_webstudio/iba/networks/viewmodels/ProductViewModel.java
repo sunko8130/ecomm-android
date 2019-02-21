@@ -66,6 +66,7 @@ public class ProductViewModel extends AndroidViewModel {
             criteriaVO.setThumbnail(thumbnailCriteria);
             criteriaVO.setWithThumbnail(true);
             criteriaVO.setProductCategoryId(String.valueOf(categoryId));
+            criteriaVO.setWithDetail(true);
         }
         MutableLiveData<ApiResponse<ProductResponse>> result = new MutableLiveData<>();
         ApiResponse<ProductResponse> apiResponse = new ApiResponse();

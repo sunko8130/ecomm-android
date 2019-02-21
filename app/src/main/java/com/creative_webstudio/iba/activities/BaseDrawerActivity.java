@@ -86,8 +86,10 @@ public class BaseDrawerActivity extends BaseActivity {
         View headerView = navigationView.getHeaderView(0);
         MMTextView name = headerView.findViewById(R.id.tvCustomerName);
         MMTextView email = headerView.findViewById(R.id.tvCustomerEmail);
-        name.setText(customerVO.getName());
-        if (customerVO.getEmail() != null) {
+        if (customerVO != null) {
+            if(customerVO.getName()!=null)
+            name.setText(customerVO.getName());
+            if(customerVO.getEmail()!=null)
             email.setText(customerVO.getEmail());
         }
         headerView.setOnClickListener(v -> {

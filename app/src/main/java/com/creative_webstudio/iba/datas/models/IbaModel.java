@@ -81,20 +81,17 @@ public class IbaModel extends BaseModel {
         return result;
     }
 
-    public MutableLiveData<ApiResponse<ConfigurationVO>> getConfigData(){
-        ConfigurationCriteria criteria=new ConfigurationCriteria();
-        MutableLiveData<ApiResponse<ConfigurationVO>> result = new MutableLiveData<>();
-        ApiResponse<ConfigurationVO> apiResponse = new ApiResponse();
+    public MutableLiveData<ApiResponse<List<ConfigurationVO>>> getConfigData(String settingKey){
+        MutableLiveData<ApiResponse<List<ConfigurationVO>>> result = new MutableLiveData<>();
+        ApiResponse<List<ConfigurationVO>> apiResponse = new ApiResponse();
         IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
-        String accessToken = ibaPreference.getAccessToken();
-        String userAuth = "Bearer " + accessToken;
-        api.getConfigurationInfo(userAuth,criteria)
+        api.getConfigurationInfo(settingKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    ConfigurationVO body = response.body();
+                    List<ConfigurationVO> body = response.body();
                     if (response.isSuccessful()
-                            && body != null) {
+                            && body != null && !body.isEmpty()) {
                         apiResponse.setData(body);
                     } else {
                         apiResponse.setError(new ApiException(response.code()));

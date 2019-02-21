@@ -160,19 +160,33 @@
                 android:text=""
                 android:textSize="@dimen/text_regular_2x" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rc_details"
+            <LinearLayout
+                android:id="@+id/layout_details"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/tv_item_content"
-                android:layout_margin="5dp"
-                android:background="@drawable/round_rect_black_line" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/tv_item_content">
+
+                <org.mmtextview.components.MMTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Details"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                    android:layout_margin="@dimen/margin_medium"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rc_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/round_rect_black_line" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/layoutSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_below="@id/rc_details"
+                android:layout_below="@id/layout_details"
                 android:orientation="horizontal">
 
                 <LinearLayout

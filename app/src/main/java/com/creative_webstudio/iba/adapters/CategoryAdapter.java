@@ -57,6 +57,7 @@ public class CategoryAdapter extends BaseRecyclerAdapter<CategoryAdapter.Categor
         public void setData(CategoryVO data) {
             categoryVO = data;
             tvCateName.setText(data.getName());
+            ivImage.setVisibility(View.VISIBLE);
             if (data.getId().equals(Long.valueOf(-2))) {
                 Glide.with(itemView.getContext())
                         .load(R.drawable.banner)

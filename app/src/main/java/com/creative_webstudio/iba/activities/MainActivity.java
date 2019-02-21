@@ -250,7 +250,7 @@ public class MainActivity extends BaseDrawerActivity {
         allProduct.setName("All Product");
         allProduct.setId((long) -2);
         CategoryVO promo = new CategoryVO();
-        promo.setName("Promo Product");
+        promo.setName("Promotion");
         promo.setId((long) -1);
         mCategoryList.add(allProduct);
         mCategoryList.add(promo);

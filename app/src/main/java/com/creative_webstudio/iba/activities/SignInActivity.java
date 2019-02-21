@@ -1,14 +1,19 @@
 package com.creative_webstudio.iba.activities;
 
+import android.Manifest;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Paint;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -19,9 +24,14 @@ import com.creative_webstudio.iba.datas.vos.ConfigurationVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.mvp.presenters.SignInPresenter;
 import com.creative_webstudio.iba.mvp.views.SignInView;
+import com.creative_webstudio.iba.utils.AppConstants;
 import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
+
+import org.mmtextview.components.MMTextView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,8 +46,15 @@ public class SignInActivity extends BaseActivity implements SignInView {
     @BindView(R.id.etPassword)
     EditText etPassword;
 
+    @BindView(R.id.tvContactMsg)
+    MMTextView tvContactMsg;
+
+    @BindView(R.id.tvPhone)
+    MMTextView tvPhone;
+
     private SignInPresenter mPresenter;
-    private boolean connected = false;
+
+    String phoneNumber;
 
     //RetryDialog
     CustomRetryDialog dialog;
@@ -45,7 +62,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
     //show loading
     AlertDialog loadingDialog;
 
-    ConfigurationVO configurationVO;
+    List<ConfigurationVO> configurationVOList;
 
     private IBAPreferenceManager ibaShared;
 
@@ -64,14 +81,56 @@ public class SignInActivity extends BaseActivity implements SignInView {
         mPresenter.initPresenter(this);
         ibaShared = new IBAPreferenceManager(this);
 //        getConfigurationData();
-        dialog =   new CustomRetryDialog(SignInActivity.this);
+        dialog = new CustomRetryDialog(SignInActivity.this);
         dialog.setCanceledOnTouchOutside(false);
         btnSignIn.setOnClickListener(view -> {
             signIn();
         });
         getResponse();
+        tvPhone.setOnClickListener(view -> {
+            callPhoneNumber();
+        });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        if(requestCode == 101)
+        {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                callPhoneNumber();
+            }
+        }
+    }
+
+    public void callPhoneNumber()
+    {
+        try
+        {
+            if(Build.VERSION.SDK_INT > 22)
+            {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(SignInActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 101);
+                    return;
+                }
+
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + phoneNumber));
+                startActivity(callIntent);
+
+            }
+            else {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + phoneNumber));
+                startActivity(callIntent);
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
     private void getConfigurationData() {
         if (!checkNetwork()) {
             retryDialog.show();
@@ -81,10 +140,10 @@ public class SignInActivity extends BaseActivity implements SignInView {
                 getConfigurationData();
             });
         }else {
-            IbaModel.getInstance().getConfigData().observe(this, apiResponse -> {
+            IbaModel.getInstance().getConfigData("").observe(this, apiResponse -> {
                 if (apiResponse.getData() != null) {
-                    configurationVO = apiResponse.getData();
-                    startActivity(MainActivity.newIntent(this));
+                    configurationVOList = apiResponse.getData();
+                    setupConfig();
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {
                         int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
@@ -108,16 +167,22 @@ public class SignInActivity extends BaseActivity implements SignInView {
         }
     }
 
-    public void signIn() {
-//        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-//                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-//            //we are connected to a network
-//            connected = true;
-//        } else {
-//            connected = false;
-//        }
+    private void setupConfig() {
+        for(ConfigurationVO configurationVO:configurationVOList){
+            if(configurationVO.getKey().equals(AppConstants.APP_CONTACT_MSG)){
+                tvContactMsg.setText(configurationVO.getValue());
+            }
+            if(configurationVO.getKey().equals(AppConstants.APP_CONTACT_PHONE)){
+                phoneNumber=configurationVO.getValue();
+                tvPhone.setPaintFlags(tvContactMsg.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
+                tvPhone.setText(configurationVO.getValue());
+            }
+        }
+    }
 
+
+
+    public void signIn() {
         if (!checkNetwork()) {
             dialog.show();
             dialog.tvRetry.setText("No Internet Connection");
@@ -147,7 +212,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
             }
             switch (integer) {
                 case 200:
-//                    getConfigurationData();
+                    getConfigurationData();
                     startActivity(SplashActivity.newIntent(SignInActivity.this));
                     break;
                 case 400:

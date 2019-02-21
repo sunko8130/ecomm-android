@@ -118,9 +118,9 @@ public interface IbaAPI {
     @GET("customer/me")
     Observable<Response<CustomerVO>> getCustomerInfo(@Header("Authorization") String authHeader);
 
-    @POST("customer/me")
-    Observable<Response<ConfigurationVO>> getConfigurationInfo(@Header("Authorization") String authHeader,
-                                                               @Body ConfigurationCriteria configurationCriteria);
+    @FormUrlEncoded
+    @POST("pub/configuration/searchWithKey")
+    Observable<Response<List<ConfigurationVO>>> getConfigurationInfo(@Field("settingKey") String settingKey);
 
     @PUT("customer/me")
     Observable<Response<Integer>> updateCustomerInfo(@Header("Authorization") String authHeader,

@@ -89,7 +89,7 @@ public class SplashActivity extends BaseActivity implements SplashView {
                             // TODO: Reach End of List
                         } else {
                             retryDialog.show();
-                            retryDialog.tvRetry.setText("No Internet Connection");
+                            retryDialog.tvRetry.setText("Connection Error!");
                             retryDialog.btnRetry.setOnClickListener(v -> {
                                 retryDialog.dismiss();
                                 getCustomerInfo();
@@ -101,4 +101,6 @@ public class SplashActivity extends BaseActivity implements SplashView {
         }
 
     }
+
+
 }

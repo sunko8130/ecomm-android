@@ -24,7 +24,7 @@ import org.mmtextview.components.MMTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SubCategoryAdapter extends BaseRecyclerAdapter<SubCategoryAdapter.SubCategoryViewHolder,CategoryVO>{
+public class SubCategoryAdapter extends BaseRecyclerAdapter<SubCategoryAdapter.SubCategoryViewHolder, CategoryVO> {
 
     IBAPreferenceManager mIbaShared;
     Context mContext;
@@ -42,7 +42,7 @@ public class SubCategoryAdapter extends BaseRecyclerAdapter<SubCategoryAdapter.S
         return new SubCategoryViewHolder(view);
     }
 
-    public class SubCategoryViewHolder extends BaseViewHolder<CategoryVO>{
+    public class SubCategoryViewHolder extends BaseViewHolder<CategoryVO> {
 
         @BindView(R.id.tvCateName)
         MMTextView tvCateName;
@@ -51,34 +51,41 @@ public class SubCategoryAdapter extends BaseRecyclerAdapter<SubCategoryAdapter.S
         ImageView ivImage;
 
         @BindView(R.id.layoutCate)
-        LinearLayout layoutCate;
+        RelativeLayout layoutCate;
 
         private CategoryVO categoryVO;
 
         public SubCategoryViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         @Override
         public void setData(CategoryVO data) {
-            categoryVO=data;
+            categoryVO = data;
             tvCateName.setText(data.getName());
-            if(data.getThumbnailId()!=null){
-                GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(),data.getThumbnailId());
+            ivImage.setVisibility(View.VISIBLE);
+            if (data.getThumbnailId() != null) {
+                GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(), data.getThumbnailId());
                 Glide.with(itemView.getContext())
                         .asBitmap()
                         .apply(LoadImage.getOption())
                         .load(glideUrl)
                         .into(ivImage);
-            }else {
-                ivImage.setVisibility(View.GONE);
+            }
+            else {
+                Glide.with(itemView.getContext())
+                        .load(R.drawable.blank_photo)
+                        .into(ivImage);
+//                ivImage.setVisibility(View.GONE);
             }
 
-            if(data.isSelected()){
-                layoutCate.setPadding(8,8,8,8);
-            }else {
-                layoutCate.setPadding(16,16,16,16);
+            if (data.isSelected()) {
+//                layoutCate.setPadding(8,8,8,8);
+                layoutCate.setVisibility(View.VISIBLE);
+            } else {
+//                layoutCate.setPadding(16,16,16,16);
+                layoutCate.setVisibility(View.GONE);
             }
         }
 

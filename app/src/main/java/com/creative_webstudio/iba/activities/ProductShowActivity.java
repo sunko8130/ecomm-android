@@ -77,6 +77,10 @@ public class ProductShowActivity extends BaseActivity {
     @BindView(R.id.subHeader)
     MMTextView subHeader;
 
+    @Nullable
+    @BindView(R.id.vLine)
+    View vLine;
+
     //empty view
 
     @Nullable
@@ -109,6 +113,8 @@ public class ProductShowActivity extends BaseActivity {
     private Long categoryId = Long.valueOf(0);
 
     GridLayoutManager layoutManager;
+
+    GridLayoutManager subLayoutManager;
     private ProductAdapter mProductAdapter;
 
     public static Intent newIntent(Context context, String categoryVo) {
@@ -129,15 +135,17 @@ public class ProductShowActivity extends BaseActivity {
         mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
         mCategoryList = new ArrayList<>();
         mSubAdapter = new SubCategoryAdapter(this);
-        rcSubCate.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        rcSubCate.setAdapter(mSubAdapter);
         rvProduct.setEmptyView(vpEmpty);
         mProductAdapter = new ProductAdapter(this);
         if (isTablet(this)) {
             layoutManager = new GridLayoutManager(this, 3);
+            subLayoutManager = new GridLayoutManager(this, 4);
         } else {
             layoutManager = new GridLayoutManager(this, 2);
+            subLayoutManager = new GridLayoutManager(this, 3);
         }
+        rcSubCate.setLayoutManager(subLayoutManager);
+        rcSubCate.setAdapter(mSubAdapter);
         rvProduct.setLayoutManager(layoutManager);
         rvProduct.setAdapter(mProductAdapter);
         tvEmpty.setText("Loading Data........");
@@ -149,14 +157,15 @@ public class ProductShowActivity extends BaseActivity {
             toolbar.setTitle(categoryVO.getName());
             getSubCategory(categoryVO.getId());
             if (categoryVO.getId() > 3) {
-                CategoryVO temp = categoryVO;
-                temp.setName("All " + categoryVO.getName());
-                mCategoryList.add(categoryVO);
+//                CategoryVO temp = categoryVO;
+//                temp.setName("All " + categoryVO.getName());
+//                mCategoryList.add(categoryVO);
                 categoryId = categoryVO.getId();
-                categoryVO.setSelected(true);
+//                categoryVO.setSelected(true);
             } else {
                 categoryId = categoryVO.getId();
                 subHeader.setVisibility(View.GONE);
+                vLine.setVisibility(View.GONE);
             }
         }
 
@@ -410,7 +419,6 @@ public class ProductShowActivity extends BaseActivity {
             cartItems = 0;
         }
         invalidateOptionsMenu();
-        refreshData();
     }
 
     @Override

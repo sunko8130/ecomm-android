@@ -66,6 +66,7 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
             if(data.getThumbnailIdsList()==null || data.getThumbnailIdsList().isEmpty()){
                 Glide.with(itemView.getContext())
                         .load(R.drawable.blank_photo)
+                        .apply(LoadImage.getOption())
                         .into(ivProduct);
             }else {
                 GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(),data.getThumbnailIdsList().get(0));

@@ -19,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -129,6 +131,9 @@ public class ProductDetailsActivity extends BaseActivity {
     @BindView(R.id.photo_view_pager)
     ViewPagerFixed photoViewPager;
 
+    @BindView(R.id.layout_details)
+    LinearLayout layoutDetails;
+
     private DetailAdapter mDetailAdapter;
 
     private PromoAdapter mPromoAdapter;
@@ -215,7 +220,7 @@ public class ProductDetailsActivity extends BaseActivity {
             tvToolBarTitle.setText(productVO.getProductName());
             tvItemName.setText(productVO.getProductName());
             if (productVO.getDescription() != null) {
-                tvItemContent.setText(productVO.getDescription());
+                tvItemContent.setText(Html.fromHtml(productVO.getDescription()));
             }
             if (productVO.getOrderUnits() != null) {
                 orderUnitVOList = productVO.getOrderUnits();
@@ -230,7 +235,10 @@ public class ProductDetailsActivity extends BaseActivity {
 //                Glide.with(context).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(bigImageView);
 //            });
             if (productVO.getProductDetailsVo() != null && productVO.getProductDetailsVo().getValueList() != null) {
+                layoutDetails.setVisibility(View.VISIBLE);
                 mDetailAdapter.setNewData(productVO.getProductDetailsVo().getValueList());
+            }else {
+                layoutDetails.setVisibility(View.GONE);
             }
             if (productVO.getHasPromotion()) {
                 for (OrderUnitVO orderUnitVO : productVO.getOrderUnits()) {

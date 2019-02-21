@@ -49,5 +49,4 @@
 -dontwarn okhttp3.internal.platform.*
 
 -keep class com.creative_webstudio.iba.datas.** { *; }
--keepclasseswithmembernames class * { native <methods>; }
 
