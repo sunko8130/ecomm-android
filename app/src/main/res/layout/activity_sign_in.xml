@@ -123,6 +123,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:padding="@dimen/margin_small"
             android:gravity="center"
+            android:visibility="gone"
             />
         <org.mmtextview.components.MMTextView
             android:id="@+id/tvPhone"
@@ -132,7 +133,8 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/limeGreen"
             android:padding="@dimen/margin_small"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

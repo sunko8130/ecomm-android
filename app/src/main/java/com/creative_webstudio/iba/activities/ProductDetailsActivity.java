@@ -82,9 +82,6 @@ public class ProductDetailsActivity extends BaseActivity {
     @BindView(R.id.tv_item_name)
     MMTextView tvItemName;
 
-//    @BindView(R.id.iv_details_top_image)
-//    ImageView ivDetailTopImage;
-
     @BindView(R.id.tv_item_content)
     MMTextView tvItemContent;
 
@@ -220,7 +217,11 @@ public class ProductDetailsActivity extends BaseActivity {
             tvToolBarTitle.setText(productVO.getProductName());
             tvItemName.setText(productVO.getProductName());
             if (productVO.getDescription() != null) {
-                tvItemContent.setText(Html.fromHtml(productVO.getDescription()));
+                String string = productVO.getDescription();
+                string = string.replace("\n", "<br>");
+                string = string.replace(" ","&#160;");
+                tvItemContent.setText(string);
+//                tvItemContent.setText(string);
             }
             if (productVO.getOrderUnits() != null) {
                 orderUnitVOList = productVO.getOrderUnits();
@@ -228,16 +229,10 @@ public class ProductDetailsActivity extends BaseActivity {
             tvPrice.setText(String.valueOf(orderUnitVOList.get(selectedItem).getPricePerUnit()) + " MMK");
             list = new ArrayList<>();
             setupViewPager();
-//            appBarLayout.setOnClickListener(v -> {
-//                bigImageView.setVisibility(View.VISIBLE);
-//                Toast.makeText(this, "View", Toast.LENGTH_SHORT).show();
-//                GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(), productVO.getThumbnailIdsList().get(0));
-//                Glide.with(context).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(bigImageView);
-//            });
             if (productVO.getProductDetailsVo() != null && productVO.getProductDetailsVo().getValueList() != null) {
                 layoutDetails.setVisibility(View.VISIBLE);
                 mDetailAdapter.setNewData(productVO.getProductDetailsVo().getValueList());
-            }else {
+            } else {
                 layoutDetails.setVisibility(View.GONE);
             }
             if (productVO.getHasPromotion()) {
@@ -305,9 +300,6 @@ public class ProductDetailsActivity extends BaseActivity {
                 photoViewPager.setCurrentItem(index);
             }
         }
-//        Toast.makeText(this, "View", Toast.LENGTH_SHORT).show();
-//        GlideUrl glideUrl = LoadImage.getGlideUrl(ibaShared.getAccessToken(), productVO.getThumbnailIdsList().get(0));
-//        Glide.with(context).asBitmap().apply(LoadImage.getOption()).load(glideUrl).into(bigImageView);
     }
 
     private void getPromoDetail(List<PromoRewardDetailCriteria> criteria) {
@@ -395,13 +387,10 @@ public class ProductDetailsActivity extends BaseActivity {
                 tvQuantity.setText(String.valueOf(quantity));
                 String s = String.format("%,.2f", orderUnitVOList.get(i).getPricePerUnit());
                 tvPrice.setText(s + " MMK");
-//                setUpPromo();
                 updatePromo(orderUnitVOList.get(i).getId());
-//                if(productVO.getHasPromotion()) {
-//                    promoRewardVOList = orderUnitVOList.get(i).getPromoRewardVOList();
-//                    setUpPromo();
-//                }
                 if (maxQuantity < 1) {
+                    quantity = 0;
+                    tvQuantity.setText(String.valueOf(quantity));
                     tvInStock.setText("Out of stock");
                     tvInStock.setTextColor(ContextCompat.getColor(ProductDetailsActivity.this, R.color.redFull));
                     btnAddToCart.setEnabled(false);
@@ -453,15 +442,6 @@ public class ProductDetailsActivity extends BaseActivity {
         });
     }
 
-//    private void checkPromo(int selected){
-//        for(PromoRewardVO temp: promoRewardVOList){
-//            if(temp.getUnitId().equals(orderUnitVOList.get(selected))){
-//                temp.setQuantity(quantity);
-//            }
-//        }
-//        mPromoAdapter.setNewData(promoRewardVOList);
-//    }
-
     private void setUpPromo() {
         promoRewardVOList = new ArrayList<>();
         if (productVO.getHasPromotion()) {
@@ -482,15 +462,6 @@ public class ProductDetailsActivity extends BaseActivity {
             }
         }
 
-//        for (PromoRewardVO temp : promoRewardVOList) {
-////            temp.setShowUnit("1" + orderUnitVOList.get(selectedItem).getUnitName() + " per " + orderUnitVOList.get(selectedItem).getItemsPerUnit() + " " + orderUnitVOList.get(selectedItem).getItemName());
-////            temp.setQuantity(quantity);
-//            for (PromoRewardDetailVO detailVO : promoDetailList) {
-//                if (detailVO.getOrderUnitId().equals(orderUnitVOList.get(selectedItem).getId())) {
-//                    temp.setPromoQuantity(detailVO.getOrderQuantity());
-//                }
-//            }
-//        }
         mPromoAdapter.setNewData(promoRewardVOList);
     }
 
@@ -579,24 +550,4 @@ public class ProductDetailsActivity extends BaseActivity {
     }
 
 
-    //    private void getOrderUnit(long productId) {
-//        ProductDetailViewModel viewModel = ViewModelProviders.of(this).get(ProductDetailViewModel.class);
-//        viewModel.getOrderUnit(productId).observe(this, apiResponse -> {
-//            if (apiResponse.getData() != null) {
-//                orderUnitVOList=apiResponse.getData().getOrderUnitVOS();
-//
-//            }else {
-//                if (apiResponse.getError() instanceof ApiException) {
-//                    int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
-//                    if (errorCode == 401) {
-//                        super.refreshAccessToken();
-//                    } else if (errorCode == 204) {
-//                        orderUnitVOList=new ArrayList<>();
-//                    }
-//                } else {
-//                    // TODO: Network related error occurs. Show the retry button with status text so that user can retry.
-//                }
-//            }
-//        });
-//    }
 }

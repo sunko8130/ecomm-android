@@ -232,10 +232,6 @@ public class BaseDrawerActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-       /* if (this instanceof CartActivity) {
-            startActivity(ProductActivity.newIntent(this));
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        } else */
         if (this instanceof MainActivity) {
             if (doubleBackToExitPressedOnce) {
                 super.onBackPressed();

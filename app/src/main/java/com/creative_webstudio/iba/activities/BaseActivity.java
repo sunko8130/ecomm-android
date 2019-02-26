@@ -67,14 +67,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public boolean checkNetwork() {
         ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-//        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
-//                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-//            //we are connected to a network
-//            return true;
-//        } else {
-//            return false;
-//        }
-//        ConnectivityManager connectivityManager= (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
@@ -85,10 +77,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         prefs.toPreference("AccessToken", tokenVO.getAccessToken());
         prefs.toPreference("RefreshToken", tokenVO.getRefreshToken());
         recreate();
-//        if(this.isDestroyed() && isTokenCalling){
-//            isTokenCalling=false;
-//            startActivity(getIntent());
-//        }
     }
 
     public void onAccessTokenRefreshFailure(Throwable t) {

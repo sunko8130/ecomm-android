@@ -33,7 +33,6 @@ public class SearchAdapter extends BaseRecyclerAdapter<SearchAdapter.SearchViewH
         super(context);
         this.mContext = context;
         mIbaShared = new IBAPreferenceManager(mContext);
-//        this.mproductDelegate = productDelegate;
     }
 
     @NonNull
@@ -57,8 +56,6 @@ public class SearchAdapter extends BaseRecyclerAdapter<SearchAdapter.SearchViewH
 
         public SearchViewHolder(@NonNull View itemView) {
             super(itemView);
-            // mSearchDelegate = productDelegate;
-//            itemView.setOnClickListener(view -> ((ProductSearchActivity) mContext).onItemClick(productVO));
 
         }
 

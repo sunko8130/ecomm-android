@@ -80,7 +80,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
         mPresenter = ViewModelProviders.of(this).get(SignInPresenter.class);
         mPresenter.initPresenter(this);
         ibaShared = new IBAPreferenceManager(this);
-//        getConfigurationData();
+        getConfigurationData();
         dialog = new CustomRetryDialog(SignInActivity.this);
         dialog.setCanceledOnTouchOutside(false);
         btnSignIn.setOnClickListener(view -> {
@@ -143,6 +143,8 @@ public class SignInActivity extends BaseActivity implements SignInView {
             IbaModel.getInstance().getConfigData("").observe(this, apiResponse -> {
                 if (apiResponse.getData() != null) {
                     configurationVOList = apiResponse.getData();
+                    tvContactMsg.setVisibility(View.VISIBLE);
+                    tvPhone.setVisibility(View.VISIBLE);
                     setupConfig();
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {

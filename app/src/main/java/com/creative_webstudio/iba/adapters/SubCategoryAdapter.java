@@ -72,19 +72,15 @@ public class SubCategoryAdapter extends BaseRecyclerAdapter<SubCategoryAdapter.S
                         .apply(LoadImage.getOption())
                         .load(glideUrl)
                         .into(ivImage);
-            }
-            else {
+            } else {
                 Glide.with(itemView.getContext())
                         .load(R.drawable.blank_photo)
                         .into(ivImage);
-//                ivImage.setVisibility(View.GONE);
             }
 
             if (data.isSelected()) {
-//                layoutCate.setPadding(8,8,8,8);
                 layoutCate.setVisibility(View.VISIBLE);
             } else {
-//                layoutCate.setPadding(16,16,16,16);
                 layoutCate.setVisibility(View.GONE);
             }
         }

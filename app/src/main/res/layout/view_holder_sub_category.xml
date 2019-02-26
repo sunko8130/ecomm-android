@@ -32,13 +32,13 @@
                 android:id="@+id/tvCateName"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_centerInParent="true"
                 android:background="@color/colorPrimary"
                 android:gravity="center"
                 android:text="Food"
                 android:textColor="@color/whiteFull"
                 android:textSize="@dimen/text_regular_2x"
-                android:layout_weight="2"/>
+                android:layout_weight="2"
+                android:maxLines="1"/>
         </LinearLayout>
 
         <RelativeLayout

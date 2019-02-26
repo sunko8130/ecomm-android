@@ -29,8 +29,5 @@ public class SectionPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return adList.size();
     }
-//    public void addFragment(List<AdvertisementVO> advertisementVOS){
-//        adList=advertisementVOS;
-//    }
 
 }

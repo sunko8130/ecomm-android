@@ -397,17 +397,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         if (!loadingDialog.isShowing()) {
             super.onBackPressed();
         }
-//        startActivity(ProductActivity.newIntent(this));
     }
-
-//    public void onClickItem(int btnNo, ProductVO productVO, int deleteItem) {
-//        if (btnNo == 1) {
-//            DeleteItem(deleteItem);
-//            Snackbar.make(rvCart, "Delete Cart", Snackbar.LENGTH_LONG).show();
-//        } else {
-//            Snackbar.make(rvCart, "Click To View", Snackbar.LENGTH_LONG).show();
-//        }
-//    }
 
     public void onRemoveCart(CartShowVO cart) {
         Bundle bundle = new Bundle();
@@ -506,10 +496,6 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
                     productDialog.setCanceledOnTouchOutside(false);
                     productDialog.show();
                 }
-//                cartEditList = new ArrayList<>();
-//                ibaShared.AddListToCart(cartEditList);
-//                setUpData();
-//                mCartAdapter.clearData();
             } else {
                 if (apiResponse.getError() instanceof ApiException) {
                     int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();

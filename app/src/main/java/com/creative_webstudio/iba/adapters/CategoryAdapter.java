@@ -1,13 +1,20 @@
 package com.creative_webstudio.iba.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.activities.MainActivity;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
@@ -72,7 +79,20 @@ public class CategoryAdapter extends BaseRecyclerAdapter<CategoryAdapter.Categor
                         .asBitmap()
                         .apply(LoadImage.getOption())
                         .load(glideUrl)
+                        .addListener(new RequestListener<Bitmap>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                                e.logRootCauses("CategoryImageLoadFailed");
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                                return false;
+                            }
+                        })
                         .into(ivImage);
+
             } else {
                 ivImage.setVisibility(View.GONE);
             }

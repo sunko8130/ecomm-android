@@ -87,7 +87,7 @@ public class ProductAdapter extends BaseRecyclerAdapter<ProductAdapter.ProductVi
 
         @Override
         public void onClick(View v) {
-            itemView.setEnabled(false);
+//            itemView.setEnabled(false);
             ((ProductShowActivity) mContext).onProductItemClick(productVO);
         }
     }

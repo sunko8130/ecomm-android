@@ -90,7 +90,6 @@ public class OrderHistoryActivity extends BaseActivity {
         ButterKnife.bind(this, this);
         orderList = new ArrayList<>();
 
-//        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Order History.Please wait!");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -142,9 +141,7 @@ public class OrderHistoryActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-//            super.onBackPressed();
-            startActivity(MainActivity.newIntent(this));
-            finish();
+            super.onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -237,8 +234,7 @@ public class OrderHistoryActivity extends BaseActivity {
         if (!scrollTop) {
             layoutManager.smoothScrollToPosition(rvOrderHistory, null, 0);
         } else {
-            startActivity(MainActivity.newIntent(this));
-//            super.onBackPressed();
+            super.onBackPressed();
         }
     }
 }

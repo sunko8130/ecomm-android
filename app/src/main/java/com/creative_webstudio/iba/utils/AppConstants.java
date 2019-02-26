@@ -29,13 +29,13 @@ public class AppConstants {
 //    public static final String IMAGE_URL = "http://68.183.239.3:8582/iba-api/api/files/thumbnail/";
 
 
-////    local
-//    public static final String BASE_PRODUCT_SEARCH_URL = "http://192.168.100.33:8282/iba-api/api/";
-//    public static final String BASE_OAUTH_URL = "http://192.168.100.33:8281/iba-uae/";
-//    public static final String IMAGE_URL = "http://192.168.100.33:8282/iba-api/api/pub/files/thumbnail/";
+//    local
+//    public static final String BASE_PRODUCT_SEARCH_URL = "http://192.168.100.14:8282/iba-api/api/";
+//    public static final String BASE_OAUTH_URL = "http://192.168.100.14:8281/iba-uae/";
+//    public static final String IMAGE_URL = "http://192.168.100.14:8282/iba-api/api/pub/files/thumbnail/";
 
     //    local
     public static final String BASE_PRODUCT_SEARCH_URL = "http://www.mmwebstudio.com/iba-api/api/";
     public static final String BASE_OAUTH_URL = "http://www.mmwebstudio.com/iba-uae/";
-    public static final String IMAGE_URL = "http://www.mmwebstudio.com/iba-api/api/files/thumbnail/";
+    public static final String IMAGE_URL = "http://www.mmwebstudio.com/iba-api/api/pub/files/thumbnail/";
 }

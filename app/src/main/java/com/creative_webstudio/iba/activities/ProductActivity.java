@@ -72,10 +72,6 @@ public class ProductActivity extends BaseDrawerActivity {
     @BindView(R.id.view_pager)
     AutoScrollViewPager viewPager;
 
-//    @Nullable
-//    @BindView(R.id.appbar)
-//    AppBarLayout appBar;
-
     @Nullable
     @BindView(R.id.ll)
     RelativeLayout ll;
@@ -88,8 +84,6 @@ public class ProductActivity extends BaseDrawerActivity {
     @Nullable
     @BindView(R.id.aniLoadMore)
     LottieAnimationView aniLoadMore;
-
-    private SmartScrollListener mSmartScrollListener;
 
     //empty view
 
@@ -124,7 +118,6 @@ public class ProductActivity extends BaseDrawerActivity {
 
     private int mCurrentPage = 1;
     private boolean mIsLoading;
-    private boolean mIsNoMoreData;
 
     private String[] items = {"All Product", "Promotion"};
     private String chooseItem;
@@ -148,8 +141,6 @@ public class ProductActivity extends BaseDrawerActivity {
 
     GridLayoutManager layoutManager;
 
-    //loading show
-//    AlertDialog loadingDialog;
 
 
     public static Intent newIntent(Context context) {
@@ -165,7 +156,6 @@ public class ProductActivity extends BaseDrawerActivity {
         mProductAdapter = new ProductAdapter(this);
         mCategoryList = new ArrayList<>();
         mAdvertisementList = new ArrayList<>();
-//        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Products.Please wait!");
         // TODO: specify the span count in res directory for phone and tablet size.
         if(isTablet(this)){
             layoutManager = new GridLayoutManager(this, 3);
@@ -177,43 +167,17 @@ public class ProductActivity extends BaseDrawerActivity {
         mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
         tvEmpty.setText("Loading Data........");
         btnEmpty.setVisibility(View.GONE);
-//        getCategory();
         getAdvertisement();
-//        if (mProductAdapter.getItemCount() == 0) {
-//            appBar.setExpanded(false);
-//        } else {
-//            appBar.setExpanded(true);
-//        }
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-//            categoryId = -2;
-//            checkedItem = 0;
-//            btnProduct.setText(items[0]);
             refreshData();
         });
 
         btnEmpty.setOnClickListener(v -> {
-//            categoryId = -2;
             refreshData();
         });
 
 
-//        rvProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                if (!mIsLoading && !mIsNoMoreData && layoutManager.findLastVisibleItemPosition() == mProductAdapter.getItemCount() - 1) {
-//                    mIsLoading = true;
-//                    aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
-//                    getProduct(mCurrentPage, categoryId);
-//                }
-//                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-//                    scrollTop = true;
-//                } else {
-//                    scrollTop = false;
-//                }
-//            }
-//        });
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY == 0) {
                 scrollTop=true;
@@ -236,12 +200,9 @@ public class ProductActivity extends BaseDrawerActivity {
                 }
             }
         });
-//        setupViewPager(mAdvertisementList);
-//        getProduct(++mCurrentPage, categoryId);
     }
 
     private void refreshData() {
-//        collapse();
         tvEmpty.setText("Loading Data......");
         btnEmpty.setVisibility(View.GONE);
         if (categoryId == -1) {
@@ -250,9 +211,6 @@ public class ProductActivity extends BaseDrawerActivity {
             btnProduct.setText("All Product");
         }
         checkedItem = categoryId + 2;
-//        if (!loadingDialog.isShowing()) {
-//            loadingDialog.show();
-//        }
         mProductAdapter.clearData();
         mIsLoading = true;
         mCurrentPage = 1;
@@ -264,7 +222,6 @@ public class ProductActivity extends BaseDrawerActivity {
     }
 
     private void getAdvertisement() {
-//        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Advertisement.Please wait!");
         if (!checkNetwork()) {
             retryDialog.show();
             retryDialog.tvRetry.setText("No Internet Connection");
@@ -273,11 +230,7 @@ public class ProductActivity extends BaseDrawerActivity {
                 getAdvertisement();
             });
         } else {
-//            loadingDialog.show();
             mProductViewModel.getAdvertisement().observe(this, apiResponse -> {
-//                if (loadingDialog.isShowing()) {
-//                    loadingDialog.dismiss();
-//                }
                 if (apiResponse.getData() != null) {
                     mAdvertisementList = new ArrayList<>();
                     mAdvertisementList = (ArrayList<AdvertisementVO>) apiResponse.getData();
@@ -289,10 +242,6 @@ public class ProductActivity extends BaseDrawerActivity {
                         if (errorCode == 401) {
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
-                            //to show placeholder if no ad
-//                            AdvertisementVO advertisementVO = new AdvertisementVO();
-//                            mAdvertisementList.add(advertisementVO);
-//                            setupViewPager(mAdvertisementList);
                             rlViewPager.setVisibility(View.GONE);
                             getCategory();
                             // TODO: Server response successful but there is no data (Empty response).
@@ -315,7 +264,6 @@ public class ProductActivity extends BaseDrawerActivity {
 
 
     private void getCategory() {
-//        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Products.Please wait!");
         if (!checkNetwork()) {
             retryDialog.tvRetry.setText("No Internet Connection");
             retryDialog.btnRetry.setOnClickListener(v -> {

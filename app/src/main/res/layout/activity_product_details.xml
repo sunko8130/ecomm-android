@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
@@ -120,11 +121,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_toStartOf="@+id/tv_price"
                 android:text="@string/item_name"
                 android:textColor="@color/textColor"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_toStartOf="@+id/tv_price"/>
+                android:textStyle="bold" />
 
             <org.mmtextview.components.MMTextView
                 android:id="@+id/tv_in_stock"
@@ -157,22 +158,24 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="@dimen/margin_medium"
-                android:text=""
+                tools:text="Benefits 1\r\nLorem Ipsum"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
                 android:textSize="@dimen/text_regular_2x" />
 
             <LinearLayout
                 android:id="@+id/layout_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@id/tv_item_content">
+                android:layout_below="@id/tv_item_content"
+                android:orientation="vertical">
 
                 <org.mmtextview.components.MMTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_medium"
+                    android:layout_marginRight="@dimen/margin_medium"
                     android:text="Details"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-                    android:layout_margin="@dimen/margin_medium"/>
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Title" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rc_details"
@@ -312,7 +315,7 @@
         <com.creative_webstudio.iba.components.ViewPagerFixed
             android:id="@+id/photo_view_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

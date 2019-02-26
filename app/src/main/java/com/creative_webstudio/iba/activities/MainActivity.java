@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.GlideException;
 import com.creative_webstudio.iba.MyOnPageChangeListener;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.adapters.CategoryAdapter;
@@ -107,6 +108,7 @@ public class MainActivity extends BaseDrawerActivity {
         super.onCreate(savedInstanceState);
         setMyView(R.layout.activity_main);
         ButterKnife.bind(this, this);
+
         rvCategory.setEmptyView(vpEmpty);
         mCategoryList = new ArrayList<>();
         mAdvertisementList = new ArrayList<>();
@@ -143,9 +145,6 @@ public class MainActivity extends BaseDrawerActivity {
     private void refreshData() {
         tvEmpty.setText("Loading Data......");
         btnEmpty.setVisibility(View.GONE);
-//        mProductAdapter.clearData();
-//        mIsLoading = true;
-//        mCurrentPage = 1;
         mCategoryAdapter.clearData();
         getCategory();
     }
@@ -212,7 +211,6 @@ public class MainActivity extends BaseDrawerActivity {
                     mCategoryList.addAll(apiResponse.getData());
                     List<CategoryVO> temp = mCategoryList;
                     mCategoryAdapter.setNewData(temp);
-//                    getProduct(mCurrentPage, categoryId);
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {
                         int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();

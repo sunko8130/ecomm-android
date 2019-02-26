@@ -75,7 +75,6 @@ public class SplashActivity extends BaseActivity implements SplashView {
                 if (apiResponse.getData() != null) {
                     CustomerVO customerVO = IbaModel.getInstance().getCustomerVO();
                     mFirebaseAnalytics.setUserProperty("customer_name", customerVO.getName());
-//                    startActivity(ProductActivity.newIntent(SplashActivity.this));
                     startActivity(MainActivity.newIntent(SplashActivity.this));
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {

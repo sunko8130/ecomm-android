@@ -37,10 +37,6 @@ import retrofit2.http.Query;
 
 public interface IbaAPI {
 
-    @FormUrlEncoded
-    @POST("GetHealthcareInfo.php")
-    Observable<HCInfoResponse> loadHCInfo(
-            @Field("access_token") String accessToken);
 
     @FormUrlEncoded
     @POST("oauth/token")
@@ -75,17 +71,13 @@ public interface IbaAPI {
     Observable<Response<ProductResponse>> getProductById(@Header("Authorization") String authHeader,
                                                          @Body ProductCriteria criteriaVO);
 
-//    @POST("order_unit/search/list")
-//    Observable<Response<List<OrderUnitVO>>> getOrderUnit(@Header("Authorization") String authHeader,
-//                                                         @Body ConfigurationCriteria criteriaVO);
-
     @POST("advertisement/search/list")
     Observable<Response<List<AdvertisementVO>>> getAdvertisement(@Header("Authorization") String authHeader,
                                                                  @Body AdvertisementCriteria criteriaVO);
 
     @POST("promo_reward_detail/search/applied_rewards")
     Observable<Response<List<PromoRewardDetailVO>>> getPromoDetails(@Header("Authorization") String authHeader,
-                                                                     @Body List<PromoRewardDetailCriteria> criteriaVO);
+                                                                    @Body List<PromoRewardDetailCriteria> criteriaVO);
 
     @POST("product_category/search/list")
     Observable<Response<List<CategoryVO>>> getCategory(@Header("Authorization") String authHeader,
@@ -112,8 +104,8 @@ public interface IbaAPI {
     @FormUrlEncoded
     @PUT("customer/me/change_password")
     Observable<Response<Integer>> updatePassword(@Header("Authorization") String authHeader,
-                                              @Field("oldPassword") String oldPassword,
-                                              @Field("newPassword") String newPassword);
+                                                 @Field("oldPassword") String oldPassword,
+                                                 @Field("newPassword") String newPassword);
 
     @GET("customer/me")
     Observable<Response<CustomerVO>> getCustomerInfo(@Header("Authorization") String authHeader);

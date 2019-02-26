@@ -81,6 +81,9 @@ public class ProductShowActivity extends BaseActivity {
     @BindView(R.id.vLine)
     View vLine;
 
+    @BindView(R.id.tv_toolbar_title)
+    MMTextView tvToolBarTitle;
+
     //empty view
 
     @Nullable
@@ -154,18 +157,13 @@ public class ProductShowActivity extends BaseActivity {
             String json = getIntent().getStringExtra("categoryVo");
             Gson gson = new Gson();
             categoryVO = gson.fromJson(json, CategoryVO.class);
-            toolbar.setTitle(categoryVO.getName());
-            getSubCategory(categoryVO.getId());
+            tvToolBarTitle.setText(categoryVO.getName());
             if (categoryVO.getId() > 3) {
-//                CategoryVO temp = categoryVO;
-//                temp.setName("All " + categoryVO.getName());
-//                mCategoryList.add(categoryVO);
                 categoryId = categoryVO.getId();
-//                categoryVO.setSelected(true);
+                getSubCategory(categoryVO.getId());
             } else {
                 categoryId = categoryVO.getId();
-                subHeader.setVisibility(View.GONE);
-                vLine.setVisibility(View.GONE);
+                getProduct(mCurrentPage,categoryId);
             }
         }
 
@@ -204,14 +202,8 @@ public class ProductShowActivity extends BaseActivity {
     }
 
     private void refreshData() {
-//        collapse();
         tvEmpty.setText("Loading Data......");
         btnEmpty.setVisibility(View.GONE);
-//        if (categoryId == -1) {
-//            btnProduct.setText("Promotion");
-//        } else if (categoryId == -2) {
-//            btnProduct.setText("All Product");
-//        }
         mProductAdapter.clearData();
         mIsLoading = true;
         mCurrentPage = 1;
@@ -232,6 +224,8 @@ public class ProductShowActivity extends BaseActivity {
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 if (apiResponse.getData() != null) {
+                    subHeader.setVisibility(View.GONE);
+                    vLine.setVisibility(View.GONE);
                     mCategoryList.addAll(apiResponse.getData());
                     mSubAdapter.setNewData(mCategoryList);
                     getProduct(mCurrentPage, categoryId);
@@ -282,10 +276,6 @@ public class ProductShowActivity extends BaseActivity {
                 }
                 aniLoadMore.setVisibility(View.GONE);
                 if (apiResponse.getData() != null) {
-                    if (mCurrentPage == 1) {
-//                        expand();
-                    }
-//                    categoryId = (int) productCategoryId;
                     mCurrentPage++;
                     mIsLoading = false;
                     List<ProductVO> list = new ArrayList<>();
@@ -302,7 +292,6 @@ public class ProductShowActivity extends BaseActivity {
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
                             // TODO: Server response successful but there is no data (Empty response).
-//                            collapse();
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
                             if (mCurrentPage > 1) {

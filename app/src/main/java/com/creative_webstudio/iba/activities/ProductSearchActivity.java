@@ -103,20 +103,12 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         searchView.setIconified(false);
         searchView.requestFocusFromTouch();
 
-//        tvResult.setOnClickListener(view -> {
-//            Log.e("onclickTvResult", "onClick: Success ");
-//            mPresenter.onTapSearch("e");
-//            mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, productVOS -> searchAdapter.setNewData(productVOS));
-//        });
-
     }
 
 
     @Override
     public void onTapView() {
-//        Intent i = new Intent(this, ProductDetailsActivity.class);
         startActivity(ProductDetailsActivity.newIntent(this, "Search"));
-//        overridePendingTransition(R.anim.rotate_clockwise_anim, R.anim.zoom_out_anim);
     }
 
     @Override
@@ -140,49 +132,11 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         mFirebaseAnalytics.logEvent("click_search_icon", bundle);
         getProductSearch(criteriaVO);
         searchView.clearFocus();
-//        mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
-//            @Override
-//            public void onChanged(@Nullable List<ProductVO> productVOS) {
-//                searchAdapter.setNewData(productVOS);
-//                mProductVOS = productVOS;
-//            }
-//        });
-//        List<ProductVO> productVo = new ArrayList<>();
-//        for (ProductVO product : mProductList) {
-//            if (product.getProductName().toLowerCase().contains(userInput)) {
-//                productVo.add(product);
-//            }
-//        }
-//
-//        searchAdapter.appendNewData(productVo);
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-
-//        String userInput = newText.toLowerCase();
-//        // mPresenter.onTapSearch(userInput);
-//        ProductCriteria criteriaVO = new ProductCriteria();
-//        criteriaVO.setWord(userInput);
-//        criteriaVO.setPageNumber(0);
-//        getProductSearch(criteriaVO);
-//        searchAdapter.setNewData(mProductList);
-////        mPresenter.getmListMutableLiveData().observe(ProductSearchActivity.this, new Observer<List<ProductVO>>() {
-////            @Override
-////            public void onChanged(@Nullable List<ProductVO> productVOS) {
-////                searchAdapter.setNewData(productVOS);
-////                mProductVOS = productVOS;
-////            }
-////        });
-//        List<ProductVO> productVo = new ArrayList<>();
-//        for (ProductVO product : mProductList) {
-//            if (product.getProductName().toLowerCase().contains(userInput)) {
-//                productVo.add(product);
-//            }
-//        }
-//
-//        searchAdapter.setNewData(productVo);
         return false;
     }
 
@@ -198,7 +152,6 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//       startActivity(ProductActivity.newIntent(this));
     }
 
     public void getProductSearch(ProductCriteria criteriaVO) {
@@ -213,7 +166,6 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
             searchAdapter.clearData();
             loadingSearch.setVisibility(View.VISIBLE);
             mProductSearchViewModel.getProductSearchList(criteriaVO).observe(this, apiResponse -> {
-//            vpEmpty.setVisibility(View.VISIBLE);
                 loadingSearch.setVisibility(View.GONE);
                 if (apiResponse.getData() != null) {
                     List<ProductVO> list=new ArrayList<>();
@@ -222,7 +174,6 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
                             list.add(productVO);
                         }
                     }
-//                    mProductList = (ArrayList<ProductVO>) apiResponse.getData();
                     searchAdapter.setNewData(list);
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {

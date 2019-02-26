@@ -62,20 +62,4 @@ public class PagerAdapter extends android.support.v4.view.PagerAdapter {
         container.removeView((View) object);
     }
 
-//    public class PagerViewHolder extends BaseViewHolder<AdvertisementVO> {
-//
-//        public PagerViewHolder(View itemView) {
-//            super(itemView);
-//        }
-//
-//        @Override
-//        public void setData(AdvertisementVO data) {
-//
-//        }
-//
-//        @Override
-//        public void onClick(View v) {
-//
-//        }
-//    }
 }

@@ -165,11 +165,6 @@ public class CartEditActivity extends BaseActivity {
             }
         }
         cartEditList = tempList;
-//        if (ibaShared.removeCart(cartVO)) {
-//            mAdapter.clearData();
-//            Toast.makeText(this, "Removed!", Toast.LENGTH_SHORT).show();
-//            setUpData(); // Fetch data from server.
-//        }
         setUpData();
     }
 
