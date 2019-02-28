@@ -62,8 +62,8 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.tvSubTotal)
     MMTextView tvSubtotal;
 
-    @BindView(R.id.tvTax)
-    MMTextView tvTax;
+//    @BindView(R.id.tvTax)
+//    MMTextView tvTax;
 
     @BindView(R.id.tvTotal)
     MMTextView tvTotal;
@@ -206,6 +206,13 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
                             Snackbar.make(rvCart, "End of Product List", Snackbar.LENGTH_LONG).show();
+                        }else {
+                            retryDialog.show();
+                            retryDialog.tvRetry.setText("Network error!");
+                            retryDialog.btnRetry.setOnClickListener(v -> {
+                                retryDialog.dismiss();
+                                getCartProducts(page, productIds);
+                            });
                         }
                     } else {
                         retryDialog.show();

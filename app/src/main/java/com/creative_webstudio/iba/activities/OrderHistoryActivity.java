@@ -110,7 +110,7 @@ public class OrderHistoryActivity extends BaseActivity {
                 super.onScrolled(recyclerView, dx, dy);
                 if (!mIsLoading && layoutManager.findLastVisibleItemPosition() == mAdapter.getItemCount() - 1) {
                     mIsLoading = true;
-                    aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
+//                    aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
                     getOrderHistory(mCurrentPage);
                 }
                 if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
@@ -177,7 +177,7 @@ public class OrderHistoryActivity extends BaseActivity {
 //                    }
                     mCurrentPage++;
                     mIsLoading = false;
-                    ivEmpty.setVisibility(View.GONE);
+//                    ivEmpty.setVisibility(View.GONE);
                     mAdapter.appendNewData(orderList);
                 } else {
                     if (apiResponse.getError() instanceof ApiException) {

@@ -10,17 +10,13 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.creative_webstudio.iba.R;
-import com.creative_webstudio.iba.activities.ProductActivity;
 import com.creative_webstudio.iba.activities.ProductShowActivity;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
 import com.creative_webstudio.iba.vieholders.BaseViewHolder;
-import com.creative_webstudio.iba.delegates.ProductDelegate;
 
 import org.mmtextview.components.MMTextView;
-
-import java.util.List;
 
 import butterknife.BindView;
 

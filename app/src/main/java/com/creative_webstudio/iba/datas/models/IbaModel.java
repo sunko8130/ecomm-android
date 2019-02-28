@@ -326,46 +326,6 @@ public class IbaModel extends BaseModel {
 //                });
 //    }
 
-//    public void loadHCInfo(final MutableLiveData<List<HCInfoVO>> mHCInfoList,
-//                           final MutableLiveData<String> error) {
-//        theApiSample.loadHCInfo("b002c7e1a528b7cb460933fc2875e916")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<HCInfoResponse>() {
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(HCInfoResponse hcInfoResponse) {
-//                        if (hcInfoResponse != null) {
-//                            infoVOList = hcInfoResponse.getInfoVOList();
-//                            mHCInfoList.setValue(hcInfoResponse.getInfoVOList());
-//                        } else {
-//                            error.setValue("NoData");
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        error.setValue(e.getMessage());
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
-//    }
-//
-//    public HCInfoVO getInfoById(double infoId) {
-//        HCInfoVO info = null;
-//        for (HCInfoVO i : infoVOList) {
-//            if (i.getId() == infoId) info = i;
-//        }
-//        return info;
-//    }
 
 
 }

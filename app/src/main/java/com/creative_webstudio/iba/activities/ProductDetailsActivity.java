@@ -219,7 +219,7 @@ public class ProductDetailsActivity extends BaseActivity {
             if (productVO.getDescription() != null) {
                 String string = productVO.getDescription();
                 string = string.replace("\n", "<br>");
-                string = string.replace(" ","&#160;");
+                string = string.replace(" ", "&#160;");
                 tvItemContent.setText(string);
 //                tvItemContent.setText(string);
             }
@@ -250,16 +250,22 @@ public class ProductDetailsActivity extends BaseActivity {
                 setUpSpinner();
             }
             btnAddToCart.setOnClickListener(view -> {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailsActivity.this);
-                builder.setTitle("Sure?");
-                builder.setMessage("Want to add to Cart?");
-                builder.setPositiveButton("Ok", (dialog, which) -> {
-                    addToCart();
-                });
-                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-                AlertDialog productDialog = builder.create();
-                productDialog.show();
-            });
+                        if (maxQuantity > 0) {
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailsActivity.this);
+                            builder.setTitle("Sure?");
+                            builder.setMessage("Want to add to Cart?");
+                            builder.setPositiveButton("Ok", (dialog, which) -> {
+                                addToCart();
+                            });
+                            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                            AlertDialog productDialog = builder.create();
+                            productDialog.show();
+                        } else {
+                            Toast.makeText(context, "This product is out of stock!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            );
+
         }
     }
 
@@ -393,11 +399,9 @@ public class ProductDetailsActivity extends BaseActivity {
                     tvQuantity.setText(String.valueOf(quantity));
                     tvInStock.setText("Out of stock");
                     tvInStock.setTextColor(ContextCompat.getColor(ProductDetailsActivity.this, R.color.redFull));
-                    btnAddToCart.setEnabled(false);
                 } else {
                     tvInStock.setText("In Stock");
                     tvInStock.setTextColor(ContextCompat.getColor(ProductDetailsActivity.this, R.color.limeGreen));
-                    btnAddToCart.setEnabled(true);
                 }
             }
 
@@ -487,6 +491,7 @@ public class ProductDetailsActivity extends BaseActivity {
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "view_cart");
                 mFirebaseAnalytics.logEvent("click_cart", bundle);
                 startActivity(CartActivity.newIntent(this));
+                finish();
                 break;
         }
         return true;

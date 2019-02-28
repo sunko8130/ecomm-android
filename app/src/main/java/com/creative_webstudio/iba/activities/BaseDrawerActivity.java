@@ -242,13 +242,10 @@ public class BaseDrawerActivity extends BaseActivity {
             Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
 
             final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //Do something after 100ms
-                    doubleBackToExitPressedOnce = false;
+            handler.postDelayed(() -> {
+                //Do something after 100ms
+                doubleBackToExitPressedOnce = false;
 //                    handler.postDelayed(this, 2000);
-                }
             }, 2000);
         }
     }

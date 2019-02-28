@@ -5,9 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.creative_webstudio.iba.R;
-import com.creative_webstudio.iba.activities.ProductActivity;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
-import com.creative_webstudio.iba.delegates.ProductDelegate;
 
 import org.mmtextview.components.MMTextView;
 

@@ -51,7 +51,6 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
                 if (cart != null) {
                     ((CartActivity) mContext).onRemoveCart(cart);
                 }
-                //((CartActivity) mContext).onClickItem(1,null,position);
             });
         } else {
             holder.btnDelete.setVisibility(View.GONE);

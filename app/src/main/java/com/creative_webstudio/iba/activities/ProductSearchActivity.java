@@ -1,7 +1,6 @@
 package com.creative_webstudio.iba.activities;
 
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +10,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -28,8 +25,6 @@ import com.creative_webstudio.iba.datas.criterias.ThumbnailCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
-import com.creative_webstudio.iba.mvp.presenters.ProductSearchPresenter;
-import com.creative_webstudio.iba.mvp.views.ProductSearchView;
 import com.creative_webstudio.iba.networks.viewmodels.ProductSearchViewModel;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
@@ -42,7 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Response;
 
-public class ProductSearchActivity extends BaseActivity implements ProductSearchView, SearchView.OnQueryTextListener {
+public class ProductSearchActivity extends BaseActivity implements SearchView.OnQueryTextListener {
 
     @BindView(R.id.search_product_toolbar)
     Toolbar toolbar;
@@ -62,8 +57,6 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
     SearchAdapter searchAdapter;
 
     ProductCriteria criteriaVO;
-    private ProductSearchPresenter mPresenter;
-    private List<ProductVO> mProductVOS;
     private ProductSearchViewModel mProductSearchViewModel;
 
     public static Intent newIntent(Context context) {
@@ -76,11 +69,7 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
         setContentView(R.layout.activity_product_search);
         ButterKnife.bind(this, this);
         setSupportActionBar(toolbar);
-        mProductVOS = new ArrayList<>();
         loadingSearch.setVisibility(View.GONE);
-
-        mPresenter = ViewModelProviders.of(this).get(ProductSearchPresenter.class);
-        mPresenter.initPresenter(this);
 
         Objects.requireNonNull(getSupportActionBar()).setHomeButtonEnabled(true);
         searchAdapter = new SearchAdapter(this);
@@ -105,11 +94,6 @@ public class ProductSearchActivity extends BaseActivity implements ProductSearch
 
     }
 
-
-    @Override
-    public void onTapView() {
-        startActivity(ProductDetailsActivity.newIntent(this, "Search"));
-    }
 
     @Override
     public boolean onQueryTextSubmit(String query) {

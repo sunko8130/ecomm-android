@@ -82,6 +82,10 @@ public class MainActivity extends BaseDrawerActivity {
     @BindView(R.id.nestedScroll)
     NestedScrollView nestedScrollView;
 
+    @Nullable
+    @BindView(R.id.header)
+    TextView header;
+
     private CirclePageIndicator titlePageIndicator;
 
     private ArrayList<CategoryVO> mCategoryList;
@@ -207,6 +211,7 @@ public class MainActivity extends BaseDrawerActivity {
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 if (apiResponse.getData() != null) {
+                    header.setVisibility(View.VISIBLE);
                     setupCategory();
                     mCategoryList.addAll(apiResponse.getData());
                     List<CategoryVO> temp = mCategoryList;
