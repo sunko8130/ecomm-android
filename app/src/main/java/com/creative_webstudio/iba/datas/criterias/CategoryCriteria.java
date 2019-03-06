@@ -6,6 +6,8 @@ public class CategoryCriteria {
 
     private Long parentCategoryId;
 
+    private Boolean withChildCategoryCount;
+
     public Long getParentCategoryId() {
         return parentCategoryId;
     }
@@ -20,5 +22,13 @@ public class CategoryCriteria {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean isWithChildCategoryCount() {
+        return withChildCategoryCount;
+    }
+
+    public void setWithChildCategoryCount(Boolean withChildCategoryCount) {
+        this.withChildCategoryCount = withChildCategoryCount;
     }
 }

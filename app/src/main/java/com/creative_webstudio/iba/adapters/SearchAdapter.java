@@ -13,7 +13,6 @@ import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.activities.ProductSearchActivity;
 import com.creative_webstudio.iba.datas.vos.OrderUnitVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
-import com.creative_webstudio.iba.delegates.ProductSearchDelegate;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.creative_webstudio.iba.utils.LoadImage;
 import com.creative_webstudio.iba.vieholders.BaseViewHolder;
@@ -25,7 +24,6 @@ import butterknife.BindView;
 
 public class SearchAdapter extends BaseRecyclerAdapter<SearchAdapter.SearchViewHolder, ProductVO> {
 
-    private ProductSearchDelegate mproductDelegate;
     Context mContext;
     IBAPreferenceManager mIbaShared;
 

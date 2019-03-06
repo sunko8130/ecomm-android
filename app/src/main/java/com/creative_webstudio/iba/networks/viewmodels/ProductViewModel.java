@@ -6,11 +6,13 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.creative_webstudio.iba.datas.ApiResponse;
 import com.creative_webstudio.iba.datas.criterias.AdvertisementCriteria;
+import com.creative_webstudio.iba.datas.criterias.BrandCriteria;
 import com.creative_webstudio.iba.datas.criterias.CategoryCriteria;
 import com.creative_webstudio.iba.datas.criterias.OrderUnitCriteria;
 import com.creative_webstudio.iba.datas.criterias.PromoRewardDetailCriteria;
 import com.creative_webstudio.iba.datas.criterias.ThumbnailCriteria;
 import com.creative_webstudio.iba.datas.vos.AdvertisementVO;
+import com.creative_webstudio.iba.datas.vos.BrandVO;
 import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ProductResponse;
@@ -93,9 +95,49 @@ public class ProductViewModel extends AndroidViewModel {
         return result;
     }
 
+    public MutableLiveData<ApiResponse<ProductResponse>> getProductbyBrand(int page, long brandId) {
+        ProductCriteria criteriaVO = new ProductCriteria();
+        ThumbnailCriteria thumbnailCriteria = new ThumbnailCriteria();
+        thumbnailCriteria.setThumbnailType(2);
+        OrderUnitCriteria orderUnitCriteria = new OrderUnitCriteria();
+        orderUnitCriteria.setWithPromoReward(true);
+        criteriaVO.setOrderUnit(orderUnitCriteria);
+        criteriaVO.setPageNumber(String.valueOf(page));
+        criteriaVO.setWithOrderUnit(true);
+        criteriaVO.setProductCategoryId(null);
+        criteriaVO.setThumbnail(thumbnailCriteria);
+        criteriaVO.setWithThumbnail(true);
+        criteriaVO.setWithDetail(true);
+        criteriaVO.setBrandId(brandId);
+        MutableLiveData<ApiResponse<ProductResponse>> result = new MutableLiveData<>();
+        ApiResponse<ProductResponse> apiResponse = new ApiResponse();
+        IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
+        IBAPreferenceManager prefs = new IBAPreferenceManager(getApplication());
+        String accessToken = prefs.getAccessToken();
+        String userAuth = "Bearer " + accessToken;
+        api.getProduct(userAuth, criteriaVO)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    ProductResponse body = response.body();
+                    if (response.isSuccessful() && body != null && body.getProductVOList() != null && !body.getProductVOList().isEmpty()) {
+                        apiResponse.setData(body);
+                    } else {
+                        apiResponse.setError(new ApiException(response.code()));
+                    }
+                    result.setValue(apiResponse);
+                }, throwable -> {
+                    apiResponse.setError(new ApiException(throwable));
+                    result.setValue(apiResponse);
+                });
+
+        return result;
+    }
+
     public MutableLiveData<ApiResponse<List<CategoryVO>>> getCategory() {
         CategoryCriteria criteriaVO = new CategoryCriteria();
         criteriaVO.setType("MAIN");
+        criteriaVO.setWithChildCategoryCount(true);
         MutableLiveData<ApiResponse<List<CategoryVO>>> result = new MutableLiveData<>();
         ApiResponse<List<CategoryVO>> apiResponse = new ApiResponse();
         IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
@@ -135,6 +177,33 @@ public class ProductViewModel extends AndroidViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     List<CategoryVO> body = response.body();
+                    if (response.isSuccessful() && body != null && !body.isEmpty()) {
+                        apiResponse.setData(body);
+                    } else {
+                        apiResponse.setError(new ApiException(response.code()));
+                    }
+                    result.setValue(apiResponse);
+                }, throwable -> {
+                    apiResponse.setError(new ApiException(throwable));
+                    result.setValue(apiResponse);
+                });
+        return result;
+    }
+
+    public MutableLiveData<ApiResponse<List<BrandVO>>> getBrand(Long categoryId) {
+        BrandCriteria criteriaVO = new BrandCriteria();
+        criteriaVO.setProductCategoryId(categoryId);
+        MutableLiveData<ApiResponse<List<BrandVO>>> result = new MutableLiveData<>();
+        ApiResponse<List<BrandVO>> apiResponse = new ApiResponse();
+        IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
+        IBAPreferenceManager prefs = new IBAPreferenceManager(getApplication());
+        String accessToken = prefs.getAccessToken();
+        String userAuth = "Bearer " + accessToken;
+        api.getBrand(userAuth, criteriaVO)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    List<BrandVO> body = response.body();
                     if (response.isSuccessful() && body != null && !body.isEmpty()) {
                         apiResponse.setData(body);
                     } else {

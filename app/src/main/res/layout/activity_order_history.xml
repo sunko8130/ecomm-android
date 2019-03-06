@@ -35,7 +35,7 @@
                 app:lottie_rawRes="@raw/load_more"
                 app:lottie_loop="true"
                 app:lottie_colorFilter="@color/colorAccent"
-                android:layout_alignBottom="@+id/recycler_order_history"
+                android:layout_below="@+id/recycler_order_history"
                 android:visibility="gone"/>
         </RelativeLayout>
 

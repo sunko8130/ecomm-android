@@ -12,6 +12,7 @@ public class ProductCriteria {
     private boolean withDetail;
     private OrderUnitCriteria orderUnit;
     private Boolean hasPromotion=false;
+    private Long brandId;
 
     public long[] getIncludeIds() {
         return includeIds;
@@ -91,5 +92,13 @@ public class ProductCriteria {
 
     public void setHasPromotion(Boolean hasPromotion) {
         this.hasPromotion = hasPromotion;
+    }
+
+    public Long getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(Long brandId) {
+        this.brandId = brandId;
     }
 }

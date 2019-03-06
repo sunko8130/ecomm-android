@@ -73,7 +73,7 @@
                         android:id="@+id/aniLoadMore"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/load_more_height"
-                        android:layout_alignBottom="@+id/rv_product"
+                        android:layout_below="@+id/rv_product"
                         android:visibility="gone"
                         app:lottie_autoPlay="true"
                         app:lottie_colorFilter="@color/colorAccent"

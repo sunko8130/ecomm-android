@@ -52,5 +52,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <!--load more size-->
-    <dimen name="load_more_height">30dp</dimen>
+    <dimen name="load_more_height">45dp</dimen>
 </resources>
