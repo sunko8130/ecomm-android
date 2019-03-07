@@ -166,6 +166,7 @@ public class ProductViewModel extends AndroidViewModel {
         CategoryCriteria criteriaVO = new CategoryCriteria();
         criteriaVO.setType("SUB");
         criteriaVO.setParentCategoryId(categoryId);
+        criteriaVO.setWithChildCategoryCount(true);
         MutableLiveData<ApiResponse<List<CategoryVO>>> result = new MutableLiveData<>();
         ApiResponse<List<CategoryVO>> apiResponse = new ApiResponse();
         IbaAPI api = ServiceGenerator.createService(IbaAPI.class);

@@ -120,6 +120,8 @@ public class ProductShowActivity extends BaseActivity {
 
     private Long brandId = 0L;
 
+    private boolean isCategory = true;
+
     GridLayoutManager layoutManager;
 
     GridLayoutManager subLayoutManager;
@@ -163,17 +165,20 @@ public class ProductShowActivity extends BaseActivity {
             categoryVO = gson.fromJson(json, CategoryVO.class);
             tvToolBarTitle.setText(categoryVO.getName());
             categoryId = categoryVO.getId();
-            if (categoryId > 3) {
-                getSubCategory(categoryId);
-            }else if (categoryVO.getChildCategoryCount() > 1) {
+            if (categoryId < 3) {
+                getProductByCategory(mCurrentPage, categoryId);
+            }else if (categoryVO.getChildCategoryCount() > 0) {
                 mSubAdapter = new SubCategoryAdapter(this);
                 rcSubCate.setAdapter(mSubAdapter);
-                getProductByCategory(mCurrentPage, categoryId);
+                getSubCategory(categoryId);
+                subHeader.setText("Sub Categories");
             } else {
                 //brand show
                 mBrandAdapter = new BrandAdapter(this);
+                isCategory = false;
                 rcSubCate.setAdapter(mBrandAdapter);
                 getBrand(categoryId);
+                subHeader.setText("Brands");
             }
         }
 
@@ -217,7 +222,11 @@ public class ProductShowActivity extends BaseActivity {
         mProductAdapter.clearData();
         mIsLoading = true;
         mCurrentPage = 1;
-        getProductByCategory(mCurrentPage, categoryId);
+        if(isCategory) {
+            getProductByCategory(mCurrentPage, categoryId);
+        }else {
+            getProductByBrand(mCurrentPage,brandId);
+        }
     }
 
     private void getSubCategory(Long categoryId) {
@@ -294,8 +303,7 @@ public class ProductShowActivity extends BaseActivity {
                         if (errorCode == 401) {
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
-                            mSubAdapter.setNewData(mCategoryList);
-                            getProductByCategory(mCurrentPage, categoryId);
+                            tvEmpty.setText("There is no Data!");
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
                             Snackbar.make(toolbar, "End of Product List", Snackbar.LENGTH_LONG).show();
@@ -391,7 +399,7 @@ public class ProductShowActivity extends BaseActivity {
                 getProductByCategory(page, brandId);
             });
         } else {
-            mProductViewModel.getProduct(page, brandId).observe(this, apiResponse -> {
+            mProductViewModel.getProductbyBrand(page, brandId).observe(this, apiResponse -> {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
