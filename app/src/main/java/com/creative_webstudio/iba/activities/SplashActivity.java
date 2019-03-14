@@ -77,7 +77,13 @@ public class SplashActivity extends BaseActivity implements BaseView {
                             // Invalid or expired access token.
                             super.refreshAccessToken();
                         } else if (errorCode == 204) {
-                            // TODO: Server response successful but there is no data (Empty response).
+                            // Because of SuperUser
+                            retryDialog.show();
+                            retryDialog.tvRetry.setText("You can't sign in with this account!");
+                            retryDialog.btnRetry.setOnClickListener(v -> {
+                                retryDialog.dismiss();
+                                startActivity(SignInActivity.newIntent(this));
+                            });
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
                         } else {

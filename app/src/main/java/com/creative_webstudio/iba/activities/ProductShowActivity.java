@@ -166,8 +166,8 @@ public class ProductShowActivity extends BaseActivity {
             tvToolBarTitle.setText(categoryVO.getName());
             categoryId = categoryVO.getId();
             if (categoryId < 3) {
-                getProductByCategory(mCurrentPage, categoryId);
-            }else if (categoryVO.getChildCategoryCount() > 0) {
+                getSubCategory(categoryId);
+            }else if (categoryVO.getChildCategoryCount() > 1) {
                 mSubAdapter = new SubCategoryAdapter(this);
                 rcSubCate.setAdapter(mSubAdapter);
                 getSubCategory(categoryId);

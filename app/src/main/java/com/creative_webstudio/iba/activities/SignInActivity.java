@@ -12,7 +12,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +34,7 @@ import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 
 import org.mmtextview.components.MMTextView;
 
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -87,9 +91,9 @@ public class SignInActivity extends BaseActivity implements SignInView {
             signIn();
         });
         getResponse();
-        tvPhone.setOnClickListener(view -> {
-            callPhoneNumber();
-        });
+//        tvPhone.setOnClickListener(view -> {
+////            callPhoneNumber();
+//        });
     }
 
     @Override
@@ -115,13 +119,13 @@ public class SignInActivity extends BaseActivity implements SignInView {
                     return;
                 }
 
-                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                Intent callIntent = new Intent(Intent.ACTION_VIEW);
                 callIntent.setData(Uri.parse("tel:" + phoneNumber));
                 startActivity(callIntent);
 
             }
             else {
-                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                Intent callIntent = new Intent(Intent.ACTION_VIEW);
                 callIntent.setData(Uri.parse("tel:" + phoneNumber));
                 startActivity(callIntent);
             }
@@ -176,8 +180,24 @@ public class SignInActivity extends BaseActivity implements SignInView {
             }
             if(configurationVO.getKey().equals(AppConstants.APP_CONTACT_PHONE)){
                 phoneNumber=configurationVO.getValue();
-                tvPhone.setPaintFlags(tvContactMsg.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
-                tvPhone.setText(configurationVO.getValue());
+                List<String> elephantList = Arrays.asList(phoneNumber.split(","));
+                String phone="";
+                for(String temp:elephantList){
+                    phone+="&lt;a href=\"tel:"+temp+"\">"+temp+"&lt;/a>&nbsp;&nbsp;&nbsp;";
+                }
+//                tvPhone.setPaintFlags(tvPhone.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
+//                tvPhone.setText(configurationVO.getValue());
+                tvPhone. setMovementMethod(LinkMovementMethod.getInstance());
+                tvPhone.setLinksClickable(true);
+                tvPhone.setFocusable(true);
+                tvPhone.setClickable(true);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    tvPhone.setText(Html.fromHtml(phone,Html.FROM_HTML_MODE_LEGACY));
+                } else {
+                    tvPhone.setText(Html.fromHtml(phone));
+                }
+                tvPhone.setLinkTextColor(ContextCompat.getColor(this, R.color.limeGreen));
+//                tvPhone.setText(Html.fromHtml("&lt;a href=\"http://www.google.com\">Google&lt;/a>"));
             }
         }
     }
@@ -214,7 +234,7 @@ public class SignInActivity extends BaseActivity implements SignInView {
             }
             switch (integer) {
                 case 200:
-                    getConfigurationData();
+//                    getConfigurationData();
                     startActivity(SplashActivity.newIntent(SignInActivity.this));
                     break;
                 case 400:
