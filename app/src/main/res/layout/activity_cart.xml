@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.78" />
+        app:layout_constraintGuide_percent="0.8" />
 
 
     <android.support.constraint.Guideline
@@ -102,9 +102,9 @@
         <org.mmtextview.components.MMTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/subtotal" />
+            android:text="@string/subtotal"
+            android:visibility="gone"/>
 
-        /
 
         <org.mmtextview.components.MMTextView
             android:layout_width="wrap_content"
@@ -131,7 +131,8 @@
             android:id="@+id/tvSubTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/mmk_sub_total" />
+            android:text="@string/mmk_sub_total"
+            android:visibility="gone"/>
 
         <!--<org.mmtextview.components.MMTextView-->
             <!--android:id="@+id/tvTax"-->

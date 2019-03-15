@@ -158,9 +158,10 @@ public class CartEditActivity extends BaseActivity {
         cartVO.setProductId(cart.getProductId());
         cartVO.setOrderUnitId(cart.getUnitId());
         cartVO.setQuantity(cart.getItemQuantity());
+        ibaShared.removeCart(cartVO);
         List<CartVO> tempList = new ArrayList<>();
         for (CartVO temp : cartEditList) {
-            if (temp.getProductId() != cartVO.getProductId() || temp.getOrderUnitId() != cartVO.getOrderUnitId()) {
+            if (!temp.getProductId().equals(cartVO.getProductId()) || !temp.getOrderUnitId().equals(cartVO.getOrderUnitId())) {
                 tempList.add(temp);
             }
         }

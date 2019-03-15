@@ -75,7 +75,7 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_minus"/>
 
-                <EditText
+                <org.mmtextview.components.MMTextView
                     android:id="@+id/tv_quantity"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -86,8 +86,7 @@
                     android:maxLength="3"
                     android:inputType="number"
                     android:textColor="@color/redFull"
-                    android:textSize="@dimen/text_regular_3x"
-                    android:background="@drawable/round_rect_black_line"/>
+                    android:textSize="@dimen/text_regular_3x"/>
 
                 <ImageView
                     android:id="@+id/iv_plus"

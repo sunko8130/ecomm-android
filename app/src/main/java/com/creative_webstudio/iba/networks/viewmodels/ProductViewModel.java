@@ -95,7 +95,7 @@ public class ProductViewModel extends AndroidViewModel {
         return result;
     }
 
-    public MutableLiveData<ApiResponse<ProductResponse>> getProductbyBrand(int page, long brandId) {
+    public MutableLiveData<ApiResponse<ProductResponse>> getProductbyBrand(int page, long brandId, long categoryId) {
         ProductCriteria criteriaVO = new ProductCriteria();
         ThumbnailCriteria thumbnailCriteria = new ThumbnailCriteria();
         thumbnailCriteria.setThumbnailType(2);
@@ -109,6 +109,7 @@ public class ProductViewModel extends AndroidViewModel {
         criteriaVO.setWithThumbnail(true);
         criteriaVO.setWithDetail(true);
         criteriaVO.setBrandId(brandId);
+        criteriaVO.setProductCategoryId(String.valueOf(categoryId));
         MutableLiveData<ApiResponse<ProductResponse>> result = new MutableLiveData<>();
         ApiResponse<ProductResponse> apiResponse = new ApiResponse();
         IbaAPI api = ServiceGenerator.createService(IbaAPI.class);

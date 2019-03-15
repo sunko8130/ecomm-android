@@ -120,7 +120,7 @@ public class CartEditAdapter extends BaseRecyclerAdapter<CartEditAdapter.CartEdi
         ImageView ivMinus;
 
         @BindView(R.id.tv_quantity)
-        EditText tvQuantity;
+        MMTextView tvQuantity;
 
         @BindView(R.id.btn_delete)
         ImageView btnDelete;

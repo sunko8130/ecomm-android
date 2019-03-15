@@ -175,7 +175,6 @@ public class ProductShowActivity extends BaseActivity {
             } else {
                 //brand show
                 mBrandAdapter = new BrandAdapter(this);
-                isCategory = false;
                 rcSubCate.setAdapter(mBrandAdapter);
                 getBrand(categoryId);
                 subHeader.setText("Brands");
@@ -225,12 +224,13 @@ public class ProductShowActivity extends BaseActivity {
         if(isCategory) {
             getProductByCategory(mCurrentPage, categoryId);
         }else {
-            getProductByBrand(mCurrentPage,brandId);
+            getProductByBrand(mCurrentPage,brandId , categoryId);
         }
     }
 
     private void getSubCategory(Long categoryId) {
         if (!checkNetwork()) {
+            retryDialog.show();
             retryDialog.tvRetry.setText("No Internet Connection");
             retryDialog.btnRetry.setOnClickListener(v -> {
                 retryDialog.dismiss();
@@ -390,7 +390,7 @@ public class ProductShowActivity extends BaseActivity {
         }
     }
 
-    private void getProductByBrand(int page, long brandId) {
+    private void getProductByBrand(int page, long brandId , long categoryId) {
         if (!checkNetwork()) {
             retryDialog.show();
             retryDialog.tvRetry.setText("No Internet Connection");
@@ -399,7 +399,7 @@ public class ProductShowActivity extends BaseActivity {
                 getProductByCategory(page, brandId);
             });
         } else {
-            mProductViewModel.getProductbyBrand(page, brandId).observe(this, apiResponse -> {
+            mProductViewModel.getProductbyBrand(page, brandId , categoryId).observe(this, apiResponse -> {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -516,12 +516,13 @@ public class ProductShowActivity extends BaseActivity {
     }
 
     public void onBrandItemClick(BrandVO brandVO){
+        isCategory = false;
         mProductAdapter.clearData();
         tvEmpty.setText("Loading data........");
         btnEmpty.setVisibility(View.GONE);
         mCurrentPage = 1;
         brandId = brandVO.getId();
-        getProductByBrand(mCurrentPage, brandId);
+        getProductByBrand(mCurrentPage, brandId , categoryId);
         for (int i = 0; i < mBrandList.size(); i++) {
             if (mBrandList.get(i).getId().equals(brandId)) {
                 mBrandList.get(i).setSelected(true);
@@ -557,6 +558,7 @@ public class ProductShowActivity extends BaseActivity {
             cartItems = 0;
         }
         invalidateOptionsMenu();
+        refreshData();
     }
 
     @Override

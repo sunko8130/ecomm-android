@@ -250,16 +250,39 @@ public class ProductDetailsActivity extends BaseActivity {
                 setUpSpinner();
             }
             btnAddToCart.setOnClickListener(view -> {
-                        if (maxQuantity > 0) {
-                            final AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailsActivity.this);
-                            builder.setTitle("Sure?");
-                            builder.setMessage("Want to add to Cart?");
-                            builder.setPositiveButton("Ok", (dialog, which) -> {
+                        if (maxQuantity < minQuantity) {
+                            Toast.makeText(context, "You can't order for this item!", Toast.LENGTH_SHORT).show();
+                        } else if (maxQuantity > 0) {
+//                            final AlertDialog.Builder builder = new AlertDialog.Builder(ProductDetailsActivity.this);
+//                            builder.setTitle("Sure?");
+//                            builder.setMessage("Want to add to Cart?");
+//                            builder.setPositiveButton("Ok", (dialog, which) -> {
+//                                addToCart();
+//                            });
+//                            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+//                            AlertDialog productDialog = builder.create();
+//                            productDialog.show();
+                            List<CartVO> list = ibaShared.getItemsFromCart();
+                            boolean isContain = false;
+                            if (list == null || list.size() == 0) {
+                                isContain = true;
                                 addToCart();
-                            });
-                            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-                            AlertDialog productDialog = builder.create();
-                            productDialog.show();
+                            } else {
+                                for (CartVO cartVO : list) {
+                                    if (cartVO.getProductId().equals(productVO.getId()) && cartVO.getOrderUnitId().equals(orderUnitVOList.get(selectedItem).getId())) {
+                                        isContain = true;
+                                        if (cartVO.getQuantity() + quantity <= maxQuantity) {
+                                            addToCart();
+                                        } else {
+                                            Snackbar.make(rcPromo, "Your order is exceed the maximum", Snackbar.LENGTH_LONG).show();
+                                        }
+                                    }
+                                }
+                            }
+                            if (!isContain) {
+                                addToCart();
+                            }
+
                         } else {
                             Toast.makeText(context, "This product is out of stock!", Toast.LENGTH_SHORT).show();
                         }

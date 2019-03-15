@@ -71,7 +71,7 @@ public class OrderHistoryAdapter extends BaseRecyclerAdapter<OrderHistoryAdapter
             for (OrderItemVO order:data.getOrderItems()){
                 price+=order.getOrderPrice();
             }
-            tvOrderPrice.setText(String.format("%,.2f", price) + " Ks");
+            tvOrderPrice.setText("Total Amount: "+String.format("%,.2f", price) + " Ks");
             tvOrderId.setText("Order ID: "+data.getOrderNumber());
             historyVO = data;
         }

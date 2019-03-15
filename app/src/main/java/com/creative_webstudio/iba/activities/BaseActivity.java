@@ -40,6 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         retryDialog = new CustomRetryDialog(this);
         retryDialog.setCanceledOnTouchOutside(false);
+        retryDialog.setCancelable(false);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 

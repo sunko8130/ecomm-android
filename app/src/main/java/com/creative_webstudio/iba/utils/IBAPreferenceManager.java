@@ -173,7 +173,7 @@ public class IBAPreferenceManager {
         }
         stringList = gson.toJson(cartList);
         toPreference("CartList", stringList);
-        Toast.makeText(mContext, "This Item is add to Cart!", Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "Successfully added to cart!", Toast.LENGTH_LONG).show();
     }
 
     public boolean removeCart(CartVO removeCart) {
