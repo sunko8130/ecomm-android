@@ -88,7 +88,7 @@ public class CartAdapter extends BaseRecyclerAdapter<CartAdapter.CartViewHolder,
         @Override
         public void setData(CartShowVO data) {
             tvProductName.setText(data.getProductName());
-            tvQuantity.setText(data.getItemQuantity() + " " + data.getUnitShow());
+            tvQuantity.setText("Quantity: "+data.getItemQuantity() + " " + data.getUnitShow());
             String s = String.format("%,.2f", data.getPricePerUnit());
             GlideUrl glideUrl = LoadImage.getGlideUrl(mIbaShared.getAccessToken(), data.getThumbnailId());
             Glide.with(itemView.getContext())

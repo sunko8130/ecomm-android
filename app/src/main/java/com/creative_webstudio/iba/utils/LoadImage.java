@@ -14,7 +14,7 @@ public class LoadImage {
 
         return new GlideUrl(AppConstants.IMAGE_URL + imageId,
                 new LazyHeaders.Builder()
-                        .addHeader("Authorization", accessToken)
+//                        .addHeader("Authorization", accessToken)
                         .build());
     }
 

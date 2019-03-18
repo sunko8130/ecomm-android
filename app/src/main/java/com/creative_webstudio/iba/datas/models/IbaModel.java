@@ -12,6 +12,7 @@ import com.creative_webstudio.iba.datas.criterias.ConfigurationCriteria;
 import com.creative_webstudio.iba.datas.criterias.ProductCriteria;
 import com.creative_webstudio.iba.datas.vos.ConfigurationVO;
 import com.creative_webstudio.iba.datas.vos.CustomerVO;
+import com.creative_webstudio.iba.datas.vos.LogOutVO;
 import com.creative_webstudio.iba.datas.vos.ProductVO;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.enents.TokenEvent;
@@ -68,6 +69,33 @@ public class IbaModel extends BaseModel {
                             && body != null) {
                         apiResponse.setData(body);
                         customerVO = body;
+                    } else {
+                        apiResponse.setError(new ApiException(response.code()));
+                    }
+                    result.setValue(apiResponse);
+                }, throwable -> {
+                    Crashlytics.logException(throwable);
+                    apiResponse.setError(new ApiException(throwable));
+                    result.setValue(apiResponse);
+                });
+
+        return result;
+    }
+
+    public MutableLiveData<ApiResponse<LogOutVO>> userLogOut(){
+        MutableLiveData<ApiResponse<LogOutVO>> result = new MutableLiveData<>();
+        ApiResponse<LogOutVO> apiResponse = new ApiResponse();
+        IbaAPI api = ServiceGenerator.createService(IbaAPI.class);
+        String accessToken = ibaPreference.getAccessToken();
+        String userAuth = "Bearer " + accessToken;
+        api.userLogOut(userAuth,accessToken)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    LogOutVO body = response.body();
+                    if (response.isSuccessful()
+                            && body != null) {
+                        apiResponse.setData(body);
                     } else {
                         apiResponse.setError(new ApiException(response.code()));
                     }

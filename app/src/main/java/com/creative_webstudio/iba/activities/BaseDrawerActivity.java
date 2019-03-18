@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.creative_webstudio.iba.R;
 import com.creative_webstudio.iba.datas.models.IbaModel;
 import com.creative_webstudio.iba.datas.vos.CustomerVO;
+import com.creative_webstudio.iba.datas.vos.LogOutVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.utils.CustomDialog;
 import com.creative_webstudio.iba.utils.IBAPreferenceManager;
@@ -87,10 +88,10 @@ public class BaseDrawerActivity extends BaseActivity {
         MMTextView name = headerView.findViewById(R.id.tvCustomerName);
         MMTextView email = headerView.findViewById(R.id.tvCustomerEmail);
         if (customerVO != null) {
-            if(customerVO.getName()!=null)
-            name.setText(customerVO.getName());
-            if(customerVO.getEmail()!=null)
-            email.setText(customerVO.getEmail());
+            if (customerVO.getName() != null)
+                name.setText(customerVO.getName());
+            if (customerVO.getEmail() != null)
+                email.setText(customerVO.getEmail());
         }
         headerView.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
@@ -193,11 +194,40 @@ public class BaseDrawerActivity extends BaseActivity {
         bundle.putLong("customer_id", customerVO.getId());
         bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "logout");
         mFirebaseAnalytics.logEvent("click_log_out", bundle);
-//        ibaShared.removePreference("AccessToken");
-//        ibaShared.removePreference("RefreshToken");
-        ibaShared.clear();
-        startActivity(SignInActivity.newIntent(this));
-        finish();
+        if (!checkNetwork()) {
+            retryDialog.show();
+            retryDialog.tvRetry.setText("No Internet Connection");
+            retryDialog.btnRetry.setOnClickListener(v -> {
+                retryDialog.dismiss();
+                logOut();
+            });
+        } else {
+            IbaModel.getInstance().userLogOut().observe(this, apiResponse -> {
+                if (apiResponse.getData() != null) {
+                    ibaShared.clear();
+                    startActivity(SignInActivity.newIntent(this));
+                    finish();
+                } else {
+                    if (apiResponse.getError() instanceof ApiException) {
+                        int errorCode = ((ApiException) apiResponse.getError()).getErrorCode();
+                        if (errorCode == 401) {
+                            // Invalid or expired access token.
+                            super.refreshAccessToken();
+                        } else {
+                            retryDialog.show();
+                            retryDialog.tvRetry.setText("Connection Error!");
+                            retryDialog.btnRetry.setOnClickListener(v -> {
+                                retryDialog.dismiss();
+                                logOut();
+                            });
+                        }
+                    }
+                }
+            });
+
+
+        }
+
     }
 
     @Override

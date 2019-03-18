@@ -30,9 +30,9 @@ public class AppConstants {
 
 
 //    local
-//    public static final String BASE_PRODUCT_SEARCH_URL = "http://192.168.100.14:8282/iba-api/api/";
-//    public static final String BASE_OAUTH_URL = "http://192.168.100.14:8281/iba-uae/";
-//    public static final String IMAGE_URL = "http://192.168.100.14:8282/iba-api/api/pub/files/thumbnail/";
+//    public static final String BASE_PRODUCT_SEARCH_URL = "http://192.168.100.16:8282/iba-api/api/";
+//    public static final String BASE_OAUTH_URL = "http://192.168.100.16:8281/iba-uae/";
+//    public static final String IMAGE_URL = "http://192.168.100.16:8282/iba-api/api/pub/files/thumbnail/";
 
     //    production
     public static final String BASE_PRODUCT_SEARCH_URL = "http://www.mmwebstudio.com/iba-api/api/";

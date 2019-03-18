@@ -196,8 +196,8 @@ public class ProductSearchActivity extends BaseActivity implements SearchView.On
         startActivity(ProductDetailsActivity.newIntent(this, "ProductSearch", json));
     }
 
-    @Override
-    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
-        getProductSearch(criteriaVO);
-    }
+//    @Override
+//    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
+//        getProductSearch(criteriaVO);
+//    }
 }

@@ -138,7 +138,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         animEmpty.playAnimation();
         tvEmpty.setText("There is no item in your cart!");
         btnRefresh.setVisibility(View.GONE);
-        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Your Order.Please wait!");
+
 
     }
 
@@ -150,6 +150,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void setUpData() {
+        loadingDialog = CustomDialog.loadingDialog2(this, "Loading!", "Loading Your Order.Please wait!");
         total = 0.0;
         totalCartItem = 0;
         if (ibaShared.getItemsFromCart() != null && ibaShared.getItemsFromCart().size()!=0) {
@@ -537,8 +538,8 @@ public class CartActivity extends BaseActivity implements View.OnClickListener {
         });
     }
 
-    @Override
-    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
-        getCartProducts(0, productIds);
-    }
+//    @Override
+//    public void onAccessTokenRefreshSuccess(Response<TokenVO> response) {
+//        getCartProducts(0, productIds);
+//    }
 }

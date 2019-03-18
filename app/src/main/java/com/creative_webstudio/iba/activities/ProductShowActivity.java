@@ -143,8 +143,6 @@ public class ProductShowActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         ibaShared = new IBAPreferenceManager(this);
         mProductViewModel = ViewModelProviders.of(this).get(ProductViewModel.class);
-        mCategoryList = new ArrayList<>();
-        mBrandList = new ArrayList<>();
         rvProduct.setEmptyView(vpEmpty);
         mProductAdapter = new ProductAdapter(this);
         if (isTablet(this)) {
@@ -154,38 +152,15 @@ public class ProductShowActivity extends BaseActivity {
             layoutManager = new GridLayoutManager(this, 2);
             subLayoutManager = new GridLayoutManager(this, 3);
         }
+        setUpData();
         rcSubCate.setLayoutManager(subLayoutManager);
         rvProduct.setLayoutManager(layoutManager);
         rvProduct.setAdapter(mProductAdapter);
         tvEmpty.setText("Loading Data........");
         btnEmpty.setVisibility(View.GONE);
-        if (getIntent().hasExtra("categoryVo")) {
-            String json = getIntent().getStringExtra("categoryVo");
-            Gson gson = new Gson();
-            categoryVO = gson.fromJson(json, CategoryVO.class);
-            tvToolBarTitle.setText(categoryVO.getName());
-            categoryId = categoryVO.getId();
-            if (categoryId < 3) {
-                getProductByCategory(mCurrentPage, categoryId);
-            }else if (categoryVO.getChildCategoryCount() > 0) {
-                mSubAdapter = new SubCategoryAdapter(this);
-                rcSubCate.setAdapter(mSubAdapter);
-                getSubCategory(categoryId);
-                subHeader.setText("Sub Categories");
-            } else {
-                //brand show
-                mBrandAdapter = new BrandAdapter(this);
-                rcSubCate.setAdapter(mBrandAdapter);
-                getBrand(categoryId);
-                subHeader.setText("Brands");
-            }
-        }
-
-        swipeRefreshLayout.setOnRefreshListener(() ->refreshData());
-
-        btnEmpty.setOnClickListener(v ->refreshData());
-
-        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) ->{
+        swipeRefreshLayout.setOnRefreshListener(() -> refreshData());
+        btnEmpty.setOnClickListener(v -> refreshData());
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY == 0) {
                 scrollTop = true;
             } else {
@@ -201,12 +176,42 @@ public class ProductShowActivity extends BaseActivity {
                         mIsLoading = true;
                         if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                             aniLoadMore.setVisibility(View.VISIBLE);// Prevent duplicate request while fetching from server
-                            getProductByCategory(mCurrentPage, categoryId);
+                            if (isCategory) {
+                                getProductByCategory(mCurrentPage, categoryId);
+                            } else {
+                                getProductByBrand(mCurrentPage, brandId, categoryId);
+                            }
                         }
                     }
                 }
             }
         });
+    }
+
+    private void setUpData() {
+        mCategoryList = new ArrayList<>();
+        mBrandList = new ArrayList<>();
+        if (getIntent().hasExtra("categoryVo")) {
+            String json = getIntent().getStringExtra("categoryVo");
+            Gson gson = new Gson();
+            categoryVO = gson.fromJson(json, CategoryVO.class);
+            tvToolBarTitle.setText(categoryVO.getName());
+            categoryId = categoryVO.getId();
+            if (categoryId < 3) {
+                getProductByCategory(mCurrentPage, categoryId);
+            } else if (categoryVO.getChildCategoryCount() > 0) {
+                mSubAdapter = new SubCategoryAdapter(this);
+                rcSubCate.setAdapter(mSubAdapter);
+                getSubCategory(categoryId);
+                subHeader.setText("Sub Categories");
+            } else {
+                //brand show
+                mBrandAdapter = new BrandAdapter(this);
+                rcSubCate.setAdapter(mBrandAdapter);
+                getBrand(categoryId);
+                subHeader.setText("Brands");
+            }
+        }
     }
 
     public boolean isTablet(Context context) {
@@ -221,10 +226,10 @@ public class ProductShowActivity extends BaseActivity {
         mProductAdapter.clearData();
         mIsLoading = true;
         mCurrentPage = 1;
-        if(isCategory) {
+        if (isCategory) {
             getProductByCategory(mCurrentPage, categoryId);
-        }else {
-            getProductByBrand(mCurrentPage,brandId , categoryId);
+        } else {
+            getProductByBrand(mCurrentPage, brandId, categoryId);
         }
     }
 
@@ -390,7 +395,7 @@ public class ProductShowActivity extends BaseActivity {
         }
     }
 
-    private void getProductByBrand(int page, long brandId , long categoryId) {
+    private void getProductByBrand(int page, long brandId, long categoryId) {
         if (!checkNetwork()) {
             retryDialog.show();
             retryDialog.tvRetry.setText("No Internet Connection");
@@ -399,7 +404,7 @@ public class ProductShowActivity extends BaseActivity {
                 getProductByCategory(page, brandId);
             });
         } else {
-            mProductViewModel.getProductbyBrand(page, brandId , categoryId).observe(this, apiResponse -> {
+            mProductViewModel.getProductbyBrand(page, brandId, categoryId).observe(this, apiResponse -> {
                 if (swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -424,7 +429,7 @@ public class ProductShowActivity extends BaseActivity {
                         } else if (errorCode == 200) {
                             // TODO: Reach End of List
                             if (mCurrentPage > 1) {
-                                Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(rvProduct, "End of Product List", Snackbar.LENGTH_SHORT).show();
                             } else {
                                 tvEmpty.setText("No Data to Display!");
                                 btnEmpty.setVisibility(View.VISIBLE);
@@ -515,14 +520,14 @@ public class ProductShowActivity extends BaseActivity {
         startActivity(ProductShowActivity.newIntent(this, json));
     }
 
-    public void onBrandItemClick(BrandVO brandVO){
+    public void onBrandItemClick(BrandVO brandVO) {
         isCategory = false;
         mProductAdapter.clearData();
         tvEmpty.setText("Loading data........");
         btnEmpty.setVisibility(View.GONE);
         mCurrentPage = 1;
         brandId = brandVO.getId();
-        getProductByBrand(mCurrentPage, brandId , categoryId);
+        getProductByBrand(mCurrentPage, brandId, categoryId);
         for (int i = 0; i < mBrandList.size(); i++) {
             if (mBrandList.get(i).getId().equals(brandId)) {
                 mBrandList.get(i).setSelected(true);
@@ -558,7 +563,6 @@ public class ProductShowActivity extends BaseActivity {
             cartItems = 0;
         }
         invalidateOptionsMenu();
-        refreshData();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.creative_webstudio.iba.activities;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 
 import com.creative_webstudio.iba.components.CustomRetryDialog;
+import com.creative_webstudio.iba.datas.ApiResponse;
 import com.creative_webstudio.iba.datas.vos.TokenVO;
 import com.creative_webstudio.iba.exception.ApiException;
 import com.creative_webstudio.iba.networks.IbaAPI;
@@ -19,6 +21,7 @@ import com.creative_webstudio.iba.utils.IBAPreferenceManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.lang.reflect.Method;
+import java.util.function.Function;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -33,8 +36,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     //FirebaseAnalytics
     FirebaseAnalytics mFirebaseAnalytics;
 
-    public boolean isTokenCalling = false;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         retryDialog.setCancelable(false);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
+
 
     protected void refreshAccessToken() {
         IBAPreferenceManager prefs = new IBAPreferenceManager(this);
@@ -56,7 +58,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .subscribe(authResponse -> {
                     if (authResponse.isSuccessful()) {
                         onAccessTokenRefreshSuccess(authResponse);
-
                     } else {
                         onAccessTokenRefreshFailure(new ApiException(authResponse.code()));
                     }

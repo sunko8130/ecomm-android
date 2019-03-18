@@ -13,6 +13,7 @@ import com.creative_webstudio.iba.datas.vos.CategoryVO;
 import com.creative_webstudio.iba.datas.criterias.OrderHistoryCriteria;
 import com.creative_webstudio.iba.datas.vos.ConfigurationVO;
 import com.creative_webstudio.iba.datas.vos.CustomerVO;
+import com.creative_webstudio.iba.datas.vos.LogOutVO;
 import com.creative_webstudio.iba.datas.vos.OrderHistoryResponse;
 import com.creative_webstudio.iba.datas.criterias.OrderItemCriteria;
 import com.creative_webstudio.iba.datas.vos.OrderItemVO;
@@ -115,6 +116,11 @@ public interface IbaAPI {
 
     @GET("customer/me")
     Observable<Response<CustomerVO>> getCustomerInfo(@Header("Authorization") String authHeader);
+
+    @FormUrlEncoded
+    @POST("invalidate_tokens")
+    Observable<Response<LogOutVO>> userLogOut(@Header("Authorization") String authHeader,
+                                              @Field("access_token") String token);
 
     @FormUrlEncoded
     @POST("pub/configuration/searchWithKey")
